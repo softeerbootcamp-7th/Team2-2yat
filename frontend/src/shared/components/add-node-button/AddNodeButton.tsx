@@ -1,5 +1,5 @@
-import { useState } from "react";
 import { cn } from "@utils/cn";
+import IcIconMove from "@icons/ic_tool_move.svg?react";
 
 const NODE_COLORS = ["violet", "blue", "skyblue", "mint", "cyan", "purple", "magenta", "navy"] as const;
 
@@ -9,33 +9,35 @@ const getColorClass = (colorIndex: number) => {
 };
 
 const MoveIcon = () => (
-    <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path
-            d="M3.02767 3.51592C2.99807 3.44761 2.9897 3.37198 3.00363 3.29884C3.01756 3.22571 3.05316 3.15845 3.10581 3.10581C3.15845 3.05316 3.22571 3.01756 3.29884 3.00363C3.37198 2.9897 3.44761 2.99807 3.51592 3.02767L15.5159 7.90267C15.5889 7.9324 15.6506 7.98436 15.6924 8.05116C15.7342 8.11797 15.7538 8.19624 15.7486 8.27485C15.7434 8.35347 15.7135 8.42844 15.6633 8.48912C15.613 8.54981 15.5449 8.59312 15.4687 8.61292L10.8757 9.79792C10.6162 9.86464 10.3793 9.99965 10.1896 10.1889C9.99994 10.3782 9.86443 10.6148 9.79717 10.8742L8.61292 15.4687C8.59312 15.5449 8.54981 15.613 8.48912 15.6633C8.42844 15.7135 8.35347 15.7434 8.27485 15.7486C8.19624 15.7538 8.11797 15.7342 8.05116 15.6924C7.98436 15.6506 7.9324 15.5889 7.90267 15.5159L3.02767 3.51592Z"
-            fill="var(--color-base-white)"
-            stroke="var(--color-base-white)"
-            strokeWidth="1.33"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-        />
-    </svg>
+    <div className="w-13.5 h-13.5 bg-node-violet-op-15 rounded-full flex items-center justify-center">
+        <div className="w-11 h-11 bg-node-violet-op-100 rounded-full border-base-white border-3 flex items-center justify-center">
+            <IcIconMove className="w-5 h-6 text-base-white rotate-135" />
+        </div>
+    </div>
 );
 
 type AddNodeButtonProps = {
     colorIndex?: number;
     className?: string;
 };
-
 const AddNodeButton = ({ colorIndex = 0, className }: AddNodeButtonProps) => {
-    const [isHovering, setIsHovering] = useState(false);
-
     return (
         <button
-            className={cn("w-3 h-3 rounded-full cursor-pointer", getColorClass(colorIndex), className)}
-            onMouseEnter={() => setIsHovering(true)}
-            onMouseLeave={() => setIsHovering(false)}
+            className={cn(
+                "group relative flex items-center justify-center w-3 h-3 rounded-full cursor-pointer",
+                getColorClass(colorIndex),
+                className,
+            )}
         >
-            {isHovering && <MoveIcon />}
+            <div
+                className="absolute inset-0 flex items-center justify-center
+                            opacity-0 group-hover:opacity-100 
+                            transition-all duration-300 ease-in-out"
+            >
+                <div className="z-10">
+                    <MoveIcon />
+                </div>
+            </div>
         </button>
     );
 };
