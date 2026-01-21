@@ -1,0 +1,136 @@
+@import "tailwindcss";
+@import "./styles/typography_token.css";
+
+@theme {
+    --color-cobalt-100: #dee5ff;
+    --color-cobalt-200: #bdcbff;
+    --color-cobalt-300: #96abff;
+    --color-cobalt-400: #738fff;
+    --color-cobalt-500: #5065ff;
+    --color-cobalt-600: #4050cc;
+    --color-cobalt-700: #303c99;
+    --color-cobalt-800: #202866;
+    --color-cobalt-900: #101433;
+
+    --color-gray-100: #f7f7f9;
+    --color-gray-200: #eeeff4;
+    --color-gray-300: #dddee3;
+    --color-gray-400: #c5c6cf;
+    --color-gray-500: #acadb4;
+    --color-gray-600: #909197;
+    --color-gray-700: #797a80;
+    --color-gray-800: #5e6067;
+    --color-gray-900: #434448;
+    --color-gray-1000: #222222;
+
+    --color-red-100: #fef2f2;
+    --color-red-200: #e14e55;
+    --color-red-300: #e7000b;
+
+    --color-yellow-100: #efb100;
+
+    --color-green-100: #ddf7ec;
+    --color-green-200: #2aa590;
+    --color-green-300: #50ff82;
+
+    --color-base-white: #ffffff;
+    --color-base-black: #000000;
+    --color-base-navy: #364153;
+    --color-base-beige: #fafafa;
+
+    --color-cursor-blue: #34a7ff;
+    --color-cursor-pink: #fd69b9;
+    --color-cursor-green: #0ed038;
+    --color-cursor-purple: #7749ff;
+    --color-cursor-orange: #ff913c;
+
+    --color-node-violet-op-5: #f8f7ff;
+    --color-node-violet-op-10: #f0efff;
+    --color-node-violet-op-15: #e9e6ff;
+    --color-node-violet-op-20: #e2deff;
+    --color-node-violet-op-30: #d3ceff;
+    --color-node-violet-op-100: #6d5aff;
+
+    /* Node - Blue */
+    --color-node-blue-op-5: #f6f9ff;
+    --color-node-blue-op-10: #eef4ff;
+    --color-node-blue-op-15: #e5eeff;
+    --color-node-blue-op-20: #dce9ff;
+    --color-node-blue-op-30: #cbdeff;
+    --color-node-blue-op-100: #5090ff;
+
+    /* Node - Skyblue */
+    --color-node-skyblue-op-5: #f5fbff;
+    --color-node-skyblue-op-10: #ecf7fe;
+    --color-node-skyblue-op-15: #e2f3fe;
+    --color-node-skyblue-op-20: #d9effe;
+    --color-node-skyblue-op-30: #c5e7fd;
+    --color-node-skyblue-op-100: #3faef8;
+
+    /* Node - Mint */
+    --color-node-mint-op-5: #f4fcfd;
+    --color-node-mint-op-10: #e9f9fb;
+    --color-node-mint-op-15: #def6fa;
+    --color-node-mint-op-20: #d3f3f8;
+    --color-node-mint-op-30: #bdeef4;
+    --color-node-mint-op-100: #24c5db;
+
+    /* Node - Cyan */
+    --color-node-cyan-op-5: #f6fdfe;
+    --color-node-cyan-op-10: #edfbfc;
+    --color-node-cyan-op-15: #e3f9fb;
+    --color-node-cyan-op-20: #daf6fa;
+    --color-node-cyan-op-30: #c8f2f8;
+    --color-node-cyan-op-100: #46d4e6;
+
+    /* Node - Purple */
+    --color-node-purple-op-5: #fbf8ff;
+    --color-node-purple-op-10: #f6f0ff;
+    --color-node-purple-op-15: #f2e9ff;
+    --color-node-purple-op-20: #ede2ff;
+    --color-node-purple-op-30: #e5d3ff;
+    --color-node-purple-op-100: #a76dff;
+
+    /* Node - Magenta */
+    --color-node-magenta-op-5: #fdf5ff;
+    --color-node-magenta-op-10: #faecfe;
+    --color-node-magenta-op-15: #f8e2fe;
+    --color-node-magenta-op-20: #f5d9fe;
+    --color-node-magenta-op-30: #f0c5fd;
+    --color-node-magenta-op-100: #cd3ff8;
+
+    /* Node - Navy */
+    --color-node-navy-op-5: #f6f8fc;
+    --color-node-navy-op-10: #eef2f8;
+    --color-node-navy-op-15: #e5ebf5;
+    --color-node-navy-op-20: #dde4f2;
+    --color-node-navy-op-30: #cbd7eb;
+    --color-node-navy-op-100: #537abd;
+
+    /* semantic */
+    --color-primary: var(--color-cobalt-500);
+    --color-primary-hover: var(--color-cobalt-600);
+    --color-primary-pressed: var(--color-cobalt-700);
+    --color-primary-disabled: var(--color-cobalt-200);
+    --color-primary-bg: color-mix(in srgb, var(--color-primary), transparent 90%);
+    --color-primary-bg-02: color-mix(in srgb, var(--color-primary), transparent 80%);
+
+    --color-text-main1: var(--color-gray-1000);
+    --color-text-main2: var(--color-base-navy);
+    --color-text-sub1: var(--color-gray-800);
+    --color-text-white: var(--color-base-white);
+    --color-text-placeholder: var(--color-gray-600);
+
+    --color-white: var(--color-white);
+    --color-white-op-20: color-mix(in srgb, var(--color-white), transparent 20%);
+
+    /* landing page */
+    --color-landing-purple-op-50: color-mix(in srgb, var(--color-cobalt-500), transparent 50%);
+    --color-landing-purple-op-10: color-mix(in srgb, var(--color-cobalt-500), transparent 13%);
+    --color-landing-mint-op-100: #bdeef4;
+    --color-landing-mint-op-40: color-mix(in srgb, var(--color-landing-mint-op-100), transparent 40%);
+
+    --color-postit-base: #d07d71; /* post it */
+    --color-postit-bg: #ffdcd7 --color-postit-text: var(--color-postit-base);
+    --color-postit-dot: color-mix(in srgb, var(--color-postit-base), transparent 40%);
+}
