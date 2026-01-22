@@ -1,11 +1,13 @@
 type Props = {
     name: (typeof ICON_NAMES)[number];
+
     color?: string;
+    size?: number | string;
 };
 
-function Icon({ color = "currentColor", name }: Props) {
+function Icon({ color = "currentColor", size = 24, name }: Props) {
     return (
-        <svg color={color}>
+        <svg color={color} width={size} height={size} viewBox="0 0 24 24" fill="none">
             <use href={`/icons.svg#${name}`} />
         </svg>
     );
