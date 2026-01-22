@@ -1,18 +1,14 @@
 import { cn } from "@utils/cn";
-import { getColorClass } from "@features/mindmap/node/colors";
+import { getColorClass } from "@features/mindmap/node/utils/colors";
+import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import AddNodeHoverIcon from "@features/mindmap/node/AddNodeHoverIcon";
 
-type AddNodeButtonProps = {
-    colorIndex?: number;
-    className?: string;
-};
-
-export default function AddNodeButton({ colorIndex = 0, className }: AddNodeButtonProps) {
+export default function AddNodeButton({ colorIndex = 0, className }: NodeComponentProps) {
     return (
         <button
             className={cn(
                 "group relative flex items-center justify-center w-3 h-3 rounded-full cursor-pointer",
-                getColorClass(colorIndex),
+                getColorClass({ colorIndex }),
                 className,
             )}
         >
