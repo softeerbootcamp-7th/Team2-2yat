@@ -1,0 +1,35 @@
+package com.__yat.episode.mindmap;
+
+import jakarta.persistence.*;
+import lombok.Getter;
+import lombok.Setter;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
+
+@Entity
+@Getter
+@Setter
+@Table(name = "mindmap")
+public class Mindmap {
+
+    @Id
+    @Column(name = "id", columnDefinition = "BINARY(16)")
+    private UUID id;
+
+    @Column(name = "created_time", nullable = false)
+    private LocalDateTime createdTime;
+
+    @Column(name = "is_shared", nullable = false)
+    private boolean shared;
+
+    protected Mindmap() {
+    }
+
+    public Mindmap(UUID id, LocalDateTime createdTime, boolean shared) {
+        this.id = id;
+        this.createdTime = createdTime;
+        this.shared = shared;
+    }
+
+}
