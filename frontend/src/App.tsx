@@ -1,5 +1,7 @@
+import Icon from "@shared/components/icon/Icon";
+
 function App() {
-    return <>main</>;
+    return <div>main</div>;
 }
 
 export default App;
