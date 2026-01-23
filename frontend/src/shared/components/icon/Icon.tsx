@@ -3,11 +3,21 @@ type Props = {
 
     color?: string;
     size?: number | string;
+    strokeWidth?: number | string;
 };
 
-function Icon({ color = "currentColor", size = 24, name }: Props) {
+function Icon({ color = "currentColor", size = 24, strokeWidth = 1, name }: Props) {
     return (
-        <svg color={color} width={size} height={size} viewBox="0 0 24 24" fill="none">
+        <svg
+            color={color}
+            width={size}
+            height={size}
+            strokeWidth={strokeWidth}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            viewBox="0 0 24 24"
+            fill="none"
+        >
             <use href={`/icons.svg#${name}`} />
         </svg>
     );
