@@ -1,4 +1,4 @@
-package com.__yat.episode.episode;
+package com.yat2.episode.episode;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Embeddable;

@@ -1,9 +1,9 @@
-package com.__yat.episode.job;
+package com.yat2.episode.job;
 
-import com.__yat.episode.diagnosis.DiagnosisResult;
-import com.__yat.episode.occupation.Occupation;
-import com.__yat.episode.question.Question;
-import com.__yat.episode.users.Users;
+import com.yat2.episode.diagnosis.DiagnosisResult;
+import com.yat2.episode.occupation.Occupation;
+import com.yat2.episode.question.Question;
+import com.yat2.episode.users.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

@@ -1,4 +1,4 @@
-package com.2yat.episode;
+package com.yat2.episode;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;

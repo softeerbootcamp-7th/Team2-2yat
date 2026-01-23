@@ -1,7 +1,7 @@
-package com.__yat.episode.question;
+package com.yat2.episode.question;
 
-import com.__yat.episode.job.Job;
-import com.__yat.episode.competency.CompetencyType;
+import com.yat2.episode.job.Job;
+import com.yat2.episode.competency.CompetencyType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

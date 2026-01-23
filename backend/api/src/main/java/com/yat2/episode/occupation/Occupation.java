@@ -1,6 +1,6 @@
-package com.__yat.episode.occupation;
+package com.yat2.episode.occupation;
 
-import com.__yat.episode.job.Job;
+import com.yat2.episode.job.Job;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

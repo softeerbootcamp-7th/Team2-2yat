@@ -1,6 +1,6 @@
-package com.__yat.episode.diagnosis;
+package com.yat2.episode.diagnosis;
 
-import com.__yat.episode.question.Question;
+import com.yat2.episode.question.Question;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

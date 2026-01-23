@@ -1,4 +1,4 @@
-package com.__yat.episode.mindmap;
+package com.yat2.episode.mindmap;
 
 import jakarta.persistence.*;
 import lombok.Getter;

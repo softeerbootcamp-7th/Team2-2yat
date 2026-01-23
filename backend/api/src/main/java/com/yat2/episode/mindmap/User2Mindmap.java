@@ -1,6 +1,6 @@
-package com.__yat.episode.mindmap;
+package com.yat2.episode.mindmap;
 
-import com.__yat.episode.users.Users;
+import com.yat2.episode.users.Users;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

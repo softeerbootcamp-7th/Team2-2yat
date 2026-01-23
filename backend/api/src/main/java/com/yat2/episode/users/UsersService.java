@@ -1,4 +1,4 @@
-package com.__yat.episode.users;
+package com.yat2.episode.users;
 
 import org.springframework.stereotype.Service;
 
