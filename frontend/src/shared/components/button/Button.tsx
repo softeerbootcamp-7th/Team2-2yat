@@ -1,44 +1,48 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
+import { COLOR_SET } from "@shared/styles/color_set";
 
-type Props = ComponentPropsWithoutRef<"button"> & VariantProps<typeof buttonVariants>;
+type Props = ComponentPropsWithoutRef<"button"> &
+    VariantProps<typeof buttonVariants> & {
+        leftSlot?: ReactNode;
+        rightSlot?: ReactNode;
+    };
 
-const Button = ({ children, variant, size, className, ...rest }: Props) => {
+const Button = ({ variant = "primary", size = "md", leftSlot, rightSlot, children, className, ...rest }: Props) => {
     return (
         <button className={buttonVariants({ variant, size, className })} {...rest}>
+            {leftSlot ? leftSlot : null}
             {children}
+            {rightSlot ? rightSlot : null}
         </button>
     );
 };
 
 export default Button;
 
-const buttonVariants = cva("rounded-2xl", {
+const buttonVariants = cva("rounded-2xl flex flex-row gap-2 justify-center items-center", {
     variants: {
         variant: {
-            primary: "bg-primary text-white",
+            primary_accent: [COLOR_SET.primary_accent],
+            primary: [COLOR_SET.primary],
 
-            secondary: "bg-cobalt-200 text-white",
+            secondary: [COLOR_SET.secondary],
 
-            "tertiary-outlined": "bg-white outline-primary text-primary outline-1",
-            "tertiary-filled-outlined-2": "text-primary bg-primary-bg-02 outline-white outline-1",
-            "tertiary-filled": "bg-cobalt-200 text-primary",
-            "tertiary-filled-outlined": "bg-primary-bg-02 outline-primary text-primary outline-1",
+            tertiary: [COLOR_SET.tertiary],
+            tertiary_outlined: [COLOR_SET.tertiary_outlined],
 
-            quaternary: "bg-gray-100 text-gray-800",
-            "quaternary-outlined": "bg-white outline-gray-300 text-gray-800 outline-1",
+            quaternary: [COLOR_SET.quaternary],
+            quaternary_accent_outlined: [COLOR_SET.quaternary_accent_outlined],
 
-            notification: "bg-green-100 text-green-200",
-            alert: "bg-red-100 text-red-200",
+            basic: [COLOR_SET.basic],
+            basic_accent: [COLOR_SET.basic_accent],
+
+            alert: [COLOR_SET.alert],
         },
         size: {
-            sm: "py-3 px-4 min-w-20",
-            md: "w-full py-4 px-5",
-            lg: "w-full py-5 px-10",
+            sm: "typo-body-18-semibold py-3 px-4 min-w-20",
+            md: "typo-body-16-semibold w-full py-4 px-5",
+            lg: "typo-body-16-medium w-full py-5 px-10",
         },
-    },
-    defaultVariants: {
-        variant: "primary",
-        size: "md",
     },
 });
