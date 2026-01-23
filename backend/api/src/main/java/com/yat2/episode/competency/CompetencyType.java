@@ -1,12 +1,9 @@
 package com.yat2.episode.competency;
 
 
-import com.yat2.episode.question.Question;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Getter
 @Setter

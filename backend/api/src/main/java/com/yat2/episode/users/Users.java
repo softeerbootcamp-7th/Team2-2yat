@@ -1,14 +1,9 @@
 package com.yat2.episode.users;
 
-import com.yat2.episode.diagnosis.DiagnosisResult;
-import com.yat2.episode.episode.Episode;
 import com.yat2.episode.job.Job;
-import com.yat2.episode.mindmap.User2Mindmap;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
 
 @Entity
 @Getter
