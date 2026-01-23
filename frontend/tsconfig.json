@@ -5,7 +5,10 @@
         "jsx": "react-jsx",
         "baseUrl": "./src",
         "paths": {
-            "@shared/*": ["shared/*"]
+            "@shared/*": ["shared/*"],
+            "@utils/*": ["utils/*"],
+            "@icons/*": ["assets/icons/*"],
+            "@features/*": ["features/*"]
         },
         "outDir": "./dist"
     }

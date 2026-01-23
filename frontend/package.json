@@ -13,8 +13,10 @@
     "dependencies": {
         "@tailwindcss/vite": "^4.1.18",
         "class-variance-authority": "^0.7.1",
+        "clsx": "^2.1.1",
         "react": "^19.2.0",
         "react-dom": "^19.2.0",
+        "tailwind-merge": "^3.4.0",
         "tailwindcss": "^4.1.18"
     },
     "devDependencies": {
@@ -32,7 +34,8 @@
         "prettier": "3.8.0",
         "typescript": "~5.9.3",
         "typescript-eslint": "^8.53.1",
-        "vite": "^7.2.4"
+        "vite": "^7.2.4",
+        "vite-plugin-svgr": "^4.5.0"
     },
     "packageManager": "pnpm@9.15.1+sha512.1acb565e6193efbebda772702950469150cf12bcc764262e7587e71d19dc98a423dff9536e57ea44c49bdf790ff694e83c27be5faa23d67e0c033b583be4bfcf"
 }
