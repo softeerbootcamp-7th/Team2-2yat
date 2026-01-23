@@ -20,11 +20,4 @@ public class UsersController {
     public ResponseEntity<List<Users>> getAllUsers() {
         return ResponseEntity.ok(usersService.getAllUsers());
     }
-
-//    @GetMapping("/{id}")
-//    public ResponseEntity<Object> getUserById(@PathVariable("id") Long kakaoId) {
-//        return usersService.getUserById(kakaoId)
-//                .map(ResponseEntity::ok)
-//                .orElse(ResponseEntity.notFound().build());
-//    }
 }
