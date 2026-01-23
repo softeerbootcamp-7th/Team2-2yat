@@ -6,7 +6,7 @@ type Props = {
     strokeWidth?: number | string;
 };
 
-function Icon({ color = "currentColor", size = 24, strokeWidth = 1, name }: Props) {
+function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name }: Props) {
     return (
         <svg
             color={color}
