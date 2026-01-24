@@ -9,10 +9,10 @@ type Props = {
 };
 
 const Tooltip = ({ direction = "right", children, contents }: Props) => {
-    const [isVisible, { setOff, setOn }] = useToggle();
+    const [isVisible, isVisibleHandler] = useToggle({ defaultValue: false });
 
     return (
-        <div onPointerOver={setOn} onPointerLeave={setOff} className="relative w-fit">
+        <div onPointerOver={isVisibleHandler.on} onPointerLeave={isVisibleHandler.off} className="relative w-fit">
             {children}
 
             {isVisible && <div className={`absolute z-50 ${positionClasses[direction]}`}>{contents}</div>}
