@@ -1,4 +1,4 @@
-import { NodeColor } from "@utils/colors";
+import { NodeColor } from "@utils/node_colors";
 
 export type NodeComponentProps = {
     colorIndex?: number;

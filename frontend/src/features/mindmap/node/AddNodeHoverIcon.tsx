@@ -1,7 +1,7 @@
 import IcIconMove from "@icons/ic_tool_move.svg?react";
 import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@utils/cn";
-import { getNodeColorClass, NodeColor } from "@utils/colors";
+import { getNodeColorClass, NodeColor } from "@utils/node_colors";
 
 type Props = ComponentPropsWithoutRef<"button"> & { color: NodeColor };
 

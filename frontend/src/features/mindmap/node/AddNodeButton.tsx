@@ -1,7 +1,7 @@
 import { cn } from "@utils/cn";
 import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import AddNodeHoverIcon from "@features/mindmap/node/AddNodeHoverIcon";
-import { getNodeColorClass } from "@utils/colors";
+import { getNodeColorClass } from "@utils/node_colors";
 
 export default function AddNodeButton({ color }: NodeComponentProps) {
     return (
