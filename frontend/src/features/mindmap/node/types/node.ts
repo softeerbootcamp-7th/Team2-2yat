@@ -1,4 +1,7 @@
+import { NodeColor } from "@utils/colors";
+
 export type NodeComponentProps = {
     colorIndex?: number;
-    className?: string;
+    color?: NodeColor;
+    opacity?: number;
 };
