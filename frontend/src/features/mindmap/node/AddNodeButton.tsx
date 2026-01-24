@@ -1,26 +1,25 @@
 import { cn } from "@utils/cn";
-import { getColorClass } from "@features/mindmap/node/utils/colors";
 import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import AddNodeHoverIcon from "@features/mindmap/node/AddNodeHoverIcon";
+import { getNodeColorClass } from "@utils/colors";
 
-export default function AddNodeButton({ colorIndex = 0, className }: NodeComponentProps) {
+export default function AddNodeButton({ color }: NodeComponentProps) {
     return (
-        <button
-            className={cn(
-                "group relative flex items-center justify-center w-3 h-3 rounded-full cursor-pointer",
-                getColorClass({ colorIndex }),
-                className,
-            )}
-        >
+        <div className="group w-full h-full flex items-center justify-center">
             <div
-                className="absolute inset-0 flex items-center justify-center
-                            opacity-0 group-hover:opacity-100 
-                            transition-all duration-300 ease-in-out"
+                className={cn(
+                    "group relative flex items-center justify-center w-3 h-3 rounded-full",
+                    getNodeColorClass({ color }),
+                )}
             >
-                <div className="z-10">
-                    <AddNodeHoverIcon />
+                <div
+                    className={cn(
+                        "absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out",
+                    )}
+                >
+                    <AddNodeHoverIcon color={color} />
                 </div>
             </div>
-        </button>
+        </div>
     );
 }
