@@ -11,7 +11,7 @@ export const COLOR_SET = {
     quaternary_accent_outlined: "bg-white text-gray-800 outline-1 outline-primary",
 
     basic: "bg-gray-200 text-gray-800",
-    basic_accent: "bg-primary text-gray-800",
+    basic_accent: "bg-gray-200 text-primary",
 
     alert: "bg-red-100 text-red-200",
     notification: "bg-green-100 text-green-200",
