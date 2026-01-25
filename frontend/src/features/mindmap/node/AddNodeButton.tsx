@@ -1,25 +1,25 @@
-import { cn } from "@utils/cn";
 import { type NodeComponentProps } from "@features/mindmap/node/types/node";
-import AddNodeHoverIcon from "@features/mindmap/node/AddNodeHoverIcon";
-import { getNodeColorClass } from "@features/mindmap/node/constants/colors";
+import { useState } from "react";
+import AddNodeDot from "@features/mindmap/node/AddNodeDot";
+import AddNodeArrow from "@features/mindmap/node/AddNodeArrow";
 
 export default function AddNodeButton({ color }: NodeComponentProps) {
+    const [isHovered, setIsHovered] = useState(false);
+
     return (
-        <div className="group w-full h-full flex items-center justify-center">
-            <div
-                className={cn(
-                    "group relative flex items-center justify-center w-3 h-3 rounded-full",
-                    getNodeColorClass({ color }),
-                )}
-            >
-                <div
-                    className={cn(
-                        "absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 ease-in-out",
-                    )}
-                >
-                    <AddNodeHoverIcon color={color} />
-                </div>
+        <button
+            onMouseEnter={() => setIsHovered(true)}
+            onMouseLeave={() => setIsHovered(false)}
+            className="relative w-13.5 h-13.5 flex items-center justify-center"
+        >
+            <div className={`transition-opacity duration-300 ${isHovered ? "opacity-0" : "opacity-100"}`}>
+                <AddNodeDot color={color} />
             </div>
-        </div>
+            <div
+                className={`absolute inset-0 flex items-center justify-center transition-opacity duration-300 ${isHovered ? "opacity-100" : "opacity-0"}`}
+            >
+                <AddNodeArrow color={color} />
+            </div>
+        </button>
     );
 }
