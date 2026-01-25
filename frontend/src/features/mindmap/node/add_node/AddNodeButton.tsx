@@ -1,7 +1,7 @@
 import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import { useState } from "react";
-import AddNodeDot from "@features/mindmap/node/AddNodeDot";
-import AddNodeArrow from "@features/mindmap/node/AddNodeArrow";
+import AddNodeDot from "@features/mindmap/node/add_node/AddNodeDot";
+import AddNodeArrow from "@features/mindmap/node/add_node/AddNodeArrow";
 
 export default function AddNodeButton({ color }: NodeComponentProps) {
     const [isHovered, setIsHovered] = useState(false);
