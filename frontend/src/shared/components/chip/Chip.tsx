@@ -36,11 +36,13 @@ const variants = cva("rounded-4xl flex flex-row items-center", {
         variant: {
             primary: [COLOR_SET.primary],
             secondary: [COLOR_SET.secondary],
+            tertiary: [COLOR_SET.tertiary],
             tertiary_outlined: [COLOR_SET.tertiary_outlined],
             quaternary: [COLOR_SET.quaternary],
             quaternary_accent_outlined: [COLOR_SET.quaternary_accent_outlined],
             basic: [COLOR_SET.basic],
             notification: [COLOR_SET.notification],
+            alert: [COLOR_SET.alert],
         },
         size: {
             md: "typo-caption-14-medium py-2 px-3 h-9 gap-2",

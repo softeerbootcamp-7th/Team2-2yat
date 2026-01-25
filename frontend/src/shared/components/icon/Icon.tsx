@@ -26,6 +26,8 @@ function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name }: Pr
 export default Icon;
 
 const ICON_NAMES = [
+    "ic_star",
+    "ic_star_filled",
     "ic_arrow_right",
     "ic_calendar_days",
     "ic_check_1",
@@ -64,3 +66,5 @@ const ICON_NAMES = [
     "ic_x_circle",
     "ic_x",
 ] as const;
+
+export type IconName = (typeof ICON_NAMES)[number];
