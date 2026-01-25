@@ -1,4 +1,4 @@
-package com.yat2.episode.auth.util;
+package com.yat2.episode.auth.oauth;
 
 import java.security.SecureRandom;
 import java.util.Base64;
