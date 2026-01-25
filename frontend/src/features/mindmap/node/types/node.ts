@@ -1,8 +1,7 @@
-import { NODE_COLORS } from "@features/mindmap/node/utils/colors";
+import { NodeColor } from "@features/mindmap/node/constants/colors";
 
 export type NodeComponentProps = {
     colorIndex?: number;
-    color?: (typeof NODE_COLORS)[number];
+    color?: NodeColor;
     opacity?: number;
-    className?: string;
 };
