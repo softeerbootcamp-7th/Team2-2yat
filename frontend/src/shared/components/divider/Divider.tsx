@@ -11,4 +11,4 @@ const Divider = ({ direction = "x", className, ...props }: Props) => {
 
 export default Divider;
 
-const directionStyles = (direction: Direction) => (direction === "x" ? "w-full h-[1px]" : "h-full w-[1px]");
+const directionStyles = (direction: Direction) => (direction === "x" ? "w-full h-px" : "h-full w-px");
