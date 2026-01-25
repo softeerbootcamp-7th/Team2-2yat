@@ -26,6 +26,7 @@ function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name }: Pr
 export default Icon;
 
 const ICON_NAMES = [
+    "ic_cursor",
     "ic_star",
     "ic_star_filled",
     "ic_arrow_right",
