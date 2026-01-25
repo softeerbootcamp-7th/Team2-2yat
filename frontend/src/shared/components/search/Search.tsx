@@ -78,7 +78,7 @@ const containerVariants = cva(
     },
 );
 
-const iconVariants = cva("", {
+const iconVariants = cva("cursor-pointer", {
     variants: {
         status: {
             empty: "text-gray-500",
