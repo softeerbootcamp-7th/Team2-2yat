@@ -23,7 +23,7 @@ const Card = ({
 }: Props) => {
     return (
         <div className={cn(variants({ yPadding, xPadding, gap }), className)} {...rest}>
-            <div>
+            <div className="flex flex-col gap-2 h-fit">
                 {header}
 
                 {contents}
