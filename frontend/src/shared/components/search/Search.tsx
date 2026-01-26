@@ -14,12 +14,14 @@ export default function Search({ onSearch, onChange, placeholder = "검색", cla
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const newValue = e.target.value;
         setValue(newValue);
-        onChange?.(newValue);
+        if (onChange) {
+            onChange(newValue);
+        }
     };
 
     const handleSearch = () => {
-        if (value) {
-            onSearch?.(value);
+        if (value && onSearch) {
+            onSearch(value);
         }
     };
 
