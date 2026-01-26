@@ -1,8 +1,8 @@
-import { ComponentPropsWithoutRef } from "react";
+import { ComponentPropsWithoutRef, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@utils/cn";
 import { type NodeColor } from "@features/mindmap/node/constants/colors";
-import { colorBySize } from "@features/mindmap/node/utils/style";
+import { colorBySize, shadowClass } from "@features/mindmap/node/utils/style";
 import AddNode from "@features/mindmap/node/add_node/AddNode";
 import MenuNodeButton from "@features/mindmap/node/menu_node/MenuNodeButton";
 
@@ -10,6 +10,7 @@ type NodeProps = ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof nodeVariants> & {
         color?: NodeColor;
         direction?: "left" | "right";
+        text?: string;
     };
 
 const nodeVariants = cva(
@@ -25,8 +26,18 @@ const nodeVariants = cva(
     },
 );
 
-export default function Node({ size = "sm", color = "violet", className, children, direction, ...rest }: NodeProps) {
-    const colorClass = colorBySize(size, color);
+export default function Node({
+    size = "sm",
+    color = "violet",
+    className,
+    text,
+    children,
+    direction,
+    ...rest
+}: NodeProps) {
+    const [isSelected, setIsSelected] = useState(false);
+    const colorClass = colorBySize(size, color, isSelected);
+    const selectedStyles = isSelected ? `border-2 ${shadowClass(color)}` : "";
 
     return (
         <div className={`group relative flex items-center gap-2`} {...rest}>
@@ -34,21 +45,27 @@ export default function Node({ size = "sm", color = "violet", className, childre
                 <AddNode
                     color={color}
                     direction="left"
-                    className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-0 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-none"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto"
                 />
             )}
-            <div className={cn(nodeVariants({ size }), colorClass, className)} tabIndex={0}>
-                {children}
+            <div
+                className={cn(nodeVariants({ size }), colorClass, selectedStyles, className)}
+                onClick={() => setIsSelected(!isSelected)}
+            >
+                {text}
                 <MenuNodeButton
                     color={color}
-                    className="absolute top-0 right-0 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-opacity duration-300"
+                    className={cn(
+                        "absolute top-0 right-0 transition-opacity duration-300",
+                        isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+                    )}
                 />
             </div>
             {direction === "right" && (
                 <AddNode
                     color={color}
                     direction="right"
-                    className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-0 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-none"
+                    className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto"
                 />
             )}
         </div>
