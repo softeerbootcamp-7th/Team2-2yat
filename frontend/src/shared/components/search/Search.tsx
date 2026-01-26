@@ -1,6 +1,7 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@utils/cn";
 import Icon from "@shared/components/icon/Icon";
+import useSearch from "@shared/hooks/useSearch";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
     onChange?: (value: string) => void;
@@ -9,31 +10,10 @@ type Props = ComponentPropsWithoutRef<"div"> & {
 };
 
 export default function Search({ onSearch, onChange, placeholder = "검색", className, ...rest }: Props) {
-    const [value, setValue] = useState("");
-
-    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newValue = e.target.value;
-        setValue(newValue);
-        if (onChange) {
-            onChange(newValue);
-        }
-    };
-
-    const handleSearch = () => {
-        if (value && onSearch) {
-            onSearch(value);
-        }
-    };
-
-    const handleClear = () => {
-        setValue("");
-    };
-
-    const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            handleSearch();
-        }
-    };
+    const { value, handleChange, handleSearch, handleClear, handleKeyDown } = useSearch({
+        onChange,
+        onSearch,
+    });
 
     return (
         <div
