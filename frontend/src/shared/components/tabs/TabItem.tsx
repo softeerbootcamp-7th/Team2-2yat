@@ -10,7 +10,7 @@ const TabItem = ({ isSelected = false, label, onClick }: Props) => {
     return (
         <button
             onClick={onClick}
-            className={`relative min-w-42 flex items-center justify-center typo-body-16-semibold font-semibold transition-colors ${
+            className={`relative min-w-42 flex items-center justify-center typo-body-16-semibold transition-colors ${
                 isSelected ? "text-primary" : "text-base-navy"
             }`}
         >
