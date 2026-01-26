@@ -12,7 +12,7 @@ const List = ({ hasDivider = true, children, className, ...rest }: Props) => {
     return (
         <ul
             className={cn(
-                "shadow-lg bg-white rounded-xl outline-[1.68px] outline-white flex flex-col w-fit overflow-hidden",
+                "shadow-lg bg-white rounded-xl outline-[1.68px] outline-white flex flex-col w-fit",
                 className,
             )}
             {...rest}
