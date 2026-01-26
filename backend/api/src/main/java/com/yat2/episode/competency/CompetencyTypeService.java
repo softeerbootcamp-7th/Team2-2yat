@@ -19,7 +19,7 @@ public class CompetencyTypeService {
         ).toList();
     }
 
-    public List<DetailCompetencyTypeDto> getCompetencyTypesInMindmap(Long mindmapId){
+    public List<DetailCompetencyTypeDto> getCompetencyTypesInMindmap(String mindmapId){
         return competencyTypeRepository.findByMindmapId(mindmapId)
                 .stream().map(
                         DetailCompetencyTypeDto::of

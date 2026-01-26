@@ -10,12 +10,13 @@ import java.util.List;
 
 @Repository
 public interface CompetencyTypeRepository extends JpaRepository<CompetencyType, Integer> {
-    @Query("""
-    SELECT DISTINCT ct
-    FROM Episode e
-    JOIN e.competencyType ct
-    WHERE e.mindmap.id = :mindmapId
-""")
-    List<CompetencyType> findByMindmapId(Long mindmapId);
+    @Query(
+            value = "SELECT DISTINCT ct.* FROM episode e " +
+                    "JOIN competency_type ct ON e.competency_type_id = ct.id " +
+                    "WHERE e.mindmap_id = UUID_TO_BIN(:mindmapId)",
+            nativeQuery = true
+    )
+    List<CompetencyType> findByMindmapId(@Param("mindmapId") String mindmapId);
+
 
 }
