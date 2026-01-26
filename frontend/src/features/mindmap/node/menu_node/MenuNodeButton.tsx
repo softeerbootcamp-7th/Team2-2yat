@@ -3,7 +3,7 @@ import Icon from "@shared/components/icon/Icon";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ComponentPropsWithoutRef } from "react";
 
-const nodeVariants = cva("w-5.5 h-5.5 cursor-pointer rounded-bl-xl rounded-tr-xl justify-center items-center flex", {
+const nodeVariants = cva("w-5.5 h-5.5 cursor-pointer rounded-bl-xl rounded-tr-lg justify-center items-center flex", {
     variants: {
         color: {
             violet: "bg-node-violet-op-100",
