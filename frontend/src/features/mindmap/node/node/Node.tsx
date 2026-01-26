@@ -25,14 +25,7 @@ const nodeVariants = cva(
     },
 );
 
-export default function Node({
-    size = "sm",
-    color = "violet",
-    className,
-    children,
-    direction,
-    ...rest
-}: Omit<NodeProps, "status">) {
+export default function Node({ size = "sm", color = "violet", className, children, direction, ...rest }: NodeProps) {
     const colorClass = colorBySize(size, color);
 
     return (
