@@ -27,9 +27,11 @@ export default function useSearch({ onSearchChange, onSearchSubmit }: UseSearchP
     };
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-        if (e.key === "Enter") {
-            handleSearch();
-        }
+        if (e.key !== "Enter") return;
+
+        if (e.nativeEvent.isComposing) return;
+        e.preventDefault();
+        handleSearch();
     };
 
     return {
