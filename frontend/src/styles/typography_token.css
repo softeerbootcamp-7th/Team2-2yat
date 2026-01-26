@@ -203,4 +203,11 @@
         font-weight: var(--font-weight-bold);
         letter-spacing: var(--tracking-title);
     }
+
+    .typo-12-medium {
+        font-size: var(--text-12);
+        line-height: var(--leading-140);
+        font-weight: var(--font-weight-medium);
+        letter-spacing: var(--tracking-body);
+    }
 }
