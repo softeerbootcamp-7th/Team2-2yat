@@ -1,4 +1,7 @@
+import { NodeColor } from "@features/mindmap/node/constants/colors";
+
 export type NodeComponentProps = {
     colorIndex?: number;
-    className?: string;
+    color?: NodeColor;
+    opacity?: number;
 };

@@ -1,7 +1,5 @@
-import AddNodeButton from "@features/mindmap/node/AddNodeButton";
-
 function App() {
-    return <AddNodeButton />;
+    return <div>main</div>;
 }
 
 export default App;

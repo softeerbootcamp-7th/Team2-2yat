@@ -35,7 +35,7 @@
     --tracking-body: -0.02em; /* -2% */
 }
 
-@layer utilities {
+@layer {
     /* 
        CAPTION SERIES 
     */

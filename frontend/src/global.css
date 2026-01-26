@@ -121,8 +121,8 @@
     --color-text-white: var(--color-base-white);
     --color-text-placeholder: var(--color-gray-600);
 
-    --color-white: var(--color-white);
-    --color-white-op-20: color-mix(in srgb, var(--color-white), transparent 20%);
+    --color-white: var(--color-base-white);
+    --color-white-op-20: color-mix(in srgb, var(--color-base-white), transparent 20%);
 
     /* landing page */
     --color-landing-purple-op-50: color-mix(in srgb, var(--color-cobalt-500), transparent 50%);
