@@ -15,8 +15,6 @@
 
 <div align="center">
 
-[팀 노션](https://www.notion.so/bside/2-2d32202027358184b712cd7978a157a5)
-|
 [피그마](https://www.figma.com/design/hTYvt1ufIO462HogLTosKe/Handoff_guidelines_소프티어-7기--복사-?node-id=1-6&p=f&t=Z0PIWuZECLYFK4GB-0)
 |
 [wiki](https://github.com/softeerbootcamp-7th/Team2-2yat/wiki/%ED%9A%8C%EC%9D%98%EB%A1%9D)
