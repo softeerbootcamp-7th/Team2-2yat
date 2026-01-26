@@ -5,7 +5,7 @@ type Props = ComponentPropsWithoutRef<"div"> & {
     username?: string;
 };
 
-const primary_color = "violet";
+const PRIMARY_COLOR = "violet";
 
 export default function NodeCenter({ username = "", className, ...rest }: Props) {
     const [isHover, setIsHover] = useState(false);
@@ -18,11 +18,11 @@ export default function NodeCenter({ username = "", className, ...rest }: Props)
             onMouseLeave={() => setIsHover(false)}
             {...rest}
         >
-            {isHover && <AddNode color={primary_color} direction="left" />}
+            {isHover && <AddNode color={PRIMARY_COLOR} direction="left" />}
             <div className="cursor-pointer w-40 bg-primary rounded-full h-40 flex items-center justify-center text-white typo-body-16-semibold px-3 whitespace-pre-line">
                 {label}
             </div>
-            {isHover && <AddNode color={primary_color} direction="right" />}
+            {isHover && <AddNode color={PRIMARY_COLOR} direction="right" />}
         </div>
     );
 }
