@@ -2,8 +2,10 @@ package com.yat2.episode.competency;
 
 import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
 import com.yat2.episode.users.Users;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -23,4 +25,12 @@ public class CompetencyTypeController {
     public ResponseEntity<List<DetailCompetencyTypeDto>> getAllCompetencies() {
         return ResponseEntity.ok(competencyTypeService.getAllData());
     }
+
+    @GetMapping("/mindmap/{mindmapId}")
+    public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(@PathVariable Long mindmapId) {
+        return ResponseEntity.ok(
+                competencyTypeService.getCompetencyTypesInMindmap(mindmapId)
+        );
+    }
+
 }
