@@ -1,4 +1,4 @@
-import Divider from "../divider/Divider";
+import Divider from "@shared/components/divider/Divider";
 
 type Props = {
     label: string;
