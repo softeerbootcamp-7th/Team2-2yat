@@ -6,6 +6,7 @@ import org.springframework.http.HttpStatus;
 @Getter
 public enum ErrorCode {
 
+    NOT_FOUND_MINDMAP(HttpStatus.NOT_FOUND, "NOT_FOUND_MINDMAP", "마인드맵을 찾을 수 없습니다"),
     AUTH_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_EXPIRED", "로그인이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
 

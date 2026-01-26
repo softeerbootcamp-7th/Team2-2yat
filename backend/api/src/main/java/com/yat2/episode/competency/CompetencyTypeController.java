@@ -1,6 +1,8 @@
 package com.yat2.episode.competency;
 
 import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.mindmap.Mindmap;
 import com.yat2.episode.mindmap.MindmapService;
 import com.yat2.episode.users.Users;
@@ -35,7 +37,8 @@ public class CompetencyTypeController {
     @GetMapping("/mindmap/{mindmapId}")
     public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(@PathVariable String mindmapId) {
         Optional<Mindmap> mindmap = mindmapService.getMindmapById(mindmapId);
-        //if(mindmap == null) throw new
+        //todo : 사용자 id 추출해서 해당 사용자의 episode 역량 태그만 조회하도록 수정
+        if(mindmap.isEmpty()) throw new CustomException(ErrorCode.NOT_FOUND_MINDMAP);
 
         return ResponseEntity.ok(
                 competencyTypeService.getCompetencyTypesInMindmap(mindmapId)
