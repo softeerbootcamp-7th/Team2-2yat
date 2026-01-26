@@ -11,7 +11,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 @RequiredArgsConstructor
 public class KakaoOAuthClient {
     private final KakaoProperties kakaoProperties;
-    private final WebClient webClient = WebClient.builder().build();
+    private final WebClient webClient;
 
     public KakaoTokenResponse requestToken(String code) {
         return webClient.post()
