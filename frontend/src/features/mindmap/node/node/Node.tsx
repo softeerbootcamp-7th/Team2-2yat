@@ -3,10 +3,12 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@utils/cn";
 import { type NodeColor } from "@features/mindmap/node/constants/colors";
 import { colorBySize } from "@features/mindmap/node/utils/style";
+import AddNode from "@features/mindmap/node/add_node/AddNode";
 
 type NodeProps = ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof nodeVariants> & {
         color?: NodeColor;
+        direction?: "left" | "right";
     };
 
 const nodeVariants = cva(
@@ -23,17 +25,34 @@ const nodeVariants = cva(
 );
 
 export default function Node({
-    size = "md",
+    size = "sm",
     color = "violet",
     className,
     children,
+    direction = "left",
     ...rest
 }: Omit<NodeProps, "status">) {
     const colorClass = colorBySize(size, color);
 
     return (
-        <div className={cn(nodeVariants({ size }), colorClass, className)} {...rest}>
-            {children}
+        <div className={`group relative flex items-center gap-2`} {...rest}>
+            {direction === "left" && (
+                <AddNode
+                    color={color}
+                    direction="left"
+                    className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-0 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-none"
+                />
+            )}
+            <div className={cn(nodeVariants({ size }), colorClass, className)} tabIndex={0}>
+                {children}
+            </div>
+            {direction === "right" && (
+                <AddNode
+                    color={color}
+                    direction="right"
+                    className="opacity-0 group-hover:opacity-100 group-focus-within:opacity-0 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-none"
+                />
+            )}
         </div>
     );
 }
