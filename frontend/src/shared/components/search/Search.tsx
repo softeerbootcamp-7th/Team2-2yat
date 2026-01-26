@@ -31,7 +31,7 @@ export default function Search({ onSearch, placeholder = "검색", className, ..
 
     const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
         if (e.key === "Enter") {
-            onSearch?.(value);
+            handleSearch();
         }
     };
 
