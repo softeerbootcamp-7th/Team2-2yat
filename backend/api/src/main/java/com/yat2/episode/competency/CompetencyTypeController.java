@@ -36,7 +36,7 @@ public class CompetencyTypeController {
     public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(@PathVariable String mindmapId) {
         Optional<Mindmap> mindmap = mindmapService.getMindmapById(mindmapId);
         //todo : 사용자 id 추출해서 해당 사용자의 episode 역량 태그만 조회하도록 수정
-        if(mindmap.isEmpty()) throw new CustomException(ErrorCode.NOT_FOUND_MINDMAP);
+        if(mindmap.isEmpty()) throw new CustomException(ErrorCode.MINDMAP_NOT_FOUND);
 
         return ResponseEntity.ok(
                 competencyTypeService.getCompetencyTypesInMindmap(mindmapId)
