@@ -31,6 +31,9 @@ dependencies {
 	implementation 'org.flywaydb:flyway-mysql:9.22.3'
 	implementation 'com.mysql:mysql-connector-j'
 
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.5.0'
+
+	runtimeOnly 'com.mysql:mysql-connector-j'
 
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
