@@ -15,7 +15,7 @@ public class KakaoOAuthClient {
 
     public KakaoTokenResponse requestToken(String code) {
         return webClient.post()
-                .uri("https://kauth.kakao.com/oauth/token")
+                .uri(kakaoProperties.tokenUrl())
                 .contentType(MediaType.APPLICATION_FORM_URLENCODED)
                 .body(BodyInserters.fromFormData("grant_type", "authorization_code")
                         .with("client_id", kakaoProperties.getClientId())
