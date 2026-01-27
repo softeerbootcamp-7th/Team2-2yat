@@ -60,7 +60,19 @@ public class AuthController {
             @RequestParam("state") String state,
             HttpServletResponse response
     ) {
-        IssuedTokens tokens = authService.handleKakaoCallback(session, code, state);
+        String sessionState = (String) session.getAttribute("OAUTH_STATE");
+
+        if (sessionState == null || !sessionState.equals(state)) {
+            throw new IllegalStateException("Invalid OAuth state");
+        }
+
+        boolean isLocalDev = Boolean.TRUE.equals(
+                session.getAttribute("OAUTH_LOCAL_DEV")
+        );
+
+        session.invalidate();
+
+        IssuedTokens tokens = authService.handleKakaoCallback(code);
 
         ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
         ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
@@ -68,13 +80,7 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        boolean isLocalDev = Boolean.TRUE.equals(
-                session.getAttribute("OAUTH_LOCAL_DEV")
-        );
-
         String redirect = isLocalDev ? "http://localhost:5173" : "https://episode.io.kr";
-
-        session.removeAttribute("OAUTH_LOCAL_DEV");
 
         return new RedirectView(redirect);
     }
