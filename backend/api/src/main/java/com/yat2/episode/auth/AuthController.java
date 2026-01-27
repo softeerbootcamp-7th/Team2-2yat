@@ -1,5 +1,6 @@
 package com.yat2.episode.auth;
 
+import com.yat2.episode.auth.config.AuthRedirectProperties;
 import com.yat2.episode.auth.dto.IssuedTokens;
 import com.yat2.episode.auth.config.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
@@ -25,6 +26,7 @@ public class AuthController {
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
+    private final AuthRedirectProperties authRedirectProperties;
 
     @GetMapping("/login")
     public RedirectView loginWithKakao(HttpSession session, HttpServletRequest request) {
@@ -80,7 +82,7 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        String redirect = isLocalDev ? "http://localhost:5173" : "https://episode.io.kr";
+        String redirect = isLocalDev ? authRedirectProperties.getLocal() : authRedirectProperties.getProd();
 
         return new RedirectView(redirect);
     }
