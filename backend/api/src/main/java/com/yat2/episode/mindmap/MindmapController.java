@@ -24,7 +24,7 @@ public class MindmapController {
     @GetMapping("/private")
     @Description("개인 마인드맵 리스트를 가져옵니다.")
     public ResponseEntity<List<MindmapDataDto>> privateMindmap(@CookieValue(name = "access_token", required = false) String token) {
-        Long userId = authService.getUserIdByToken(token);
+        //Long userId = authService.getUserIdByToken(token);
 
         //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터(shared = false) 가져오기
         //todo: 즐겨찾기/수정 순 기준으로 정렬하기
