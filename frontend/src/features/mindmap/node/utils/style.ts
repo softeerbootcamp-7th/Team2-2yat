@@ -1,6 +1,8 @@
 import { getNodeColorClass, type NodeColor, type OpacityLevel } from "@features/mindmap/node/constants/colors";
 
 export function bgClass(color: NodeColor | undefined, opacity: OpacityLevel = 100) {
+    if (!color) return "";
+
     return getNodeColorClass({ color, opacity });
 }
 
