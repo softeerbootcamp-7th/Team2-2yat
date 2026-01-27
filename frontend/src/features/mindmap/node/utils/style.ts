@@ -5,11 +5,6 @@ import {
     type NodeColor,
 } from "@features/mindmap/node/constants/colors";
 
-export function borderClass(color: NodeColor | undefined): string {
-    if (!color) return "";
-    return COLOR_CLASS_MAP.border[color][100];
-}
-
 export function shadowClass(color: NodeColor | undefined) {
     if (!color) return "";
     return SHADOW_CLASS_MAP[color];
