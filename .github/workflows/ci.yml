@@ -4,15 +4,10 @@ on:
   pull_request:
     branches:
       - dev
-      - main
-    paths:
-      - "backend/**"
-
+      - release
   push:
     branches:
       - dev
-    paths:
-      - "backend/**"
 
 jobs:
   ci:
@@ -36,5 +31,20 @@ jobs:
       - name: Grant execute permission to gradlew
         run: chmod +x ./gradlew
 
+      - name: Detect backend changes
+        id: changes
+        run: |
+          git fetch origin ${{ github.base_ref || 'dev' }}
+          if git diff --name-only origin/${{ github.base_ref || 'dev' }}...HEAD | grep '^backend/'; then
+            echo "changed=true" >> $GITHUB_OUTPUT
+          else
+            echo "changed=false" >> $GITHUB_OUTPUT
+          fi
+
       - name: Build & Test
+        if: steps.changes.outputs.changed == 'true'
         run: ./gradlew clean build
+
+      - name: Skip backend CI
+        if: steps.changes.outputs.changed == 'false'
+        run: echo "No backend changes detected. Skipping backend CI."
