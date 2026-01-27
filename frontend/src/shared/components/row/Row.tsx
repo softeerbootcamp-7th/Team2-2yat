@@ -12,7 +12,7 @@ type Props = ComponentPropsWithoutRef<"li"> &
 const Row = ({ yPadding = "none", leftSlot, contents, className, rightSlot, ...rest }: Props) => {
     return (
         <li className={cn(variants({ yPadding }), className)} {...rest}>
-            <div className="flex flex-row gap-2 items-center">
+            <div className="flex flex-row gap-2 items-center h-full">
                 {leftSlot}
                 {contents}
             </div>
