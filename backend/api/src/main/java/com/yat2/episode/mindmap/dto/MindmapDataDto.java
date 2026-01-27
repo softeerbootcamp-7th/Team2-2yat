@@ -8,5 +8,5 @@ public class MindmapDataDto {
     String mindmapName;
     Date createAt;
     Date updateAt;
-    boolean isBookmarked;
+    boolean isFavorite;
 }
