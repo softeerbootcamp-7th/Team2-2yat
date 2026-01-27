@@ -21,7 +21,7 @@ const Button = ({ variant = "primary", size = "md", leftSlot, rightSlot, childre
 
 export default Button;
 
-const buttonVariants = cva("flex flex-row gap-2 justify-center items-center", {
+const buttonVariants = cva("rounded-2xl flex flex-row gap-2 justify-center items-center", {
     variants: {
         variant: {
             primary_accent: [COLOR_SET.primary_accent],
@@ -41,10 +41,9 @@ const buttonVariants = cva("flex flex-row gap-2 justify-center items-center", {
             alert: [COLOR_SET.alert],
         },
         size: {
-            xs: "rounded-lg typo-body-14-medium py-2 px-3",
-            sm: "rounded-2xl typo-body-18-semibold py-3 px-4 min-w-20",
-            md: "rounded-2xl typo-body-16-semibold w-full py-4 px-5",
-            lg: "rounded-2xl typo-body-16-medium w-full py-5 px-10",
+            sm: "typo-body-18-semibold py-3 px-4 min-w-20",
+            md: "typo-body-16-semibold w-full py-4 px-5",
+            lg: "typo-body-16-medium w-full py-5 px-10",
         },
     },
 });
