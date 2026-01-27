@@ -5,6 +5,7 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.yat2.episode.auth.config.JwtProperties;
 import com.yat2.episode.auth.dto.IssuedTokens;
 import org.springframework.stereotype.Component;
 
