@@ -5,13 +5,14 @@ import { type NodeColor } from "@features/mindmap/node/constants/colors";
 import { colorBySize, shadowClass } from "@features/mindmap/node/utils/style";
 import AddNode from "@features/mindmap/node/add_node/AddNode";
 import MenuNodeButton from "@features/mindmap/node/menu_node/MenuNodeButton";
+import { NodeState } from "../types/node";
 
 type NodeProps = {
     id: string;
     text: string;
     color?: NodeColor;
     direction?: "left" | "right";
-    isSelected?: boolean;
+    state?: NodeState;
     onSelectedChange?: (selected: boolean) => void;
 };
 
@@ -35,13 +36,13 @@ export default function Node({
     color = "violet",
     text = "",
     direction,
-    isSelected = false,
+    state = "default",
     onSelectedChange,
     className,
     ...rest
 }: Props) {
-    const colorClass = colorBySize(size, color, isSelected);
-    const selectedStyles = isSelected ? `border-2 ${shadowClass(color)}` : "";
+    const colorClass = colorBySize(size, color, state);
+    const selectedStyles = state == "default" ? `border-2 ${shadowClass(color)}` : "";
 
     return (
         <div className={`group relative flex items-center gap-2`} {...rest}>
@@ -56,7 +57,7 @@ export default function Node({
                 className={cn(nodeVariants({ size }), colorClass, selectedStyles, className)}
                 onClick={() => {
                     if (onSelectedChange) {
-                        onSelectedChange(!isSelected);
+                        onSelectedChange(!state);
                     }
                 }}
             >
@@ -65,7 +66,7 @@ export default function Node({
                     color={color}
                     className={cn(
                         "absolute top-0 right-0 transition-opacity duration-300",
-                        isSelected ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+                        state == "default" ? "opacity-100" : "opacity-0 group-hover:opacity-100",
                     )}
                 />
             </div>
