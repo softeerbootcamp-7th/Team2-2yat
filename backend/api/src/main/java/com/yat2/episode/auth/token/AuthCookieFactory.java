@@ -1,5 +1,7 @@
 package com.yat2.episode.auth.token;
 
+import com.yat2.episode.auth.config.CookieProperties;
+import com.yat2.episode.auth.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;

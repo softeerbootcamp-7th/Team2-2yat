@@ -134,3 +134,16 @@
     --color-postit-bg: #ffdcd7 --color-postit-text: var(--color-postit-base);
     --color-postit-dot: color-mix(in srgb, var(--color-postit-base), transparent 40%);
 }
+
+/**
+아래 스타일은 attr 명시하지 않았을 경우 적용되는 스타일.
+직접 override했다면 override한 해당 속성이 적용됨
+*/
+@layer base {
+    button:not(:disabled) {
+        @apply cursor-pointer;
+    }
+    button:disabled {
+        @apply cursor-not-allowed;
+    }
+}

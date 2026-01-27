@@ -28,7 +28,7 @@ CREATE TABLE `users` (
    `kakao_id` BIGINT NOT NULL,
    `job_id` INT,
    `nickname` VARCHAR(45) NOT NULL,
-    `has_watched_feature_guide` TINYINT NOT NULL,
+    `has_watched_feature_guide` TINYINT(1) NOT NULL,
     PRIMARY KEY (`kakao_id`),
     INDEX `user2job_idx` (`job_id` ASC) VISIBLE,
     CONSTRAINT `user2job`
@@ -44,7 +44,10 @@ CREATE TABLE `users` (
 CREATE TABLE `competency_type` (
     `id` INT NOT NULL AUTO_INCREMENT,
     `type_name` VARCHAR(50) NOT NULL,
-    `category` ENUM('협업_커뮤니케이션_역량', '문제해결_사고_역량', '실행_성장_역량') NOT NULL,
+    `category` ENUM(
+    '협업_커뮤니케이션_역량',
+    '문제해결_사고_역량',
+    '실행_성장_역량') NOT NULL,
     PRIMARY KEY (`id`))
     ENGINE=InnoDB
     DEFAULT CHARSET=utf8mb4
@@ -78,7 +81,7 @@ CREATE TABLE `question` (
 CREATE TABLE `mindmap` (
     `id` BINARY(16) NOT NULL,
     `created_time` DATETIME NOT NULL,
-    `is_shared` TINYINT NOT NULL,
+    `is_shared` TINYINT(1) NOT NULL,
     PRIMARY KEY (`id`))
     ENGINE=InnoDB
     DEFAULT CHARSET=utf8mb4
