@@ -3,6 +3,8 @@ package com.yat2.episode.mindmap;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -17,8 +19,13 @@ public class Mindmap {
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "created_time", nullable = false)
+    @CreatedDate
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdTime;
+
+    @LastModifiedDate
+    @Column(name = "updated_time", nullable = false)
+    private LocalDateTime updatedTime;
 
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
