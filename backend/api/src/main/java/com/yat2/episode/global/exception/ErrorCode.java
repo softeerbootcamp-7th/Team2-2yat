@@ -8,7 +8,7 @@ public enum ErrorCode {
     MINDMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "MINDMAP_NOT_FOUND", "마인드맵을 찾을 수 없습니다"),
     AUTH_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_EXPIRED", "로그인이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
-    NEED_TO_LOGIN(HttpStatus.FORBIDDEN, "NEED_TO_LOGIN", "로그인이 필요합니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "사용자 인증이 되지 않았습니다."),
 
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 요청입니다."),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "서버 오류가 발생했습니다.");
