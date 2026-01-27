@@ -22,6 +22,8 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+    private static final String SESSION_STATE = "OAUTH_STATE";
+    private static final String SESSION_LOCAL_DEV = "OAUTH_LOCAL_DEV";
 
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
@@ -35,14 +37,14 @@ public class AuthController {
         String authUrl = kakaoProperties.authUrl();
 
         String state = OAuthUtil.generateState();
-        session.setAttribute("OAUTH_STATE", state);
+        session.setAttribute(SESSION_STATE, state);
 
         String referer = request.getHeader("Referer");
 
         boolean isLocalDev =
                 referer != null && referer.startsWith("http://localhost");
 
-        session.setAttribute("OAUTH_LOCAL_DEV", isLocalDev);
+        session.setAttribute(SESSION_LOCAL_DEV, isLocalDev);
 
         String redirect = UriComponentsBuilder.fromUriString(authUrl)
                 .queryParam("response_type", "code")
@@ -62,14 +64,14 @@ public class AuthController {
             @RequestParam("state") String state,
             HttpServletResponse response
     ) {
-        String sessionState = (String) session.getAttribute("OAUTH_STATE");
+        String sessionState = (String) session.getAttribute(SESSION_STATE);
 
         if (sessionState == null || !sessionState.equals(state)) {
             throw new IllegalStateException("Invalid OAuth state");
         }
 
         boolean isLocalDev = Boolean.TRUE.equals(
-                session.getAttribute("OAUTH_LOCAL_DEV")
+                session.getAttribute(SESSION_LOCAL_DEV)
         );
 
         session.invalidate();
