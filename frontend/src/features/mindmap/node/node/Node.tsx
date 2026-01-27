@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, useState } from "react";
+import { ComponentPropsWithoutRef } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@utils/cn";
 import { type NodeColor } from "@features/mindmap/node/constants/colors";
@@ -6,12 +6,16 @@ import { colorBySize, shadowClass } from "@features/mindmap/node/utils/style";
 import AddNode from "@features/mindmap/node/add_node/AddNode";
 import MenuNodeButton from "@features/mindmap/node/menu_node/MenuNodeButton";
 
-type NodeProps = ComponentPropsWithoutRef<"div"> &
-    VariantProps<typeof nodeVariants> & {
-        color?: NodeColor;
-        direction?: "left" | "right";
-        text?: string;
-    };
+type NodeProps = {
+    id: string;
+    text: string;
+    color?: NodeColor;
+    direction?: "left" | "right";
+    isSelected?: boolean;
+    onSelectedChange?: (selected: boolean) => void;
+};
+
+type Props = ComponentPropsWithoutRef<"div"> & VariantProps<typeof nodeVariants> & NodeProps;
 
 const nodeVariants = cva(
     "relative flex w-40 px-4.5 py-5 justify-center items-center gap-2.5 rounded-xl transition-shadow cursor-pointer outline-none",
@@ -26,8 +30,16 @@ const nodeVariants = cva(
     },
 );
 
-export default function Node({ size = "sm", color = "violet", text = "", direction, className, ...rest }: NodeProps) {
-    const [isSelected, setIsSelected] = useState(false);
+export default function Node({
+    size = "sm",
+    color = "violet",
+    text = "",
+    direction,
+    isSelected = false,
+    onSelectedChange,
+    className,
+    ...rest
+}: Props) {
     const colorClass = colorBySize(size, color, isSelected);
     const selectedStyles = isSelected ? `border-2 ${shadowClass(color)}` : "";
 
@@ -42,7 +54,7 @@ export default function Node({ size = "sm", color = "violet", text = "", directi
             )}
             <div
                 className={cn(nodeVariants({ size }), colorClass, selectedStyles, className)}
-                onClick={() => setIsSelected(!isSelected)}
+                onClick={() => onSelectedChange(!isSelected)}
             >
                 {text}
                 <MenuNodeButton
