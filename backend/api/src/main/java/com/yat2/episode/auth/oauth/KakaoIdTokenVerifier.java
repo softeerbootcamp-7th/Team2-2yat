@@ -9,6 +9,8 @@ import com.nimbusds.jwt.proc.ConfigurableJWTProcessor;
 import com.nimbusds.jwt.proc.DefaultJWTClaimsVerifier;
 import com.nimbusds.jwt.proc.DefaultJWTProcessor;
 import com.yat2.episode.auth.config.KakaoProperties;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 import com.nimbusds.jose.jwk.source.JWKSource;
 import com.nimbusds.jose.jwk.source.RemoteJWKSet;
@@ -25,7 +27,6 @@ public class KakaoIdTokenVerifier {
     private final DefaultJWTClaimsVerifier<SecurityContext> claimsVerifier;
 
     public KakaoIdTokenVerifier(KakaoProperties props) throws MalformedURLException {
-
         DefaultResourceRetriever retriever =
                 new DefaultResourceRetriever(2000, 5000);
 
@@ -67,7 +68,7 @@ public class KakaoIdTokenVerifier {
 
             return claims;
         } catch (Exception e) {
-            throw new IllegalStateException("Invalid Kakao ID Token", e);
+            throw new CustomException(ErrorCode.OAUTH_ID_TOKEN_INVALID);
         }
     }
 }

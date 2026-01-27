@@ -5,6 +5,8 @@ import com.yat2.episode.auth.dto.IssuedTokens;
 import com.yat2.episode.auth.config.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
 import com.yat2.episode.auth.token.AuthCookieFactory;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
@@ -67,7 +69,7 @@ public class AuthController {
         String sessionState = (String) session.getAttribute(SESSION_STATE);
 
         if (sessionState == null || !sessionState.equals(state)) {
-            throw new IllegalStateException("Invalid OAuth state");
+            throw new CustomException(ErrorCode.INVALID_OAUTH_STATE);
         }
 
         boolean isLocalDev = Boolean.TRUE.equals(
