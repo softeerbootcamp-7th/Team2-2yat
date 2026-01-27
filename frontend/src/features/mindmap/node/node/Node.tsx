@@ -54,7 +54,11 @@ export default function Node({
             )}
             <div
                 className={cn(nodeVariants({ size }), colorClass, selectedStyles, className)}
-                onClick={() => onSelectedChange(!isSelected)}
+                onClick={() => {
+                    if (onSelectedChange) {
+                        onSelectedChange(!isSelected);
+                    }
+                }}
             >
                 {text}
                 <MenuNodeButton
