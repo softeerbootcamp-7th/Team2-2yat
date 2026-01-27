@@ -2,7 +2,7 @@ name: CD
 
 on:
   push:
-    branches: [main]
+    branches: [release]
     paths:
       - "backend/**"
 
@@ -48,6 +48,8 @@ jobs:
           TAG=${GITHUB_SHA::7}
 
           docker buildx build \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
             --platform linux/arm64 \
             -t $IMAGE:$TAG \
             -t $IMAGE:latest \
