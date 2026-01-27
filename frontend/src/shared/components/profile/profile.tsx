@@ -1,6 +1,6 @@
 import Icon from "@shared/components/icon/Icon";
 
-export default function profile(name: string) {
+export default function Profile(name: string) {
     return (
         <div className="flex items-center gap-4">
             <Icon name="ic_profile" color="var(--color-primary)" size={35} />
