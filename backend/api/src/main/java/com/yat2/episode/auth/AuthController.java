@@ -1,7 +1,7 @@
 package com.yat2.episode.auth;
 
 import com.yat2.episode.auth.dto.IssuedTokens;
-import com.yat2.episode.auth.oauth.KakaoProperties;
+import com.yat2.episode.auth.config.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
 import com.yat2.episode.auth.token.AuthCookieFactory;
 import jakarta.servlet.http.HttpServletRequest;
