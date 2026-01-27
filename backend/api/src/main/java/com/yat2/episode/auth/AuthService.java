@@ -25,22 +25,9 @@ public class AuthService {
     private final JwtProvider jwtProvider;
 
     @Transactional
-    public IssuedTokens handleKakaoCallback(
-            HttpSession session,
-            String code,
-            String state
-    ) {
-        String sessionState = (String) session.getAttribute("OAUTH_STATE");
-
-        if (sessionState == null || !sessionState.equals(state)) {
-            throw new IllegalStateException("Invalid OAuth state");
-        }
-
-        session.removeAttribute("OAUTH_STATE");
-
+    public IssuedTokens handleKakaoCallback(String code) {
         KakaoTokenResponse kakaoResponse = kakaoOAuthClient.requestToken(code);
-        JWTClaimsSet claims =
-                kakaoIdTokenVerifier.verify(kakaoResponse.idToken());
+        JWTClaimsSet claims = kakaoIdTokenVerifier.verify(kakaoResponse.idToken());
 
         Long kakaoUserId = Long.parseLong(claims.getSubject());
 
@@ -61,5 +48,10 @@ public class AuthService {
         user.setHasWatchedFeatureGuide(false);
 
         return usersRepository.save(user);
+    }
+
+    public Optional<Users> getUserByCookie(String token) {
+        Long kakaoId = jwtProvider.verifyAccessTokenAndGetUserId(token);
+        return usersRepository.findByKakaoId(kakaoId);
     }
 }

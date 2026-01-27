@@ -1,9 +1,13 @@
 package com.yat2.episode.auth;
 
+import com.yat2.episode.auth.config.AuthRedirectProperties;
 import com.yat2.episode.auth.dto.IssuedTokens;
-import com.yat2.episode.auth.oauth.KakaoProperties;
+import com.yat2.episode.auth.config.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
 import com.yat2.episode.auth.token.AuthCookieFactory;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -20,19 +24,29 @@ import org.springframework.web.util.UriComponentsBuilder;
 @RequiredArgsConstructor
 @RequestMapping("/api/auth")
 public class AuthController {
+    private static final String SESSION_STATE = "OAUTH_STATE";
+    private static final String SESSION_LOCAL_DEV = "OAUTH_LOCAL_DEV";
 
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
+    private final AuthRedirectProperties authRedirectProperties;
 
     @GetMapping("/login")
-    public RedirectView loginWithKakao(HttpSession session) {
+    public RedirectView loginWithKakao(HttpSession session, HttpServletRequest request) {
         String clientId = kakaoProperties.getClientId();
         String redirectUri = kakaoProperties.getRedirectUri();
         String authUrl = kakaoProperties.authUrl();
 
         String state = OAuthUtil.generateState();
-        session.setAttribute("OAUTH_STATE", state);
+        session.setAttribute(SESSION_STATE, state);
+
+        String referer = request.getHeader("Referer");
+
+        boolean isLocalDev =
+                referer != null && (referer.startsWith("http://localhost") || referer.startsWith("http://127.0.0.1"));
+
+        session.setAttribute(SESSION_LOCAL_DEV, isLocalDev);
 
         String redirect = UriComponentsBuilder.fromUriString(authUrl)
                 .queryParam("response_type", "code")
@@ -52,7 +66,19 @@ public class AuthController {
             @RequestParam("state") String state,
             HttpServletResponse response
     ) {
-        IssuedTokens tokens = authService.handleKakaoCallback(session, code, state);
+        String sessionState = (String) session.getAttribute(SESSION_STATE);
+
+        if (sessionState == null || !sessionState.equals(state)) {
+            throw new CustomException(ErrorCode.INVALID_OAUTH_STATE);
+        }
+
+        boolean isLocalDev = Boolean.TRUE.equals(
+                session.getAttribute(SESSION_LOCAL_DEV)
+        );
+
+        session.invalidate();
+
+        IssuedTokens tokens = authService.handleKakaoCallback(code);
 
         ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
         ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
@@ -60,7 +86,8 @@ public class AuthController {
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
 
-        //TODO: redirect target state로 설정
-        return new RedirectView("http://localhost:5173");
+        String redirect = isLocalDev ? authRedirectProperties.getLocal() : authRedirectProperties.getProd();
+
+        return new RedirectView(redirect);
     }
 }
