@@ -1,22 +1,22 @@
-import { getNodeColorClass, type NodeColor, type OpacityLevel } from "@features/mindmap/node/constants/colors";
+import {
+    COLOR_CLASS_MAP,
+    BG_CLASS_MAP,
+    SHADOW_CLASS_MAP,
+    type NodeColor,
+} from "@features/mindmap/node/constants/colors";
 
-export function bgClass(color: NodeColor | undefined, opacity: OpacityLevel = 100) {
+export function borderClass(color: NodeColor | undefined): string {
     if (!color) return "";
-
-    return getNodeColorClass({ color, opacity });
-}
-
-export function borderClass(color: NodeColor | undefined, opacity: OpacityLevel = 100) {
-    return bgClass(color, opacity).replace(/^bg-/, "border-");
+    return COLOR_CLASS_MAP.border[color][100];
 }
 
 export function shadowClass(color: NodeColor | undefined) {
-    const token = bgClass(color, 30).replace(/^bg-/, "--color-");
-    return `shadow-[0_0_15px_0_var(${token})]`;
+    if (!color) return "";
+    return SHADOW_CLASS_MAP[color];
 }
 
 export function colorBySize(size: "sm" | "md" | "lg", color: NodeColor | undefined, isSelected?: boolean) {
-    const border = borderClass(color, 100);
+    const border = COLOR_CLASS_MAP.border[color][100];
 
     // selected일 때는 hover 스타일 제외 (border-2 유지)
     if (isSelected) {
@@ -24,21 +24,20 @@ export function colorBySize(size: "sm" | "md" | "lg", color: NodeColor | undefin
             case "sm":
                 return `border ${border} bg-white`;
             case "lg":
-                return `border ${border} ${bgClass(color, 15)}`;
+                return `border ${border} ${BG_CLASS_MAP[color][15]}`;
             case "md":
             default:
-                return `border ${border} ${bgClass(color, 5)}`;
+                return `border ${border} ${BG_CLASS_MAP[color][5]}`;
         }
     }
 
-    // default/hover일 때는 hover 스타일 포함
     switch (size) {
         case "sm":
             return `border ${border} bg-white hover:border hover:${border} hover:bg-white`;
         case "lg":
-            return `border ${border} ${bgClass(color, 15)} hover:border hover:${border} hover:${bgClass(color, 15)}`;
+            return `border ${border} ${BG_CLASS_MAP[color][15]} hover:border hover:${border} hover:${BG_CLASS_MAP[color][15]}`;
         case "md":
         default:
-            return `border ${border} ${bgClass(color, 5)} hover:border hover:${border} hover:${bgClass(color, 5)}`;
+            return `border ${border} ${BG_CLASS_MAP[color][5]} hover:border hover:${border} hover:${BG_CLASS_MAP[color][5]}`;
     }
 }
