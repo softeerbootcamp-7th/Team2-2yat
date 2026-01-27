@@ -1,5 +1,6 @@
 package com.yat2.episode.episode;
 
+import com.yat2.episode.competency.CompetencyType;
 import jakarta.persistence.*;
 import com.yat2.episode.mindmap.Mindmap;
 import lombok.Getter;
@@ -18,6 +19,10 @@ public class Episode {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mindmap_id")
     private Mindmap mindmap;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "competency_type_id")
+    private CompetencyType competencyType;
 
     private String situation;
     private String task;
