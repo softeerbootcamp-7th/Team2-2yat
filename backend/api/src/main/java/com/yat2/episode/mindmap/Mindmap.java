@@ -30,13 +30,17 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
+    @Column(name = "is_favorite", nullable = false)
+    private boolean isFavorite;
+
     protected Mindmap() {
     }
 
-    public Mindmap(UUID id, LocalDateTime createdTime, boolean shared) {
+    public Mindmap(UUID id, LocalDateTime createdTime, boolean shared, boolean isFavorite) {
         this.id = id;
         this.createdTime = createdTime;
         this.shared = shared;
+        this.isFavorite = isFavorite;
     }
 
 }
