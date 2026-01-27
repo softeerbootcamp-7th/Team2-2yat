@@ -26,15 +26,7 @@ const nodeVariants = cva(
     },
 );
 
-export default function Node({
-    size = "sm",
-    color = "violet",
-    text = "",
-    direction,
-    children,
-    className,
-    ...rest
-}: NodeProps) {
+export default function Node({ size = "sm", color = "violet", text = "", direction, className, ...rest }: NodeProps) {
     const [isSelected, setIsSelected] = useState(false);
     const colorClass = colorBySize(size, color, isSelected);
     const selectedStyles = isSelected ? `border-2 ${shadowClass(color)}` : "";
