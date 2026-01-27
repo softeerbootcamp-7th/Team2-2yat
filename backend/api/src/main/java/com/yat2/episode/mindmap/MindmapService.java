@@ -1,7 +1,9 @@
 package com.yat2.episode.mindmap;
 
+import com.yat2.episode.users.Users;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -20,5 +22,10 @@ public class MindmapService {
         } catch (IllegalArgumentException e) {
             return Optional.empty();
         }
+    }
+
+    public List<Mindmap> getPrivateMindmapById(Users user) {
+        //todo: 구현 필요
+        return null;
     }
 }

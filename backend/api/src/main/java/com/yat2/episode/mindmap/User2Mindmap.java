@@ -8,7 +8,7 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "user2mindmap")
+@Table(name = "User2Mindmap")
 public class User2Mindmap {
 
     @Id

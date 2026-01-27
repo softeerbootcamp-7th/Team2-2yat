@@ -11,6 +11,7 @@ public enum ErrorCode {
     //Auth
     AUTH_EXPIRED(HttpStatus.UNAUTHORIZED, "AUTH_EXPIRED", "로그인이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),
+    UNAUTHORIZED(HttpStatus.UNAUTHORIZED, "UNAUTHORIZED", "사용자 인증이 되지 않았습니다."),
     INVALID_TOKEN_SIGNATURE(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_SIGNATURE", "토큰 서명이 올바르지 않습니다."),
     INVALID_TOKEN_ISSUER(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_ISSUER", "토큰 발급자가 올바르지 않습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_TYPE", "토큰 타입이 올바르지 않습니다."),
