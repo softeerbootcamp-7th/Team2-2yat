@@ -7,12 +7,11 @@ import {
 
 import { NodeState } from "../types/node";
 
-export function shadowClass(color: NodeColor | undefined) {
-    if (!color) return "";
+export function shadowClass(color: NodeColor) {
     return SHADOW_CLASS_MAP[color];
 }
 
-export function colorBySize(size: "sm" | "md" | "lg", color: NodeColor | undefined, state: NodeState) {
+export function colorBySize(size: "sm" | "md" | "lg", color: NodeColor, state: NodeState) {
     const border = COLOR_CLASS_MAP.border[color][100];
 
     const STATE_SIZE_STYLES: Record<NodeState, Record<"sm" | "md" | "lg", string>> = {
