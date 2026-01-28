@@ -58,7 +58,7 @@ public class MindmapController {
     }
 
     @Operation(
-            summary = "내 전체 마인드맵 목록 조회",
+            summary = "내 공개 마인드맵 목록 조회",
             description = """
                     로그인한 사용자가 참여 중인 팀 마인드맵을 조회합니다.
                     즐겨찾기 여부 및 최근 수정일 기준으로 정렬됩니다.
