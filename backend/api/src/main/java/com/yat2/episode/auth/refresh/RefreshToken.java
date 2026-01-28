@@ -1,13 +1,14 @@
 package com.yat2.episode.auth.refresh;
 
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
 @Getter
-@NoArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
 @Table(name = "refresh_token")
 public class RefreshToken {
@@ -16,7 +17,7 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
+    @Column(name = "user_id", nullable = false, unique = true)
     private Long userId;
 
     @Column(name = "token_hash", nullable = false, unique = true)
@@ -33,11 +34,8 @@ public class RefreshToken {
     )
     private LocalDateTime createdAt;
 
-    public RefreshToken(Long userId, String tokenHash, LocalDateTime expiresAt) {
-        this.userId = userId;
-        this.tokenHash = tokenHash;
-        this.expiresAt = expiresAt;
-    }
+    @Column(name = "updated_at", nullable = false, insertable = false, updatable = false)
+    private LocalDateTime updatedAt;
 
     public boolean isExpired() {
         return expiresAt.isBefore(LocalDateTime.now());
