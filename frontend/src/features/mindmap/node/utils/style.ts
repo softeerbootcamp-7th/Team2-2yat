@@ -20,6 +20,11 @@ export function colorBySize(size: "sm" | "md" | "lg", color: NodeColor, state: N
             md: `border ${border} ${BG_CLASS_MAP[color][5]}`,
             lg: `border ${border} ${BG_CLASS_MAP[color][15]}`,
         },
+        highlight: {
+            sm: `border-2 ${border} bg-white`,
+            md: `border-2 ${border} ${BG_CLASS_MAP[color][5]}`,
+            lg: `border-2 ${border} ${BG_CLASS_MAP[color][15]}`,
+        },
         selected: {
             sm: `border-2 ${border} bg-white`,
             md: `border-2 ${border} ${BG_CLASS_MAP[color][5]}`,
