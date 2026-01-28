@@ -55,13 +55,13 @@ const useCalcSafeDirection = ({ disabled = false, direction, triggerRef, content
 
         // 바로 다음, 다다음 라인에서 유효성 검사 후 valid값 주입하므로(타입가드처럼) as를 사용했습니다.
         const [primaryDirection, secondaryDirection] = direction.split("_") as BaseDirection[];
-        const safePrimaryDirection = getSafeDirection({
+        const safePrimaryDirection = calcSafeDirection({
             direction: primaryDirection || "bottom",
             remainingSpace,
             parentRect,
             contentsRect,
         });
-        const safeSecondaryDirection = getSafeDirection({
+        const safeSecondaryDirection = calcSafeDirection({
             direction: secondaryDirection,
             remainingSpace,
             parentRect,
@@ -123,7 +123,7 @@ type CardinalDirection = {
     right: number;
 };
 
-const getSafeDirection = ({
+const calcSafeDirection = ({
     direction,
     contentsRect,
     parentRect,
