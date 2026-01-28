@@ -1,4 +1,7 @@
 import Icon from "@shared/components/icon/Icon";
+import MaxWidth from "@shared/components/max_width/MaxWidth";
+import Spacer from "@shared/components/spacer/Spacer";
+import Top from "@shared/components/top/Top";
 
 const LoginPage = () => {
     return (
