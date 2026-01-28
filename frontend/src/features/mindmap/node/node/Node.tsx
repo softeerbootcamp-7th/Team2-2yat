@@ -32,21 +32,6 @@ function Node({ className, children, ...rest }: Props) {
     );
 }
 
-function NodeAddon({ direction, color }: { direction: "left" | "right"; color: NodeColor }) {
-    const positionClass = direction === "right" ? "order-last" : "order-first";
-
-    return (
-        <AddNode
-            color={color}
-            direction={direction}
-            className={cn(
-                "opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto",
-                positionClass,
-            )}
-        />
-    );
-}
-
 type NodeContentProps = ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof nodeVariants> & {
         color: NodeColor;
@@ -81,7 +66,7 @@ function NodeContent({ size = "sm", color, state, onStateChange, className, chil
     );
 }
 
-Node.Addon = NodeAddon;
 Node.Content = NodeContent;
+Node.Addon = AddNode;
 
 export default Node;
