@@ -21,7 +21,7 @@ const Button = ({ variant = "primary", size = "md", leftSlot, rightSlot, childre
 
 export default Button;
 
-const buttonVariants = cva("flex flex-row gap-2 justify-center items-center", {
+const buttonVariants = cva("rounded-2xl flex flex-row gap-2 justify-center items-center", {
     variants: {
         variant: {
             primary_accent: [COLOR_SET.primary_accent],
