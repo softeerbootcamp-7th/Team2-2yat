@@ -26,7 +26,6 @@ public class MindmapController {
         this.authService = authService;
     }
 
-    @GetMapping("/my/private")
     @Operation(
             summary = "내 비공개 마인드맵 목록 조회",
             description = """
@@ -51,13 +50,13 @@ public class MindmapController {
             )
 
     })
+    @GetMapping("/my/private")
     public ResponseEntity<List<MindmapDataDto>> getMyPrivateMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
 
         return ResponseEntity.ok(mindmapService.getPrivateMindmapById(userId));
     }
 
-    @GetMapping("/my/public")
     @Operation(
             summary = "내 전체 마인드맵 목록 조회",
             description = """
@@ -82,12 +81,13 @@ public class MindmapController {
             )
 
     })
+    @GetMapping("/my/public")
     public ResponseEntity<List<MindmapDataDto>> getMyPublicMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getPublicMindmapById(userId));
     }
 
-    @GetMapping("/my/all")
+
     @Operation(
             summary = "내 전체 마인드맵 목록 조회",
             description = """
@@ -112,12 +112,12 @@ public class MindmapController {
             )
 
     })
+    @GetMapping("/my/all")
     public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getAllMindmapById(userId));
     }
 
-    @GetMapping("/my/list")
     @Operation(
             summary = "내 마인드맵 이름 목록 조회",
             description = """
@@ -142,10 +142,12 @@ public class MindmapController {
             )
 
     })
+    @GetMapping("/my/list")
     public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getMindmapListById(userId));
     }
+
 
     @PostMapping()
     public ResponseEntity<Object> createMindmap(@RequestBody MindmapArgsReqDto reqBody) {
