@@ -4,6 +4,7 @@ import com.yat2.episode.auth.config.AuthRedirectProperties;
 import com.yat2.episode.auth.dto.IssuedTokens;
 import com.yat2.episode.auth.config.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
+import com.yat2.episode.auth.refresh.RefreshTokenService;
 import com.yat2.episode.auth.token.AuthCookieFactory;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
@@ -27,7 +28,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/auth")
+@RequestMapping("/auth")
 @Tag(name = "Auth", description = "카카오 OAuth 로그인 및 토큰 재발급 API")
 public class AuthController {
     private static final String SESSION_STATE = "OAUTH_STATE";
@@ -37,6 +38,7 @@ public class AuthController {
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
     private final AuthRedirectProperties authRedirectProperties;
+    private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login")
     @Operation(
@@ -118,7 +120,7 @@ public class AuthController {
     @PostMapping("/refresh")
     @Operation(
             summary = "토큰 재발급",
-            description = "쿠키의 refresh_token을 검증(JWT 검증 + DB 세션 검증)한 뒤 새 토큰을 발급합니다. 성공 시 access_token(및 refresh_token) 쿠키를 재설정합니다."
+            description = "쿠키의 refresh_token을 검증한 뒤 새 토큰을 발급합니다."
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "재발급 성공 (응답 바디 없음, Set-Cookie로 토큰 갱신)"),
@@ -142,6 +144,35 @@ public class AuthController {
 
         response.addHeader(HttpHeaders.SET_COOKIE, accessCookie.toString());
         response.addHeader(HttpHeaders.SET_COOKIE, refreshCookie.toString());
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PostMapping("/logout")
+    @Operation(
+            summary = "로그아웃",
+            description = "쿠키의 refresh_token을 기반으로 access_token/refresh_token을 만료 처리합니다"
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "204", description = "로그아웃 성공 (응답 바디 없음, Set-Cookie로 쿠키 만료)"),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+    })
+    public ResponseEntity<Void> logout(
+            @Parameter(
+                    in = ParameterIn.COOKIE,
+                    name = "refresh_token",
+                    description = "Refresh Token 쿠키 (없어도 로그아웃 처리됨)"
+            )
+            @CookieValue(value = "refresh_token", required = false) String refreshToken,
+            HttpServletResponse response
+    ) {
+        refreshTokenService.deleteByRefreshToken(refreshToken);
+
+        ResponseCookie expiredAccess = authCookieFactory.deleteAccess();
+        ResponseCookie expiredRefresh = authCookieFactory.deleteRefresh();
+
+        response.addHeader(HttpHeaders.SET_COOKIE, expiredAccess.toString());
+        response.addHeader(HttpHeaders.SET_COOKIE, expiredRefresh.toString());
 
         return ResponseEntity.noContent().build();
     }

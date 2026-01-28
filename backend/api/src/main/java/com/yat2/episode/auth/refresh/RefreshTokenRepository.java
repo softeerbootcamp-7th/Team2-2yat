@@ -23,4 +23,6 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
     void upsertByUserId(@Param("userId") Long userId, @Param("tokenHash") String tokenHash, @Param("expiresAt") LocalDateTime expiresAt);
 
     void deleteByUserId(Long userId);
+
+    void deleteByTokenHash(String tokenHash);
 }
