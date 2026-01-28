@@ -1,20 +1,4 @@
-/**
- * 사용자 인터페이스
- */
-export type User = {
-    userId: number;
-    nickname: string;
-};
-
-/**
- *  인증 상태 인터페이스
- *  AuthProvider에서 관리하는 전역 상태
- */
-export type AuthState = {
-    isAuthenticated: boolean;
-    user: User | null;
-    isLoading: boolean;
-};
+import { User } from "@features/auth/types/user.types";
 
 /**
  * 카카오 로그인 API
@@ -44,18 +28,6 @@ export type ApiError = {
     code: string;
     message: string;
 };
-
-/**
- * AuthContext 값 타입
- */
-export interface AuthContextValue {
-    isAuthenticated: boolean;
-    user: User | null;
-    isLoading: boolean;
-    login: (user: User) => void;
-    logout: () => Promise<void>;
-    checkAuth: () => Promise<void>;
-}
 
 /**
  * 유틸리티: AuthCheckResponse를 User로 반환
