@@ -5,6 +5,7 @@ import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
 import com.yat2.episode.mindmap.dto.MindmapDataDto;
 import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -35,7 +36,7 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비공개 마인드맵 목록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패 (access_token 없음 또는 만료)")
+            @ApiResponse(responseCode = "401", description = "인증 실패 (access_token 없음 또는 만료)", content = @Content)
     })
     public ResponseEntity<List<MindmapDataDto>> getMyPrivateMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
@@ -53,7 +54,7 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "전체 마인드맵 목록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패")
+            @ApiResponse(responseCode = "401", description = "인증 실패", content = @Content)
     })
     public ResponseEntity<List<MindmapDataDto>> getMyPublicMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
@@ -70,7 +71,7 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "전체 마인드맵 목록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패")
+            @ApiResponse(responseCode = "401", description = "인증 실패", content = @Content)
     })
     public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
@@ -87,7 +88,7 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "마인드맵 이름 목록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패")
+            @ApiResponse(responseCode = "401", description = "인증 실패", content = @Content)
     })
     public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
