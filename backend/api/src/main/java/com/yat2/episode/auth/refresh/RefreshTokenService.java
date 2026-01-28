@@ -4,6 +4,7 @@ import com.yat2.episode.auth.config.JwtProperties;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,6 +15,7 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class RefreshTokenService {
@@ -36,6 +38,17 @@ public class RefreshTokenService {
 
         refreshTokenRepository.findByTokenHash(tokenHash)
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
+    }
+
+   @Transactional
+    public void deleteByRefreshToken(String refreshToken) {
+        if (refreshToken == null || refreshToken.isBlank()) return;
+
+        try {
+            refreshTokenRepository.deleteByTokenHash(hash(refreshToken));
+        } catch (Exception e) {
+            log.error("Failed to delete refresh token", e);
+        }
     }
 
     private String hash(String token) {
