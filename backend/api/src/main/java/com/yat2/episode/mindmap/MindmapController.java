@@ -50,7 +50,7 @@ public class MindmapController {
             )
 
     })
-    @GetMapping("/my/private")
+    @GetMapping("/private")
     public ResponseEntity<List<MindmapDataDto>> getMyPrivateMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
 
@@ -81,7 +81,7 @@ public class MindmapController {
             )
 
     })
-    @GetMapping("/my/public")
+    @GetMapping("/public")
     public ResponseEntity<List<MindmapDataDto>> getMyPublicMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getPublicMindmapById(userId));
@@ -112,7 +112,7 @@ public class MindmapController {
             )
 
     })
-    @GetMapping("/my/all")
+    @GetMapping("/all")
     public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getAllMindmapById(userId));
@@ -142,7 +142,7 @@ public class MindmapController {
             )
 
     })
-    @GetMapping("/my/list")
+    @GetMapping("/list")
     public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
         return ResponseEntity.ok(mindmapService.getMindmapListById(userId));
