@@ -4,14 +4,18 @@ import com.yat2.episode.auth.AuthService;
 import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
 import com.yat2.episode.mindmap.dto.MindmapDataDto;
 import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
-import org.springframework.context.annotation.Description;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/mindmap")
+@Tag(name = "Mindmap", description = "마인드맵 관리 API")
 public class MindmapController {
     private final MindmapService mindmapService;
     private final AuthService authService;
@@ -21,28 +25,51 @@ public class MindmapController {
         this.authService = authService;
     }
 
-    @GetMapping("/private")
-    @Description("개인 마인드맵 리스트를 가져옵니다.")
-    public ResponseEntity<List<MindmapDataDto>> privateMindmap(@CookieValue(name = "access_token", required = false) String token) {
-        //Long userId = authService.getUserIdByToken(token);
+    @GetMapping("/my/private")
+    @Operation(
+            summary = "내 비공개 마인드맵 목록 조회",
+            description = "로그인한 사용자가 소유하거나 참여 중인 마인드맵 중 비공개 상태인 마인드맵 목록을 조회합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "비공개 마인드맵 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패 (access_token 없음 또는 만료)")
+    })
+    public ResponseEntity<List<MindmapDataDto>> getMyPrivateMindmapList(@CookieValue(name = "access_token", required = false) String token) {
+        Long userId = authService.getUserIdByToken(token);
 
-        //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터(shared = false) 가져오기
-        //todo: 즐겨찾기/수정 순 기준으로 정렬하기
-
-        return ResponseEntity.ok(null);
+        return ResponseEntity.ok(mindmapService.getPrivateMindmapById(userId));
     }
 
-    @GetMapping("/public")
-    public ResponseEntity<List<MindmapDataDto>> publicMindmap() {
-        //todo: userId 가져오기
-        //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터(shared = true) 가져오기
-        //todo: 즐겨찾기/수정 순 기준으로 정렬하기
-
-        return ResponseEntity.ok(null);
+    @GetMapping("/my/public")
+    @Operation(
+            summary = "내 전체 마인드맵 목록 조회",
+            description = """
+        로그인한 사용자가 소유하거나 참여 중인 모든 마인드맵을 조회합니다.
+        즐겨찾기 여부 및 최근 수정일 기준으로 정렬됩니다.
+        """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "전체 마인드맵 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    public ResponseEntity<List<MindmapDataDto>> getMyPublicMindmapList(@CookieValue(name = "access_token", required = false) String token) {
+        Long userId = authService.getUserIdByToken(token);
+        return ResponseEntity.ok(mindmapService.getPublicMindmapById(userId));
     }
 
-    @GetMapping("/all")
-    public ResponseEntity<List<MindmapDataDto>> allMindmap() {
+    @GetMapping("/my/all")
+    @Operation(
+            summary = "내 전체 마인드맵 목록 조회",
+            description = """
+        로그인한 사용자가 참여 중인 모든 마인드맵을 조회합니다.
+        즐겨찾기 여부 및 최근 수정일 기준으로 정렬됩니다.
+        """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "전체 마인드맵 목록 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패")
+    })
+    public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList() {
         //todo: userId 가져오기
         //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터 모두 가져오기
         //todo: 즐겨찾기/수정 순 기준으로 정렬하기
@@ -50,8 +77,8 @@ public class MindmapController {
         return ResponseEntity.ok(null);
     }
 
-    @GetMapping("/list")
-    public ResponseEntity<List<MindmapIdentityDto>> getMindmapNames() {
+    @GetMapping("/my/list")
+    public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames() {
         //todo: userId 가져오기
         //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터(shared = true) 가져오기
         //todo: 생성 순 기준으로 정렬하기
