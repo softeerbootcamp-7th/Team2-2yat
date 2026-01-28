@@ -65,7 +65,7 @@ public class AuthCookieFactory {
 
     enum Spec {
         ACCESS("access_token", "/api"),
-        REFRESH("refresh_token", "/api/auth/refresh");
+        REFRESH("refresh_token", "/api/auth");
 
         final String name;
         final String path;

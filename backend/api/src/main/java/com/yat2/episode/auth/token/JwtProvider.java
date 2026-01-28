@@ -100,6 +100,8 @@ public class JwtProvider {
             }
 
             return claims;
+        } catch (CustomException e) {
+            throw e;
         } catch (Exception e) {
             throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
