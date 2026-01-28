@@ -19,7 +19,7 @@ public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
                   AND m.shared = :shared
                 ORDER BY m.isFavorite DESC, m.updatedAt DESC
             """)
-    List<Mindmap> findMindmapsByUserIdAndShared(
+    List<Mindmap> findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(
             @Param("userId") Long userId,
             @Param("shared") boolean shared
     );
@@ -32,7 +32,7 @@ public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
                 WHERE p.user.kakaoId = :userId
                 ORDER BY m.isFavorite DESC, m.updatedAt DESC
             """)
-    List<Mindmap> findMindmapsByUserId(@Param("userId") Long userId);
+    List<Mindmap> findByUserIdOrderByFavoriteAndUpdatedDesc(@Param("userId") Long userId);
 
 
     @Query("""
@@ -42,5 +42,5 @@ public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
                 WHERE p.user.kakaoId = :userId
                 ORDER BY m.createdAt DESC
             """)
-    List<Mindmap> findMindmapListByUserId(@Param("userId") Long userId);
+    List<Mindmap> findByUserIdOrderByCreatedDesc(@Param("userId") Long userId);
 }

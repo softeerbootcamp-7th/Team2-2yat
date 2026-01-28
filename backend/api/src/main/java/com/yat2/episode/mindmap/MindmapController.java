@@ -80,7 +80,7 @@ public class MindmapController {
     @GetMapping("/titles")
     public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@CookieValue(name = "access_token", required = false) String token) {
         Long userId = authService.getUserIdByToken(token);
-        return ResponseEntity.ok(mindmapService.getMindmapListById(userId));
+        return ResponseEntity.ok(mindmapService.getMindmapList(userId));
     }
 
 

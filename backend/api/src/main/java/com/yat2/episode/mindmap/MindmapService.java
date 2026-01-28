@@ -32,27 +32,27 @@ public class MindmapService {
         return switch (type) {
             case PRIVATE -> getMindmapsByShared(userId, false);
             case PUBLIC  -> getMindmapsByShared(userId, true);
-            default      -> getAllMindmapById(userId);
+            default      -> getAllMindmap(userId);
         };
     }
 
     private List<MindmapDataDto> getMindmapsByShared(Long userId, boolean shared) {
-        return mindmapRepository.findMindmapsByUserIdAndShared(userId, shared)
+        return mindmapRepository.findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(userId, shared)
                 .stream()
                 .map(MindmapDataDto::of)
                 .toList();
     }
 
-    private List<MindmapDataDto> getAllMindmapById(Long userId) {
-        return mindmapRepository.findMindmapsByUserId(userId)
+    private List<MindmapDataDto> getAllMindmap(Long userId) {
+        return mindmapRepository.findByUserIdOrderByFavoriteAndUpdatedDesc(userId)
                 .stream()
                 .map(MindmapDataDto::of)
                 .toList();
     }
 
 
-    public List<MindmapIdentityDto> getMindmapListById(Long userId) {
-        return mindmapRepository.findMindmapListByUserId(userId)
+    public List<MindmapIdentityDto> getMindmapList(Long userId) {
+        return mindmapRepository.findByUserIdOrderByCreatedDesc(userId)
                 .stream()
                 .map(MindmapIdentityDto::of)
                 .toList();
