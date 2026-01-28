@@ -10,11 +10,14 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+
+@RequiredArgsConstructor
 @RestController
 @RequestMapping("/mindmap")
 @Tag(name = "Mindmap", description = "마인드맵 관리 API")
@@ -25,11 +28,6 @@ public class MindmapController {
 
     private final MindmapService mindmapService;
     private final AuthService authService;
-
-    MindmapController(MindmapService mindmapService, AuthService authService) {
-        this.mindmapService = mindmapService;
-        this.authService = authService;
-    }
 
     @Operation(
             summary = "마인드맵 목록 조회 (통합)",
