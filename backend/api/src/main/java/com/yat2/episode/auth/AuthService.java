@@ -48,6 +48,10 @@ public class AuthService {
         return tokens;
     }
 
+    public Long getUserIdByToken(String token){
+        return jwtProvider.verifyAccessTokenAndGetUserId(token);
+    }
+  
     @Transactional
     public IssuedTokens refresh(String refreshToken) {
         Long userId = jwtProvider.verifyRefreshTokenAndGetUserId(refreshToken);

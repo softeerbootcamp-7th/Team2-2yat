@@ -1,0 +1,2 @@
+ALTER TABLE mindmap
+    ADD COLUMN name VARCHAR(43) NOT NULL DEFAULT 'untitled';

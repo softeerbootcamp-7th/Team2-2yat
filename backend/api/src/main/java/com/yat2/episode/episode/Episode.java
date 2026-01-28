@@ -33,8 +33,6 @@ public class Episode {
     private String result;
     private String content;
 
-
-    @CreatedDate
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 }
