@@ -48,8 +48,14 @@ public class AuthService {
         return tokens;
     }
 
-    public Optional<Users> getUserByCookie(String token) {
-        Long kakaoId = jwtProvider.verifyAccessTokenAndGetUserId(token);
-        return usersRepository.findByKakaoId(kakaoId);
+    @Transactional
+    public IssuedTokens refresh(String refreshToken) {
+        Long userId = jwtProvider.verifyRefreshTokenAndGetUserId(refreshToken);
+        refreshTokenService.validateSession(refreshToken);
+
+        IssuedTokens tokens = jwtProvider.issueTokens(userId);
+        refreshTokenService.save(userId, tokens.refreshToken());
+
+        return tokens;
     }
 }

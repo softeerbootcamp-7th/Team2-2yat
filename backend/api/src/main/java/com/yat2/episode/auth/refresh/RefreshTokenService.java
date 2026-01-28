@@ -1,6 +1,8 @@
 package com.yat2.episode.auth.refresh;
 
 import com.yat2.episode.auth.config.JwtProperties;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,14 @@ public class RefreshTokenService {
                 .plus(Duration.ofMillis(jwtProperties.getRefreshTokenExpiry()));
 
         refreshTokenRepository.upsertByUserId(userId, tokenHash, expiresAt);
+    }
+
+    @Transactional(readOnly = true)
+    public void validateSession(String refreshToken) {
+        String tokenHash = hash(refreshToken);
+
+        RefreshToken stored = refreshTokenRepository.findByTokenHash(tokenHash)
+                .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
     }
 
     private String hash(String token) {
