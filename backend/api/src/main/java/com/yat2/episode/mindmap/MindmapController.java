@@ -28,7 +28,10 @@ public class MindmapController {
     @GetMapping("/my/private")
     @Operation(
             summary = "내 비공개 마인드맵 목록 조회",
-            description = "로그인한 사용자가 소유하거나 참여 중인 마인드맵 중 비공개 상태인 마인드맵 목록을 조회합니다."
+            description = """
+        로그인한 사용자가 소유한 개인 마인드맵을 조회합니다.
+        즐겨찾기 여부 및 최근 수정일 기준으로 정렬됩니다.
+        """
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "비공개 마인드맵 목록 조회 성공"),
@@ -44,7 +47,7 @@ public class MindmapController {
     @Operation(
             summary = "내 전체 마인드맵 목록 조회",
             description = """
-        로그인한 사용자가 소유하거나 참여 중인 모든 마인드맵을 조회합니다.
+        로그인한 사용자가 참여 중인 팀 마인드맵을 조회합니다.
         즐겨찾기 여부 및 최근 수정일 기준으로 정렬됩니다.
         """
     )
@@ -69,12 +72,9 @@ public class MindmapController {
             @ApiResponse(responseCode = "200", description = "전체 마인드맵 목록 조회 성공"),
             @ApiResponse(responseCode = "401", description = "인증 실패")
     })
-    public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList() {
-        //todo: userId 가져오기
-        //todo: 마인드맵_참여자 table에서 userId 기준 mindmap 데이터 모두 가져오기
-        //todo: 즐겨찾기/수정 순 기준으로 정렬하기
-
-        return ResponseEntity.ok(null);
+    public ResponseEntity<List<MindmapDataDto>> getMyAllMindmapList(@CookieValue(name = "access_token", required = false) String token) {
+        Long userId = authService.getUserIdByToken(token);
+        return ResponseEntity.ok(mindmapService.getPublicMindmapById(userId));
     }
 
     @GetMapping("/my/list")

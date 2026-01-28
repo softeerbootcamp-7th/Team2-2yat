@@ -43,4 +43,11 @@ public class MindmapService {
                 .toList();
     }
 
+
+    public List<MindmapDataDto> getAllMindmapById(Long userId) {
+        return mindmapRepository.findMindmapsByUserId(userId)
+                .stream()
+                .map(MindmapDataDto::of)
+                .toList();
+    }
 }
