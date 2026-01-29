@@ -1,13 +1,13 @@
-import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import { ComponentPropsWithoutRef } from "react";
 import AddNodeDot from "@features/mindmap/node/add_node/AddNodeDot";
 import AddNodeArrow from "@features/mindmap/node/add_node/AddNodeArrow";
 import { cn } from "@utils/cn";
+import { NodeColor } from "@features/mindmap/node/constants/colors";
 
-type Props = ComponentPropsWithoutRef<"div"> &
-    NodeComponentProps & {
-        direction: "left" | "right";
-    };
+type Props = ComponentPropsWithoutRef<"div"> & {
+    color: NodeColor;
+    direction: "left" | "right";
+};
 
 export default function AddNode({ color, direction, className, ...rest }: Props) {
     return (

@@ -1,4 +1,4 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react";
+import { ComponentPropsWithoutRef, ReactNode, useState } from "react";
 import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@utils/cn";
 import { type NodeColor } from "@features/mindmap/node/constants/colors";
@@ -24,7 +24,7 @@ const nodeVariants = cva(
     },
 );
 
-function Node({ className, children, ...rest }: Props) {
+function NodeComponent({ className, children, ...rest }: Props) {
     return (
         <div className={cn("group relative flex items-center gap-2", className)} {...rest}>
             {children}
@@ -32,41 +32,30 @@ function Node({ className, children, ...rest }: Props) {
     );
 }
 
-function NodeAddon({ direction, color }: { direction: "left" | "right"; color: NodeColor }) {
-    const positionClass = direction === "right" ? "order-last" : "order-first";
-
-    return (
-        <AddNode
-            color={color}
-            direction={direction}
-            className={cn(
-                "opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none group-hover:pointer-events-auto",
-                positionClass,
-            )}
-        />
-    );
-}
-
 type NodeContentProps = ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof nodeVariants> & {
         color: NodeColor;
-        state: NodeState;
-        onStateChange?: (selected: boolean) => void;
+        variant?: NodeState;
         children: ReactNode;
     };
 
-function NodeContent({ size = "sm", color, state, onStateChange, className, children, ...rest }: NodeContentProps) {
-    const colorClass = colorBySize(size, color, state);
-    const selectedStyles = state === "selected" ? `border-2 ${shadowClass(color)}` : "";
+function NodeContent({ size = "sm", color, variant = "default", className, children, ...rest }: NodeContentProps) {
+    const [isSelected, setIsSelected] = useState(false);
+
+    const getState = (): NodeState => {
+        if (isSelected) return "selected";
+        if (variant === "highlight") return "highlight";
+        return "default";
+    };
+    const state = getState();
+
+    const colorClass = colorBySize({ size, color, state });
+    const variantStyles = state === "selected" || state === "highlight" ? `${shadowClass(color)}` : "";
 
     return (
         <div
-            className={cn(nodeVariants({ size }), colorClass, selectedStyles, className)}
-            onClick={() => {
-                if (onStateChange) {
-                    onStateChange(state === "default");
-                }
-            }}
+            className={cn(nodeVariants({ size }), colorClass, variantStyles, className)}
+            onClick={() => setIsSelected(!isSelected)}
             {...rest}
         >
             {children}
@@ -74,14 +63,14 @@ function NodeContent({ size = "sm", color, state, onStateChange, className, chil
                 color={color}
                 className={cn(
                     "absolute top-0 right-0 transition-opacity duration-300",
-                    state === "selected" ? "opacity-100" : "opacity-0 group-hover:opacity-100",
+                    state === "selected" ? "opacity-100" : "opacity-0",
                 )}
             />
         </div>
     );
 }
 
-Node.Addon = NodeAddon;
-Node.Content = NodeContent;
-
-export default Node;
+export const Node = Object.assign(NodeComponent, {
+    AddNode: AddNode,
+    Content: NodeContent,
+});

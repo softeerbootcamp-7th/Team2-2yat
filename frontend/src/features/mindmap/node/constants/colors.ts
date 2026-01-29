@@ -143,17 +143,6 @@ export const COLOR_CLASS_MAP: ColorClassMap = {
     },
 };
 
-export const BG_CLASS_MAP = {
-    violet: { 5: "bg-node-violet-op-5", 15: "bg-node-violet-op-15" },
-    blue: { 5: "bg-node-blue-op-5", 15: "bg-node-blue-op-15" },
-    skyblue: { 5: "bg-node-skyblue-op-5", 15: "bg-node-skyblue-op-15" },
-    mint: { 5: "bg-node-mint-op-5", 15: "bg-node-mint-op-15" },
-    cyan: { 5: "bg-node-cyan-op-5", 15: "bg-node-cyan-op-15" },
-    purple: { 5: "bg-node-purple-op-5", 15: "bg-node-purple-op-15" },
-    magenta: { 5: "bg-node-magenta-op-5", 15: "bg-node-magenta-op-15" },
-    navy: { 5: "bg-node-navy-op-5", 15: "bg-node-navy-op-15" },
-} as const;
-
 export const SHADOW_CLASS_MAP: Record<NodeColor, string> = {
     violet: "shadow-[0_0_30px_5px_var(--color-node-violet-op-20)]",
     blue: "shadow-[0_0_30px_5px_var(--color-node-blue-op-20)]",
