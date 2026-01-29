@@ -24,6 +24,16 @@ const nodeVariants = cva(
     },
 );
 
+const menuButtonVariants = cva("absolute top-0 right-0 transition-opacity duration-300", {
+    variants: {
+        nodeMode: {
+            default: "opacity-0",
+            highlight: "opacity-0",
+            selected: "opacity-100",
+        },
+    },
+});
+
 function NodeComponent({ className, children, ...rest }: Props) {
     return (
         <div className={cn("group relative flex items-center gap-2", className)} {...rest}>
@@ -59,13 +69,7 @@ function NodeContent({ size = "sm", color, variant = "default", className, child
             {...rest}
         >
             {children}
-            <MenuNodeButton
-                color={color}
-                className={cn(
-                    "absolute top-0 right-0 transition-opacity duration-300",
-                    nodeMode === "selected" ? "opacity-100" : "opacity-0",
-                )}
-            />
+            <MenuNodeButton color={color} className={menuButtonVariants({ nodeMode })} />
         </div>
     );
 }
