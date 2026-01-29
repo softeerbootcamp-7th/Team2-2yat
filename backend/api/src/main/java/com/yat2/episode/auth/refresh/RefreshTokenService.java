@@ -1,6 +1,6 @@
 package com.yat2.episode.auth.refresh;
 
-import com.yat2.episode.auth.config.JwtProperties;
+import com.yat2.episode.auth.jwt.JwtProperties;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
