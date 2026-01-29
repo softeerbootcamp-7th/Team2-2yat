@@ -122,9 +122,8 @@ public class MindmapController {
     @PostMapping()
     public ResponseEntity<Object> createMindmap(@CookieValue(name = "access_token", required = false) String token, @RequestBody MindmapArgsReqDto reqBody) {
         Long userId = authService.getUserIdByToken(token);
-        // todo: isShared 여부 기반 웹소켓 로직 추가
-        // todo: 기본 활동 타입 인자 기반으로 yDoc 베이스 제공 필요
-        return ResponseEntity.ok(null);
+
+        return ResponseEntity.ok(mindmapService.createMindmap(userId, reqBody));
     }
 
     @PostMapping("/connect/{mindmapId}")
