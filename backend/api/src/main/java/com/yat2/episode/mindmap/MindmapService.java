@@ -99,6 +99,10 @@ public class MindmapService {
         return new MindmapCreatedWithUrlDto(MindmapDataDto.of(savedMindmap), null);
     }
 
+    //todo: presignedURL 작성 함수
+    //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
+    //todo: disconnect 시 마인드맵 참여자가 0인 경우의 s3 데이터와 db 내 마인드맵 데이터 삭제
+
     private UUID getUUID(String uuidStr){
         try {
             return UUID.fromString(uuidStr);
