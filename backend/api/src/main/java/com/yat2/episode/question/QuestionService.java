@@ -1,9 +1,11 @@
 package com.yat2.episode.question;
 
 import com.yat2.episode.competency.CompetencyType;
+import com.yat2.episode.question.dto.CategoryGroupResponseDto;
 import com.yat2.episode.question.dto.SimpleQuestionDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,8 +18,25 @@ import java.util.stream.Collectors;
 public class QuestionService {
     private final QuestionRepository questionRepository;
 
-    public List<SimpleQuestionDto> getQuestionSet(){
-        return getRandomOnePerCompetency().stream().map(SimpleQuestionDto::of).toList();
+    @Transactional(readOnly = true)
+    public List<CategoryGroupResponseDto> getQuestionSet(){
+        List<Question> selectedQuestions = getRandomOnePerCompetency();
+        Map<CompetencyType.Category, List<Question>> questionsByCategory = selectedQuestions.stream()
+                .collect(Collectors.groupingBy(q -> q.getCompetencyType().getCategory()));
+
+        return questionsByCategory.entrySet().stream()
+                .sorted(Map.Entry.comparingByKey())
+                .map(entry -> {
+                    CompetencyType.Category category = entry.getKey();
+                    List<Question> questions = entry.getValue();
+
+                    List<SimpleQuestionDto> questionDtos = questions.stream()
+                            .map(SimpleQuestionDto::of)
+                            .toList();
+
+                    return new CategoryGroupResponseDto(category, questionDtos);
+                })
+                .toList();
     }
 
     private List<Question> getRandomOnePerCompetency() {
