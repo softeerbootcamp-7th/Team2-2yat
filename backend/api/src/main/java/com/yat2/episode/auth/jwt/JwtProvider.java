@@ -89,7 +89,7 @@ public class JwtProvider {
 
             if (claims.getExpirationTime() == null ||
                     new Date().after(claims.getExpirationTime())) {
-                throw new CustomException(ErrorCode.AUTH_EXPIRED);
+                throw new CustomException(ErrorCode.TOKEN_EXPIRED);
             }
 
             String type = (String) claims.getClaim(CLAIM_TOKEN_TYPE);
