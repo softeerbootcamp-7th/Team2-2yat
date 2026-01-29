@@ -140,16 +140,32 @@ public class MindmapController {
     @ApiResponses({
             @ApiResponse(responseCode = "201", description = "마인드맵 생성 성공"),
             @ApiResponse(
+                    responseCode = "400",
+                    description = """
+                        잘못된 요청
+                        - MINDMAP_TITLE_REQUIRED: 팀 마인드맵 생성 시 제목 누락
+                        """,
+                    content = @Content
+            ),
+            @ApiResponse(
                     responseCode = "401",
                     description = """
-                            인증 실패
+                        인증 실패
                             - UNAUTHORIZED
                             - AUTH_EXPIRED
                             - INVALID_TOKEN
                             - INVALID_TOKEN_SIGNATURE
                             - INVALID_TOKEN_ISSUER
                             - INVALID_TOKEN_TYPE
-                            """,
+                        """,
+                    content = @Content
+            ),
+            @ApiResponse(
+                    responseCode = "404",
+                    description = """
+                        리소스 없음
+                        - USER_NOT_FOUND: 토큰의 사용자 정보를 DB에서 찾을 수 없음
+                        """,
                     content = @Content
             )
 
