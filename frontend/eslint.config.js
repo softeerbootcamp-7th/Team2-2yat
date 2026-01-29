@@ -9,6 +9,11 @@ export default tseslint.config(
     tseslint.configs.recommended,
     pluginReact.configs.flat.recommended,
     {
+        settings: {
+            react: {
+                version: "detect",
+            },
+        },
         files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
         plugins: {
             "simple-import-sort": simpleImportSort,

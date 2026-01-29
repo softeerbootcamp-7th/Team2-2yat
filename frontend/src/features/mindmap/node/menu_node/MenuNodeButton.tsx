@@ -1,5 +1,5 @@
-import { cn } from "@utils/cn";
 import Icon from "@shared/components/icon/Icon";
+import { cn } from "@utils/cn";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ComponentPropsWithoutRef } from "react";
 

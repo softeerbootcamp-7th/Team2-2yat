@@ -1,11 +1,11 @@
-import { ComponentPropsWithoutRef, ReactNode } from "react";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@utils/cn";
-import { type NodeColor } from "@features/mindmap/node/constants/colors";
-import { colorBySize, shadowClass } from "@features/mindmap/node/utils/style";
 import AddNode from "@features/mindmap/node/add_node/AddNode";
+import { type NodeColor } from "@features/mindmap/node/constants/colors";
 import MenuNodeButton from "@features/mindmap/node/menu_node/MenuNodeButton";
 import { NodeState } from "@features/mindmap/node/types/node";
+import { colorBySize, shadowClass } from "@features/mindmap/node/utils/style";
+import { cn } from "@utils/cn";
+import { cva, type VariantProps } from "class-variance-authority";
+import { ComponentPropsWithoutRef, ReactNode } from "react";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
     children?: ReactNode;

@@ -1,6 +1,6 @@
+import { InputVariants } from "@shared/styles/input_variants";
 import { VariantProps } from "class-variance-authority";
 import { ComponentPropsWithoutRef } from "react";
-import { InputVariants } from "@shared/styles/input_variants";
 
 type MultilineInputProps = ComponentPropsWithoutRef<"textarea"> & VariantProps<typeof InputVariants>;
 

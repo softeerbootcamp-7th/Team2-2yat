@@ -1,6 +1,6 @@
 import Icon from "@shared/components/icon/Icon";
-import { ComponentPropsWithoutRef } from "react";
 import { cn } from "@utils/cn";
+import { ComponentPropsWithoutRef } from "react";
 
 type Props = ComponentPropsWithoutRef<"button"> & {};
 

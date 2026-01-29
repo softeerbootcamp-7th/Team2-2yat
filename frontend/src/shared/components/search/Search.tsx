@@ -1,7 +1,7 @@
-import { ComponentPropsWithoutRef } from "react";
-import { cn } from "@utils/cn";
 import Icon from "@shared/components/icon/Icon";
 import useSearch, { UseSearchParams } from "@shared/hooks/useSearch";
+import { cn } from "@utils/cn";
+import { ComponentPropsWithoutRef } from "react";
 
 type Props = ComponentPropsWithoutRef<"div"> &
     UseSearchParams & {
