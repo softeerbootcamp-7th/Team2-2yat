@@ -1,4 +1,4 @@
-package com.yat2.episode.auth.oauth;
+package com.yat2.episode.auth.config;
 
 import lombok.Getter;
 import lombok.Setter;

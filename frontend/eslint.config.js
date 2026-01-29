@@ -4,16 +4,20 @@ import simpleImportSort from "eslint-plugin-simple-import-sort";
 import globals from "globals";
 import tseslint from "typescript-eslint";
 
-export default tseslint.configs(
+export default tseslint.config(
     js.configs.recommended,
-    ...tseslint.configs.recommended,
+    tseslint.configs.recommended,
     pluginReact.configs.flat.recommended,
     {
         files: ["**/*.{js,mjs,cjs,ts,mts,cts,jsx,tsx}"],
         plugins: {
             "simple-import-sort": simpleImportSort,
         },
-        languageOptions: { ...globals.browser },
+        languageOptions: {
+            globals: {
+                ...globals.browser,
+            },
+        },
         rules: {
             "react/react-in-jsx-scope": "off",
             "simple-import-sort/imports": "error",

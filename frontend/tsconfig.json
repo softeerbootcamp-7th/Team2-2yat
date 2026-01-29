@@ -2,14 +2,17 @@
     "compilerOptions": {
         "module": "preserve",
         "moduleResolution": "bundler",
+        "strict": true,
         "jsx": "react-jsx",
         "baseUrl": "./src",
+        "skipLibCheck": true,
         "paths": {
             "@shared/*": ["shared/*"],
             "@utils/*": ["utils/*"],
             "@icons/*": ["assets/icons/*"],
             "@features/*": ["features/*"]
         },
-        "outDir": "./dist"
+        "outDir": "./dist",
+        "noUncheckedIndexedAccess": true
     }
 }

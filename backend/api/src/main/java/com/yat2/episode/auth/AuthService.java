@@ -3,12 +3,12 @@ package com.yat2.episode.auth;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.yat2.episode.auth.dto.IssuedTokens;
 import com.yat2.episode.auth.dto.KakaoTokenResponse;
+import com.yat2.episode.auth.refresh.RefreshTokenService;
 import com.yat2.episode.auth.token.JwtProvider;
 import com.yat2.episode.auth.oauth.KakaoIdTokenVerifier;
 import com.yat2.episode.auth.oauth.KakaoOAuthClient;
 import com.yat2.episode.users.Users;
 import com.yat2.episode.users.UsersRepository;
-import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,24 +23,12 @@ public class AuthService {
     private final KakaoIdTokenVerifier kakaoIdTokenVerifier;
     private final UsersRepository usersRepository;
     private final JwtProvider jwtProvider;
+    private final RefreshTokenService refreshTokenService;
 
     @Transactional
-    public IssuedTokens handleKakaoCallback(
-            HttpSession session,
-            String code,
-            String state
-    ) {
-        String sessionState = (String) session.getAttribute("OAUTH_STATE");
-
-        if (sessionState == null || !sessionState.equals(state)) {
-            throw new IllegalStateException("Invalid OAuth state");
-        }
-
-        session.removeAttribute("OAUTH_STATE");
-
+    public IssuedTokens handleKakaoCallback(String code) {
         KakaoTokenResponse kakaoResponse = kakaoOAuthClient.requestToken(code);
-        JWTClaimsSet claims =
-                kakaoIdTokenVerifier.verify(kakaoResponse.idToken());
+        JWTClaimsSet claims = kakaoIdTokenVerifier.verify(kakaoResponse.idToken());
 
         Long kakaoUserId = Long.parseLong(claims.getSubject());
 
@@ -48,18 +36,30 @@ public class AuthService {
                 .orElse("USER_" + kakaoUserId);
 
         Users user = usersRepository.findByKakaoId(kakaoUserId)
-                .orElseGet(() -> createNewUser(kakaoUserId, nickname));
+                .orElseGet(() -> usersRepository.save(Users.newUser(kakaoUserId, nickname)));
 
-        return jwtProvider.issueTokens(user.getKakaoId());
+        if (!nickname.equals(user.getNickname())) {
+            user.changeNickname(nickname);
+        }
+
+        IssuedTokens tokens =  jwtProvider.issueTokens(kakaoUserId);
+        refreshTokenService.save(kakaoUserId, tokens.refreshToken());
+
+        return tokens;
     }
 
-    private Users createNewUser(Long kakaoUserId, String nickname) {
-        Users user = new Users();
-        user.setKakaoId(kakaoUserId);
+    public Long getUserIdByToken(String token){
+        return jwtProvider.verifyAccessTokenAndGetUserId(token);
+    }
+  
+    @Transactional
+    public IssuedTokens refresh(String refreshToken) {
+        Long userId = jwtProvider.verifyRefreshTokenAndGetUserId(refreshToken);
+        refreshTokenService.validateSession(refreshToken);
 
-        user.setNickname(nickname);
-        user.setHasWatchedFeatureGuide(false);
+        IssuedTokens tokens = jwtProvider.issueTokens(userId);
+        refreshTokenService.save(userId, tokens.refreshToken());
 
-        return usersRepository.save(user);
+        return tokens;
     }
 }

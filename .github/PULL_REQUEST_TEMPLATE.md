@@ -1,4 +1,4 @@
-close #{issue_number}
+Closes #
 
 # 목적
 
