@@ -1,7 +1,5 @@
 package com.yat2.episode.auth.oauth;
 
-import com.yat2.episode.auth.config.KakaoProperties;
-import com.yat2.episode.auth.dto.KakaoTokenResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;

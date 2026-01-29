@@ -1,11 +1,12 @@
 package com.yat2.episode.auth;
 
-import com.yat2.episode.auth.config.AuthRedirectProperties;
-import com.yat2.episode.auth.dto.IssuedTokens;
-import com.yat2.episode.auth.config.KakaoProperties;
+import com.yat2.episode.auth.oauth.OAuthRedirectProperties;
+import com.yat2.episode.auth.jwt.IssuedTokens;
+import com.yat2.episode.auth.oauth.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
 import com.yat2.episode.auth.refresh.RefreshTokenService;
-import com.yat2.episode.auth.token.AuthCookieFactory;
+import com.yat2.episode.auth.cookie.AuthCookieFactory;
+import com.yat2.episode.auth.security.Public;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,10 +25,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
+@Public
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/auth")
-@Tag(name = "Auth", description = "카카오 OAuth 로그인 및 토큰 재발급 API")
+@Tag(name = "Auth", description = "인증 관련")
 public class AuthController {
     private static final String SESSION_STATE = "OAUTH_STATE";
     private static final String SESSION_LOCAL_DEV = "OAUTH_LOCAL_DEV";
@@ -35,7 +37,7 @@ public class AuthController {
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
-    private final AuthRedirectProperties authRedirectProperties;
+    private final OAuthRedirectProperties oAuthRedirectProperties;
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login")
@@ -108,7 +110,7 @@ public class AuthController {
         ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
         ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
 
-        String redirect = isLocalDev ? authRedirectProperties.getLocal() : authRedirectProperties.getProd();
+        String redirect = isLocalDev ? oAuthRedirectProperties.getLocal() : oAuthRedirectProperties.getProd();
 
         return ResponseEntity.status(302)
                 .header(HttpHeaders.LOCATION, redirect)

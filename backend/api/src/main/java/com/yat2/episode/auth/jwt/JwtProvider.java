@@ -1,12 +1,10 @@
-package com.yat2.episode.auth.token;
+package com.yat2.episode.auth.jwt;
 
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
-import com.yat2.episode.auth.config.JwtProperties;
-import com.yat2.episode.auth.dto.IssuedTokens;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
@@ -91,7 +89,7 @@ public class JwtProvider {
 
             if (claims.getExpirationTime() == null ||
                     new Date().after(claims.getExpirationTime())) {
-                throw new CustomException(ErrorCode.AUTH_EXPIRED);
+                throw new CustomException(ErrorCode.TOKEN_EXPIRED);
             }
 
             String type = (String) claims.getClaim(CLAIM_TOKEN_TYPE);

@@ -1,4 +1,4 @@
-package com.yat2.episode.auth.dto;
+package com.yat2.episode.auth.oauth;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

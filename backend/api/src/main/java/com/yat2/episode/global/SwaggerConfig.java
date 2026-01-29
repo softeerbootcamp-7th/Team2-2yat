@@ -9,23 +9,25 @@ import org.springframework.context.annotation.Configuration;
 
 import java.util.List;
 
-import static com.yat2.episode.global.constant.cookieConstants.*;
+import static com.yat2.episode.auth.cookie.AuthCookieNames.*;
 
 @Configuration
 public class SwaggerConfig {
+    public static final String SWAGGER_ACCESS_TOKEN = "COOKIE_ACCESS_TOKEN";
+    public static final String SWAGGER_REFRESH_TOKEN = "COOKIE_REFRESH_TOKEN";
 
     @Bean
     public OpenAPI openAPI() {
         SecurityScheme accessTokenScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.APIKEY)
                 .in(SecurityScheme.In.COOKIE)
-                .name(ACCESS_TOKEN)
+                .name(ACCESS_COOKIE_NAME)
                 .description("입력하지 마시고, 로그인 api를 실행해주세요.");
 
         SecurityScheme refreshTokenScheme = new SecurityScheme()
                 .type(SecurityScheme.Type.APIKEY)
                 .in(SecurityScheme.In.COOKIE)
-                .name(REFRESH_TOKEN)
+                .name(REFRESH_COOKIE_NAME)
                 .description("입력하지 마시고, 로그인 api를 실행해주세요.");
 
         Components components = new Components()

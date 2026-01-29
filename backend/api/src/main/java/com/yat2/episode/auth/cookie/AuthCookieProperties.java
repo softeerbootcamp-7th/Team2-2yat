@@ -1,4 +1,4 @@
-package com.yat2.episode.auth.config;
+package com.yat2.episode.auth.cookie;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter @Setter
 @ConfigurationProperties(prefix = "cookie")
-public class CookieProperties {
+public class AuthCookieProperties {
     private String domain;
     private boolean secure;
     private String sameSite;
