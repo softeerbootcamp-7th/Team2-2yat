@@ -1,10 +1,10 @@
 package com.yat2.episode.auth.security;
 
-import com.yat2.episode.auth.cookie.AuthCookieResolver;
 import com.yat2.episode.auth.jwt.JwtProvider;
 import com.yat2.episode.global.constant.RequestAttrs;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -13,11 +13,15 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+import static com.yat2.episode.auth.cookie.AuthCookieNames.ACCESS_COOKIE_NAME;
+
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
-    private final AuthCookieResolver cookieResolver;
 
     @Override
     public boolean preHandle(@NonNull HttpServletRequest request,
@@ -29,12 +33,24 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String token = cookieResolver.findAccessToken(request)
+        String token = extractAccessToken(request)
                 .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
 
         Long userId = jwtProvider.verifyAccessTokenAndGetUserId(token);
         request.setAttribute(RequestAttrs.USER_ID, userId);
 
         return true;
+    }
+
+    private Optional<String> extractAccessToken(HttpServletRequest request) {
+        Cookie[] cookies = request.getCookies();
+        if (cookies == null || cookies.length == 0) return Optional.empty();
+
+        return Arrays.stream(cookies)
+                .filter(c -> ACCESS_COOKIE_NAME.equals(c.getName()))
+                .map(Cookie::getValue)
+                .map(v -> v == null ? "" : v.trim())
+                .filter(v -> !v.isBlank())
+                .findFirst();
     }
 }
