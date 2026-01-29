@@ -1,18 +1,18 @@
-package com.yat2.episode.auth.token;
+package com.yat2.episode.auth.cookie;
 
-import com.yat2.episode.auth.config.CookieProperties;
-import com.yat2.episode.auth.config.JwtProperties;
+import com.yat2.episode.auth.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import static com.yat2.episode.auth.cookie.AuthCookieNames.*;
 
 @Component
 @RequiredArgsConstructor
 public class AuthCookieFactory {
 
-    private final CookieProperties cookieProps;
+    private final AuthCookieProperties cookieProps;
     private final JwtProperties jwtProps;
 
     public ResponseCookie access(String token) {
@@ -64,8 +64,8 @@ public class AuthCookieFactory {
     }
 
     enum Spec {
-        ACCESS("access_token", "/api"),
-        REFRESH("refresh_token", "/api/auth");
+        ACCESS(ACCESS_COOKIE_NAME, "/api"),
+        REFRESH(REFRESH_COOKIE_NAME, "/api/auth");
 
         final String name;
         final String path;

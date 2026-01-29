@@ -74,3 +74,27 @@ jobs:
 
             docker image prune -f
           EOF
+
+      - name: Health check
+        run: |
+          set -e
+          URL="https://api.episode.io.kr/actuator/health"
+
+          echo "Checking health:"
+          for i in $(seq 1 30); do
+            resp="$(curl -sS --max-time 5 -w "\n%{http_code}" "$URL" || true)"
+            body="$(echo "$resp" | head -n 1)"
+            code="$(echo "$resp" | tail -n 1)"
+
+            echo "try=$i http=$code body=$body"
+
+            if [ "$code" = "200" ] && echo "$body" | grep -q '"status":"UP"'; then
+              echo "Health is UP"
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "Health check failed"
+          exit 1

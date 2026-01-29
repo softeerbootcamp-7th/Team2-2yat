@@ -5,10 +5,11 @@ export const COLOR_SET = {
     secondary: "bg-cobalt-200 text-white",
 
     tertiary: "bg-primary-bg-02 text-primary",
-    tertiary_outlined: "bg-primary-bg-02 text-primary outline-1 outline-primary",
+    tertiary_outlined: "bg-primary-bg-02 text-primary border border-primary",
 
     quaternary: "bg-white text-gray-800",
-    quaternary_accent_outlined: "bg-white text-primary outline-1 outline-primary",
+    quaternary_outlined: "bg-white text-gray-800 border border-gray-300",
+    quaternary_accent_outlined: "bg-white text-primary border border-primary",
 
     basic: "bg-gray-200 text-gray-800",
     basic_accent: "bg-gray-200 text-primary",
