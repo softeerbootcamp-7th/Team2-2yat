@@ -6,7 +6,7 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 
 @Getter @Setter
 @ConfigurationProperties(prefix = "cookie")
-public class CookieProperties {
+public class AuthCookieProperties {
     private String domain;
     private boolean secure;
     private String sameSite;

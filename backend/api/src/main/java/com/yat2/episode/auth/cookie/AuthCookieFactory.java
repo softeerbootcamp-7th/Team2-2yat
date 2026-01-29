@@ -12,7 +12,7 @@ import static com.yat2.episode.auth.cookie.AuthCookieNames.*;
 @RequiredArgsConstructor
 public class AuthCookieFactory {
 
-    private final CookieProperties cookieProps;
+    private final AuthCookieProperties cookieProps;
     private final JwtProperties jwtProps;
 
     public ResponseCookie access(String token) {
