@@ -19,7 +19,6 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 @RequestMapping("/users")
 public class UsersController {
     private final UsersService usersService;
-    private final UsersRepository usersRepository;
 
     @GetMapping("/me")
     @Operation(
