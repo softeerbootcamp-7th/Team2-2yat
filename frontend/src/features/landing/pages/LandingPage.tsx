@@ -4,7 +4,7 @@ import GlobalNavigationBar from "@shared/components/global_navigation_bar/Global
 const LandingPage = () => {
     return (
         <>
-            <div className="relative min-h-screen w-full bg-cover bg-center bg-no-repeat bg-[url('/landing_bg.png')]">
+            <div className="relative w-full bg-cover bg-center bg-no-repeat bg-[url('/landing_bg.png')]">
                 <GlobalNavigationBar
                     variant="transparent"
                     rightSlot={
