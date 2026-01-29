@@ -7,6 +7,7 @@ import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
+import static com.yat2.episode.auth.token.AuthCookieNames.*;
 
 @Component
 @RequiredArgsConstructor
@@ -64,8 +65,8 @@ public class AuthCookieFactory {
     }
 
     enum Spec {
-        ACCESS("access_token", "/api"),
-        REFRESH("refresh_token", "/api/auth");
+        ACCESS(ACCESS_COOKIE_NAME, "/api"),
+        REFRESH(REFRESH_COOKIE_NAME, "/api/auth");
 
         final String name;
         final String path;

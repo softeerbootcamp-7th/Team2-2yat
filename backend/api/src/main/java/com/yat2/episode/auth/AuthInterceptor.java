@@ -2,6 +2,7 @@ package com.yat2.episode.auth;
 
 import com.yat2.episode.auth.annotation.Public;
 import com.yat2.episode.auth.token.JwtProvider;
+import com.yat2.episode.global.constant.RequestAttrs;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import jakarta.servlet.http.Cookie;
@@ -12,14 +13,11 @@ import org.jspecify.annotations.NonNull;
 import org.springframework.stereotype.Component;
 import org.springframework.web.method.HandlerMethod;
 import org.springframework.web.servlet.HandlerInterceptor;
+import static com.yat2.episode.auth.token.AuthCookieNames.ACCESS_COOKIE_NAME;
 
 @Component
 @RequiredArgsConstructor
 public class AuthInterceptor implements HandlerInterceptor {
-
-    public static final String ATTR_USER_ID = "userId";
-    private static final String ACCESS_COOKIE = "access_token";
-
     private final JwtProvider jwtProvider;
 
     @Override
@@ -36,7 +34,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         }
 
         Long userId = jwtProvider.verifyAccessTokenAndGetUserId(token);
-        request.setAttribute(ATTR_USER_ID, userId);
+        request.setAttribute(RequestAttrs.USER_ID, userId);
 
         return true;
     }
@@ -45,7 +43,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         Cookie[] cookies = request.getCookies();
         if (cookies == null) return null;
         for (Cookie c : cookies) {
-            if (ACCESS_COOKIE.equals(c.getName())) return c.getValue();
+            if (ACCESS_COOKIE_NAME.equals(c.getName())) return c.getValue();
         }
         return null;
     }
