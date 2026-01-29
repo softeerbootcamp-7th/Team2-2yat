@@ -45,14 +45,14 @@ function NodeComponent({ className, children, ...rest }: Props) {
 type NodeContentProps = ComponentPropsWithoutRef<"div"> &
     VariantProps<typeof nodeVariants> & {
         color: NodeColor;
-        variant?: NodeMode;
+        highlight?: boolean;
         children: ReactNode;
     };
 
 function NodeContent({
     size = "sm",
     color,
-    variant = "default",
+    highlight = false,
     className,
     children,
     onClick,
@@ -62,7 +62,7 @@ function NodeContent({
 
     const getNodeMode = (): NodeMode => {
         if (isSelected) return "selected";
-        if (variant === "highlight") return "highlight";
+        if (highlight) return "highlight";
         return "default";
     };
     const nodeMode = getNodeMode();
