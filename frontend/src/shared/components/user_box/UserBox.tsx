@@ -5,7 +5,7 @@ type Props = ComponentPropsWithoutRef<"div"> & {
     name: string;
 };
 
-export default function Profile({ name, ...rest }: Props) {
+export default function UserBox({ name, ...rest }: Props) {
     return (
         <div className="flex items-center gap-4" {...rest}>
             <Icon name="ic_profile" color="var(--color-primary)" size={35} />
