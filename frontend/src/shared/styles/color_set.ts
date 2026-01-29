@@ -8,7 +8,7 @@ export const COLOR_SET = {
     tertiary_outlined: "bg-primary-bg-02 text-primary outline-1 outline-primary",
 
     quaternary: "bg-white text-gray-800",
-    quaternary_accent_outlined: "bg-white text-gray-800 outline-1 outline-primary",
+    quaternary_accent_outlined: "bg-white text-primary outline-1 outline-primary",
 
     basic: "bg-gray-200 text-gray-800",
     basic_accent: "bg-gray-200 text-primary",

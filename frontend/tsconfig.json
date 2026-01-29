@@ -5,6 +5,7 @@
         "strict": true,
         "jsx": "react-jsx",
         "baseUrl": "./src",
+        "skipLibCheck": true,
         "paths": {
             "@shared/*": ["shared/*"],
             "@utils/*": ["utils/*"],
