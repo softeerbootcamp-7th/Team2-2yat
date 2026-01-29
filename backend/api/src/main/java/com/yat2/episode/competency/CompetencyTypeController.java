@@ -27,7 +27,7 @@ public class CompetencyTypeController {
         return ResponseEntity.ok(competencyTypeService.getAllData());
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     @GetMapping("/mindmap/{mindmapId}")
     public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(
             @CookieValue(name = "access_token", required = false) String token,
