@@ -3,12 +3,15 @@ package com.yat2.episode.question;
 import com.yat2.episode.job.Job;
 import com.yat2.episode.competency.CompetencyType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "question")
 public class Question {
 
@@ -26,9 +29,6 @@ public class Question {
 
     @Column(name = "content", nullable = false, length = 200)
     private String content;
-
-    protected Question() {
-    }
 
     public Question(
             CompetencyType competencyType,
