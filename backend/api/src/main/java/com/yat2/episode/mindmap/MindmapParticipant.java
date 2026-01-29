@@ -2,15 +2,13 @@ package com.yat2.episode.mindmap;
 
 import com.yat2.episode.users.Users;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
 @Setter
 @Builder
+@AllArgsConstructor
 @RequiredArgsConstructor
 @Table(name = "mindmap_participant")
 public class MindmapParticipant {
