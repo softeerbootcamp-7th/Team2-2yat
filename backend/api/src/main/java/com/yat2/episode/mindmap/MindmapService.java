@@ -73,14 +73,10 @@ public class MindmapService {
         Users user = usersRepository.findByKakaoId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if (body.isShared()) {
-            if (finalTitle == null || finalTitle.isBlank()) {
+        if (finalTitle == null || finalTitle.isBlank()) {
+            if (body.isShared())
                 throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
-            }
-        } else {
-            if (finalTitle == null || finalTitle.isBlank()) {
-                finalTitle = getPrivateMindmapName(user);
-            }
+            finalTitle = getPrivateMindmapName(user);
         }
 
         Mindmap mindmap = Mindmap.builder()
