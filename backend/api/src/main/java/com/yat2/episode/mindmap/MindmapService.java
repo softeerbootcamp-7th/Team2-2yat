@@ -3,6 +3,7 @@ package com.yat2.episode.mindmap;
 import com.yat2.episode.global.constant.MindmapConstants;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.mindmap.S3.S3SnapshotRepository;
 import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
 import com.yat2.episode.mindmap.dto.MindmapCreatedWithUrlDto;
 import com.yat2.episode.mindmap.dto.MindmapDataDto;
@@ -23,6 +24,7 @@ public class MindmapService {
     private final MindmapRepository mindmapRepository;
     private final MindmapParticipantRepository mindmapParticipantRepository;
     private final UsersRepository usersRepository;
+    private final S3SnapshotRepository snapshotRepository;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
@@ -94,12 +96,11 @@ public class MindmapService {
                 .user(user).mindmap(mindmap).build();
 
         mindmapParticipantRepository.save(participant);
-        //todo: mindmap uuid 기반 s3의 presigned URL 셍성
+        String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/"+savedMindmap.getId());
 
-        return new MindmapCreatedWithUrlDto(MindmapDataDto.of(savedMindmap), null);
+        return new MindmapCreatedWithUrlDto(MindmapDataDto.of(savedMindmap), presignedURL);
     }
 
-    //todo: presignedURL 작성 함수
     //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
     //todo: disconnect 시 마인드맵 참여자가 0인 경우의 s3 데이터와 db 내 마인드맵 데이터 삭제
 
