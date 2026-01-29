@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -90,10 +91,10 @@ public class MindmapController {
     @GetMapping("/{mindmapId}")
     public ResponseEntity<MindmapDataDto> getMindmap(
             @CookieValue(name = "access_token", required = false) String token,
-            @PathVariable String UUID
+            @PathVariable String mindmapId
     ) {
         Long userId = authService.getUserIdByToken(token);
-        return ResponseEntity.ok(mindmapService.getMindmapById(userId, UUID));
+        return ResponseEntity.ok(mindmapService.getMindmapById(userId, mindmapId));
     }
 
     @Operation(
@@ -130,9 +131,10 @@ public class MindmapController {
             summary = "내 마인드맵 생성",
             description = """
                     마인드맵을 생성합니다.
+                    팀/개인 마인드맵 생성 시 title이 없어도 default 값을 지정해줍니다.
                     팀 마인드맵 생성 시에는 중심 노드가 되는 프로젝트 명이 default 마인드맵 명이 됩니다.
-                    개인 마인드맵 생성 시에는 title에 값을 넣어주지 않으셔도 됩니다. 값이 넣어진 상태로 요청하는 경우
-                    팀/개인 마인드맵에 상관 없이 해당 이름으로 마인드맵을 생성합니다.
+                    개인 마인드맵 생성 시에는 사용자 명을 기반으로 생성된 이름이 default 마인드맵 명이 됩니다.
+                    웹 소켓 연결은 별도 요청이 필요합니다.
                     """
     )
     @ApiResponses({
@@ -156,9 +158,13 @@ public class MindmapController {
     public ResponseEntity<MindmapCreatedWithUrlDto> createMindmap(@CookieValue(name = "access_token", required = false) String token, @RequestBody MindmapArgsReqDto reqBody) {
         Long userId = authService.getUserIdByToken(token);
         MindmapCreatedWithUrlDto resBody = mindmapService.createMindmap(userId, reqBody);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(resBody.mindmap().mindmapId())
+                .toUri();
 
         return ResponseEntity
-                .created(URI.create("/mindmap/" + resBody.mindmap().mindmapId()))
+                .created(location)
                 .body(resBody);
     }
 

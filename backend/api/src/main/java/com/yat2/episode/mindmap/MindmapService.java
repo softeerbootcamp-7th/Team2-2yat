@@ -61,6 +61,7 @@ public class MindmapService {
                 .map(MindmapIdentityDto::of)
                 .toList();
     }
+
     @Transactional
     public MindmapCreatedWithUrlDto createMindmap(Long userId, MindmapArgsReqDto body){
         //todo: title과 shared 값을 기반으로 defaultTitle 생성
