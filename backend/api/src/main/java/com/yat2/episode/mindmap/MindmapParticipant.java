@@ -8,8 +8,8 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "user2mindmap")
-public class User2Mindmap {
+@Table(name = "mindmap_participant")
+public class MindmapParticipant {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

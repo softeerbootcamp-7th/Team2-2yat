@@ -1,6 +1,6 @@
 import IcIconMove from "@icons/ic_tool_move.svg?react";
 import { cn } from "@utils/cn";
-import { getNodeColorClass, NodeColor } from "@features/mindmap/node/constants/colors";
+import { COLOR_CLASS_MAP, NodeColor } from "@features/mindmap/node/constants/colors";
 import { ComponentPropsWithoutRef } from "react";
 import { cva, VariantProps } from "class-variance-authority";
 
@@ -25,8 +25,8 @@ export default function AddNodeArrow({ color, direction, className, ...rest }: P
 
     const centerClass = "flex items-center justify-center rounded-full";
 
-    const outerCircleClass = cn("w-13.5 h-13.5 cursor-pointer", centerClass, getNodeColorClass({ color, opacity: 15 }));
-    const iconCircleClass = cn("w-11 h-11 border-base-white border-3", centerClass, getNodeColorClass({ color }));
+    const outerCircleClass = cn("w-13.5 h-13.5 cursor-pointer", centerClass, COLOR_CLASS_MAP.bg[color][15]);
+    const iconCircleClass = cn("w-11 h-11 border-base-white border-3", centerClass, COLOR_CLASS_MAP.bg[color][100]);
 
     return (
         <button onClick={handleAddNode} className={outerCircleClass}>

@@ -5,7 +5,10 @@ import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
+import com.yat2.episode.auth.config.JwtProperties;
 import com.yat2.episode.auth.dto.IssuedTokens;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 import org.springframework.stereotype.Component;
 
 import java.nio.charset.StandardCharsets;
@@ -28,7 +31,7 @@ public class JwtProvider {
         this.secretBytes = props.getSecret().getBytes(StandardCharsets.UTF_8);
 
         if (secretBytes.length < 32) {
-            throw new IllegalStateException("jwt.secret is too short");
+            throw new IllegalStateException("JWT secret is too short");
         }
     }
 
@@ -58,7 +61,7 @@ public class JwtProvider {
             jwt.sign(new MACSigner(secretBytes));
             return jwt.serialize();
         } catch (JOSEException e) {
-            throw new IllegalStateException("Failed to sign JWT", e);
+            throw new CustomException(ErrorCode.INTERNAL_ERROR);
         }
     }
 
@@ -77,28 +80,30 @@ public class JwtProvider {
             SignedJWT jwt = SignedJWT.parse(token);
 
             if (!jwt.verify(new MACVerifier(secretBytes))) {
-                throw new IllegalStateException("Invalid JWT signature");
+                throw new CustomException(ErrorCode.INVALID_TOKEN_SIGNATURE);
             }
 
             JWTClaimsSet claims = jwt.getJWTClaimsSet();
 
             if (!props.getIssuer().equals(claims.getIssuer())) {
-                throw new IllegalStateException("Invalid issuer");
+                throw new CustomException(ErrorCode.INVALID_TOKEN_ISSUER);
             }
 
             if (claims.getExpirationTime() == null ||
                     new Date().after(claims.getExpirationTime())) {
-                throw new IllegalStateException("JWT expired");
+                throw new CustomException(ErrorCode.AUTH_EXPIRED);
             }
 
             String type = (String) claims.getClaim(CLAIM_TOKEN_TYPE);
             if (!expectedType.equals(type)) {
-                throw new IllegalStateException("Invalid token type");
+                throw new CustomException(ErrorCode.INVALID_TOKEN_TYPE);
             }
 
             return claims;
+        } catch (CustomException e) {
+            throw e;
         } catch (Exception e) {
-            throw new IllegalStateException("Invalid JWT", e);
+            throw new CustomException(ErrorCode.INVALID_TOKEN);
         }
     }
 }

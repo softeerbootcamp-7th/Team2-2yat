@@ -5,6 +5,9 @@ import jakarta.persistence.*;
 import com.yat2.episode.mindmap.Mindmap;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.data.annotation.CreatedDate;
+
+import java.time.LocalDateTime;
 
 
 @Getter
@@ -29,4 +32,7 @@ public class Episode {
     private String action;
     private String result;
     private String content;
+
+    @Column(name = "created_at", nullable = false, updatable = false)
+    private LocalDateTime createdAt;
 }

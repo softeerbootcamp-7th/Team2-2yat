@@ -1,5 +1,7 @@
 package com.yat2.episode.auth.token;
 
+import com.yat2.episode.auth.config.CookieProperties;
+import com.yat2.episode.auth.config.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
@@ -63,7 +65,7 @@ public class AuthCookieFactory {
 
     enum Spec {
         ACCESS("access_token", "/api"),
-        REFRESH("refresh_token", "/api/auth/refresh");
+        REFRESH("refresh_token", "/api/auth");
 
         final String name;
         final String path;

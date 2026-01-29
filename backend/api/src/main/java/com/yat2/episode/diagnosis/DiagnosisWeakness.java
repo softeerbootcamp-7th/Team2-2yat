@@ -8,8 +8,9 @@ import lombok.Setter;
 @Entity
 @Getter
 @Setter
-@Table(name = "diagnosis2question")
-public class Diagnosis2Question {
+@Table(name = "diagnosis_weakness")
+public class DiagnosisWeakness {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;

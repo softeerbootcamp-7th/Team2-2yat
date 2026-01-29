@@ -3,7 +3,7 @@ import Icon from "@shared/components/icon/Icon";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ComponentPropsWithoutRef } from "react";
 
-const nodeVariants = cva("w-3 h-3 cursor-pointer rounded-bl-md rounded-tr-md justify-center items-center flex", {
+const nodeVariants = cva("w-5.5 h-5.5 cursor-pointer rounded-bl-xl rounded-tr-lg justify-center items-center flex", {
     variants: {
         color: {
             violet: "bg-node-violet-op-100",
@@ -23,7 +23,7 @@ type Props = ComponentPropsWithoutRef<"button"> & VariantProps<typeof nodeVarian
 export default function MenuNodeButton({ color, className, ...rest }: Props) {
     return (
         <button className={cn(nodeVariants({ color }), className)} {...rest}>
-            <Icon name="ic_ellipsis" size={8} color="var(--color-base-white)" />
+            <Icon name="ic_ellipsis" size={16} color="var(--color-base-white)" />
         </button>
     );
 }
