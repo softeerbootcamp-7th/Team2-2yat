@@ -18,6 +18,9 @@ public enum ErrorCode {
     INVALID_OAUTH_STATE(HttpStatus.BAD_REQUEST, "INVALID_OAUTH_STATE", "OAuth state가 일치하지 않습니다."),
     OAUTH_ID_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "OAUTH_ID_TOKEN_INVALID", "유효하지 않은 OAuth IDToken 입니다."),
 
+    //Users
+    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
+
     //Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 요청입니다."),
     INTERNAL_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "INTERNAL_ERROR", "서버 오류가 발생했습니다."),
