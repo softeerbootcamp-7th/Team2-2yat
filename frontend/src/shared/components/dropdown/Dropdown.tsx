@@ -25,6 +25,7 @@ const Dropdown = ({ children, placeholder = "선택해주세요", value }: Props
         if (!trigger) return;
 
         const rect = trigger.getBoundingClientRect();
+
         setCoords({
             top: rect.bottom + window.scrollY,
             left: rect.left + window.scrollX,
@@ -38,14 +39,25 @@ const Dropdown = ({ children, placeholder = "선택해주세요", value }: Props
     };
 
     useEffect(() => {
+        if (!isOpen) {
+            return;
+        }
+
         const handleClickOutside = (e: MouseEvent) => {
-            if (triggerRef.current && !triggerRef.current.contains(e.target as Node)) {
+            if (!(e.target instanceof Node)) {
+                return;
+            }
+
+            if (triggerRef.current && !triggerRef.current.contains(e.target)) {
                 openHandler.off();
             }
         };
+
         window.addEventListener("click", handleClickOutside);
-        return () => window.removeEventListener("click", handleClickOutside);
-    }, [openHandler]);
+        return () => {
+            window.removeEventListener("click", handleClickOutside);
+        };
+    }, [isOpen]);
 
     return (
         <>
