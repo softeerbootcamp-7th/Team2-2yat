@@ -10,9 +10,6 @@ public enum ErrorCode {
     INVALID_MINDMAP_UUID(HttpStatus.BAD_REQUEST, "INVALID_MINDMAP_UUID", "알맞지 않은 uuid 입니다."),
     MINDMAP_TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "MINDMAP_TITLE_REQUIRED", "팀 마인드맵 생성 시에는 title 입력이 필수 입니다."),
 
-    //User
-    USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "사용자를 찾을 수 없습니다."),
-
     //Auth
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED", "토큰이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),

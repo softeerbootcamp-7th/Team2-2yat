@@ -9,7 +9,7 @@ import lombok.*;
 @Setter
 @Builder
 @AllArgsConstructor
-@RequiredArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mindmap_participant")
 public class MindmapParticipant {
 
@@ -24,9 +24,4 @@ public class MindmapParticipant {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mindmap_id", nullable = false)
     private Mindmap mindmap;
-
-    public MindmapParticipant(Users user, Mindmap mindmap) {
-        this.user = user;
-        this.mindmap = mindmap;
-    }
 }
