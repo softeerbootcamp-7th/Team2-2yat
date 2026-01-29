@@ -7,6 +7,8 @@ type Props = {
 };
 
 function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name, rotate = 0 }: Props) {
+    const viewBox = name === "ic_logo" ? "0 0 87 17" : "0 0 24 24";
+
     return (
         <svg
             color={color}
@@ -15,7 +17,7 @@ function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name, rota
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
-            viewBox="0 0 24 24"
+            viewBox={viewBox}
             fill="none"
             style={{
                 transform: `rotate(${rotate}deg)`,
@@ -70,7 +72,7 @@ const ICON_NAMES = [
     "ic_writing",
     "ic_x_circle",
     "ic_x",
-    "ic_kakao_login",
+    "ic_logo",
 ] as const;
 
 export type IconName = (typeof ICON_NAMES)[number];
