@@ -1,5 +1,5 @@
-import type { FetchOptions } from "@shared/api/types";
 import { fetchWithAuth } from "@shared/api/client";
+import type { FetchOptions } from "@shared/api/types";
 
 type BaseParams = {
     endpoint: string;
