@@ -21,7 +21,20 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+  minio:
+    image: minio/minio
+    container_name: episode-minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: ${LOCAL_S3_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${LOCAL_S3_SECRET_KEY}
+    volumes:
+      - minio-data:/data
+    command: server /data --console-address ":9001"
 
 volumes:
   mysql-data:
-  
+  minio-data:
