@@ -1,5 +1,5 @@
 import useCalcSafeDirection from "@shared/hooks/useCalcSafeDirection";
-import useToggle from "@shared/hooks/useToggle";
+import useToggle from "@shared/hooks/useToggla";
 import { SafeVariantProps } from "@shared/types/safe_variant_props";
 import { cva } from "class-variance-authority";
 import { ReactNode, useRef } from "react";

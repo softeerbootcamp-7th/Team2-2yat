@@ -1,8 +1,8 @@
-import useToggle from "@shared/hooks/useToggle";
-import { ReactNode, useEffect, useRef, useState } from "react";
 import Button from "@shared/components/button/Button";
-import { createPortal } from "react-dom";
 import Icon from "@shared/components/icon/Icon";
+import useToggle from "@shared/hooks/useToggla";
+import { ReactNode, useEffect, useRef, useState } from "react";
+import { createPortal } from "react-dom";
 
 type Props = {
     children: ReactNode;

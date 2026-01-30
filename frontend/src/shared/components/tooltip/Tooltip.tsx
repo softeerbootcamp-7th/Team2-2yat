@@ -1,4 +1,4 @@
-import useToggle from "@shared/hooks/useToggle";
+import useToggle from "@shared/hooks/useToggla";
 import { ReactNode } from "react";
 
 type Props = {
