@@ -23,7 +23,7 @@ public class Mindmap {
     @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
 
-    @Column(name = "name", nullable = false)
+    @Column(name = "name", nullable = false, length = 43)
     private String name;
 
     @Column(name = "is_shared", nullable = false)
