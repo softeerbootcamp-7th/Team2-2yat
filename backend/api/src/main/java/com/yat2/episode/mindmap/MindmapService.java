@@ -79,11 +79,7 @@ public class MindmapService {
             finalTitle = getPrivateMindmapName(user);
         }
 
-        Mindmap mindmap = Mindmap.builder()
-                .name(finalTitle)
-                .shared(body.isShared())
-                .isFavorite(false)
-                .build();
+        Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
 
         Mindmap savedMindmap = mindmapRepository.save(mindmap);
 

@@ -12,24 +12,19 @@ import java.util.UUID;
 @Entity
 @Getter
 @Setter
-@Builder
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@EntityListeners(AuditingEntityListener.class)
 @Table(name = "mindmap")
 public class Mindmap {
-
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @CreatedDate
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @LastModifiedDate
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", insertable = false, updatable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "name", nullable = false)
@@ -38,6 +33,11 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
-    @Column(name = "is_favorite", nullable = false)
+    @Column(name = "is_favorite", insertable = false)
     private boolean isFavorite;
+
+    public Mindmap(String name, boolean shared) {
+        this.name = name;
+        this.shared = shared;
+    }
 }
