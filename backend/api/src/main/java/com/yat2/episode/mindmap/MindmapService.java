@@ -11,7 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -107,14 +109,39 @@ public class MindmapService {
     }
 
     private String getPrivateMindmapName(Users user) {
-        StringBuilder sb = new StringBuilder(user.getNickname())
-                .append(MindmapConstants.PRIVATE_NAME);
-        Long count = mindmapRepository.getCountSameNameByNameAndUserId(sb.toString(), user.getKakaoId());
-        if (count > 0) {
-            sb.append("(")
-                    .append(count)
-                    .append(")");
+        String baseName = user.getNickname() + MindmapConstants.PRIVATE_NAME;
+        List<String> allNames = mindmapRepository.findAllNamesByBaseName(baseName, user.getKakaoId());
+
+        if (allNames.isEmpty()) {
+            return baseName;
         }
+        int maxNum = -1;
+        boolean baseNameExists = false;
+        String prefixWithBracket = baseName + "(";
+
+        for (String name : allNames) {
+            if (name.equals(baseName)) {
+                baseNameExists = true;
+                continue;
+            }
+
+            if (name.startsWith(prefixWithBracket) && name.endsWith(")")) {
+                try {
+                    String numPart = name.substring(prefixWithBracket.length(), name.length() - 1);
+                    maxNum = Math.max(maxNum, Integer.parseInt(numPart));
+                } catch (NumberFormatException e) {}
+            }
+        }
+        if (!baseNameExists) {
+            return baseName;
+        }
+        StringBuilder sb = new StringBuilder(baseName);
+        if (maxNum == -1) {
+            sb.append("(1)");
+        } else {
+            sb.append("(").append(maxNum + 1).append(")");
+        }
+
         return sb.toString();
     }
 
