@@ -16,7 +16,7 @@ public enum ErrorCode {
     INVALID_TOKEN_ISSUER(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_ISSUER", "토큰 발급자가 올바르지 않습니다."),
     INVALID_TOKEN_TYPE(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN_TYPE", "토큰 타입이 올바르지 않습니다."),
     INVALID_OAUTH_STATE(HttpStatus.BAD_REQUEST, "INVALID_OAUTH_STATE", "OAuth state가 일치하지 않습니다."),
-    OAUTH_ID_TOKEN_INVALID(HttpStatus.UNAUTHORIZED, "OAUTH_ID_TOKEN_INVALID", "유효하지 않은 OAuth IDToken 입니다."),
+    INVALID_OAUTH_ID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_OAUTH_ID_TOKEN", "유효하지 않은 OAuth IDToken 입니다."),
 
     //Users
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
