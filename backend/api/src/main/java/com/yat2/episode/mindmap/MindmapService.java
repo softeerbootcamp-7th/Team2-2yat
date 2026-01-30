@@ -1,6 +1,6 @@
 package com.yat2.episode.mindmap;
 
-import com.yat2.episode.global.constant.MindmapConstants;
+import com.yat2.episode.mindmap.constants.MindmapConstants;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.mindmap.S3.S3SnapshotRepository;
@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @RequiredArgsConstructor
