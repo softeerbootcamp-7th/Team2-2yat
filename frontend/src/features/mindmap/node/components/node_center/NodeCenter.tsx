@@ -1,6 +1,6 @@
 import { ComponentPropsWithoutRef } from "react";
 
-import AddNode from "@/features/mindmap/node/add_node/AddNode";
+import AddNode from "@/features/mindmap/node/components/add_node/AddNode";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
     username?: string;
