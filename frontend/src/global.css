@@ -122,7 +122,7 @@
     --color-text-placeholder: var(--color-gray-600);
 
     --color-white: var(--color-base-white);
-    --color-white-op-20: color-mix(in srgb, var(--color-base-white), transparent 20%);
+    --color-white-op-20: color-mix(in srgb, var(--color-base-white), transparent 80%);
 
     /* landing page */
     --color-landing-purple-op-50: color-mix(in srgb, var(--color-cobalt-500), transparent 50%);
@@ -145,5 +145,11 @@
     }
     button:disabled {
         @apply cursor-not-allowed;
+    }
+}
+
+@layer utilities {
+    .shadow-violet-glow {
+        box-shadow: 0 0 15px 0 var(--color-node-violet-op-30, --color-node-violet-op-30);
     }
 }

@@ -1,5 +1,6 @@
-import { cn } from "@utils/cn";
 import { ComponentPropsWithoutRef, ReactNode } from "react";
+
+import { cn } from "@/utils/cn";
 
 type Variant = "default" | "alert";
 type Props = ComponentPropsWithoutRef<"li"> & {

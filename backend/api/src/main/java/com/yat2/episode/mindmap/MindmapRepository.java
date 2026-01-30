@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Repository
@@ -43,4 +44,21 @@ public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
                 ORDER BY m.createdAt DESC
             """)
     List<Mindmap> findByUserIdOrderByCreatedDesc(@Param("userId") Long userId);
+
+    @Query("""
+                SELECT m
+                FROM MindmapParticipant p
+                JOIN p.mindmap m
+                WHERE m.id = :uuid and p.user.kakaoId = :userId
+            """)
+    Optional<Mindmap> findByIdAndUserId(@Param("uuid") UUID uuid, @Param("userId") Long userId);
+
+    @Query("""
+                SELECT m.name
+                FROM MindmapParticipant p
+                JOIN p.mindmap m
+                WHERE m.name LIKE CONCAT(:name, '%')
+                  AND p.user.kakaoId = :userId
+            """)
+    List<String> findAllNamesByBaseName(@Param("name") String name, @Param("userId") Long userId);
 }

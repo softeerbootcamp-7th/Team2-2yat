@@ -9,10 +9,12 @@ import com.yat2.episode.auth.cookie.AuthCookieFactory;
 import com.yat2.episode.auth.security.Public;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -47,7 +49,7 @@ public class AuthController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "302", description = "카카오 인가 페이지로 Redirect"),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Void> loginWithKakao(HttpSession session, HttpServletRequest request) {
         String clientId = kakaoProperties.getClientId();
@@ -84,9 +86,9 @@ public class AuthController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "302", description = "프론트 Redirect + Set-Cookie(access_token, refresh_token)"),
-            @ApiResponse(responseCode = "400", description = "OAuth state 불일치", content = @Content),
-            @ApiResponse(responseCode = "401", description = "유효하지 않은 OAuth ID Token", content = @Content),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+            @ApiResponse(responseCode = "400", description = "OAuth state 불일치", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401", description = "유효하지 않은 OAuth ID Token", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Void> kakaoCallback(
             HttpSession session,
@@ -126,8 +128,8 @@ public class AuthController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "재발급 성공 (응답 바디 없음, Set-Cookie로 토큰 갱신)"),
-            @ApiResponse(responseCode = "401", description = "refresh_token 없음/만료/유효하지 않음", content = @Content),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+            @ApiResponse(responseCode = "401", description = "refresh_token 없음/만료/유효하지 않음", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Void> refresh(
             @Parameter(
@@ -156,7 +158,7 @@ public class AuthController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "204", description = "로그아웃 성공 (응답 바디 없음, Set-Cookie로 쿠키 만료)"),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     public ResponseEntity<Void> logout(
             @Parameter(

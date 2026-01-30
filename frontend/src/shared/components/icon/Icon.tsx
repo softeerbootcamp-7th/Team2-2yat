@@ -4,18 +4,33 @@ type Props = {
     size?: number | string;
     strokeWidth?: number | string;
     rotate?: number;
+    viewBox?: string;
+    width?: string | number;
+    height?: string | number;
 };
 
-function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name, rotate = 0 }: Props) {
+/**
+ * size를 주면 정사각형 크기, width height를 주면 직사각형 크기로 렌더링합니다.
+ */
+function Icon({
+    color = "currentColor",
+    size = 24,
+    width = size,
+    height = size,
+    strokeWidth = 1.6,
+    rotate = 0,
+    viewBox = "0 0 24 24",
+    name,
+}: Props) {
     return (
         <svg
             color={color}
-            width={size}
-            height={size}
+            width={width ? width : size}
+            height={height ? height : size}
             strokeWidth={strokeWidth}
             strokeLinecap="round"
             strokeLinejoin="round"
-            viewBox="0 0 24 24"
+            viewBox={viewBox}
             fill="none"
             style={{
                 transform: `rotate(${rotate}deg)`,
@@ -29,7 +44,7 @@ function Icon({ color = "currentColor", size = 24, strokeWidth = 1.6, name, rota
 
 export default Icon;
 
-const ICON_NAMES = [
+export const ICON_NAMES = [
     "ic_cursor",
     "ic_star",
     "ic_star_filled",
@@ -70,7 +85,7 @@ const ICON_NAMES = [
     "ic_writing",
     "ic_x_circle",
     "ic_x",
-    "ic_kakao_login",
+    "ic_logo",
 ] as const;
 
 export type IconName = (typeof ICON_NAMES)[number];

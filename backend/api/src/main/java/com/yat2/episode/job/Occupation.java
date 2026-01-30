@@ -1,4 +1,4 @@
-package com.yat2.episode.occupation;
+package com.yat2.episode.job;
 
 import jakarta.persistence.*;
 import lombok.Getter;

@@ -1,6 +1,7 @@
-import { cn } from "@utils/cn";
 import { Children, ComponentPropsWithoutRef, Fragment } from "react";
-import Divider from "@shared/components/divider/Divider";
+
+import Divider from "@/shared/components/divider/Divider";
+import { cn } from "@/utils/cn";
 
 type Props = ComponentPropsWithoutRef<"ul"> & {
     hasDivider?: boolean;

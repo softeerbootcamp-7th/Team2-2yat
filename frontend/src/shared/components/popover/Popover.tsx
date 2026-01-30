@@ -1,8 +1,9 @@
-import useCalcSafeDirection from "@shared/hooks/useCalcSafeDirection";
-import useToggle from "@shared/hooks/useToggle";
-import { SafeVariantProps } from "@shared/types/safe_variant_props";
 import { cva } from "class-variance-authority";
 import { ReactNode, useRef } from "react";
+
+import useCalcSafeDirection from "@/shared/hooks/useCalcSafeDirection";
+import useToggle from "@/shared/hooks/useToggle";
+import { SafeVariantProps } from "@/shared/types/safe_variant_props";
 
 type Props = SafeVariantProps<typeof variants> & {
     children: ReactNode;
