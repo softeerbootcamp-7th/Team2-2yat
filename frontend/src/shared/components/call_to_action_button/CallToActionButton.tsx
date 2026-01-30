@@ -1,8 +1,9 @@
-import { COLOR_SET } from "@shared/styles/color_set";
 import { cva, VariantProps } from "class-variance-authority";
-import { ComponentPropsWithoutRef, ReactNode } from "react";
-import Icon from "@shared/components/icon/Icon";
-import { cn } from "@utils/cn";
+import { ComponentPropsWithoutRef } from "react";
+
+import Icon from "@/shared/components/icon/Icon";
+import { COLOR_SET } from "@/shared/styles/color_set";
+import { cn } from "@/utils/cn";
 
 type Props = ComponentPropsWithoutRef<"button"> &
     VariantProps<typeof variants> & {

@@ -7,10 +7,10 @@
         "baseUrl": "./src",
         "skipLibCheck": true,
         "paths": {
-            "@shared/*": ["shared/*"],
-            "@utils/*": ["utils/*"],
-            "@icons/*": ["assets/icons/*"],
-            "@features/*": ["features/*"]
+            "@/shared/*": ["shared/*"],
+            "@/utils/*": ["utils/*"],
+            "@/icons/*": ["assets/icons/*"],
+            "@/features/*": ["features/*"]
         },
         "outDir": "./dist",
         "noUncheckedIndexedAccess": true
