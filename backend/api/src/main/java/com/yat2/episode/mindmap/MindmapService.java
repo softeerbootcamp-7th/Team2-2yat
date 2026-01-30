@@ -8,8 +8,11 @@ import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
 import com.yat2.episode.users.Users;
 import com.yat2.episode.users.UsersRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +27,10 @@ public class MindmapService {
     private final MindmapParticipantRepository mindmapParticipantRepository;
     private final UsersRepository usersRepository;
     private final S3SnapshotRepository snapshotRepository;
+    private final TransactionTemplate transactionTemplate;
+
+    @Autowired
+    private MindmapService self;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
@@ -59,28 +66,32 @@ public class MindmapService {
                 .toList();
     }
 
-    @Transactional(rollbackFor = Exception.class)
     public MindmapCreatedWithUrlDto createMindmap(Long userId, MindmapArgsReqDto body) {
-        String finalTitle = body.title();
         Users user = usersRepository.findByKakaoId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        if (finalTitle == null || finalTitle.isBlank()) {
-            if (body.isShared())
-                throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
-            finalTitle = getPrivateMindmapName(user);
+        Mindmap savedMindmap = transactionTemplate.execute(status -> {
+            String finalTitle = body.title();
+            if (finalTitle == null || finalTitle.isBlank()) {
+                if (body.isShared()) throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
+                finalTitle = getPrivateMindmapName(user);
+            }
+
+            Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
+            Mindmap saved = mindmapRepository.save(mindmap);
+
+            MindmapParticipant participant = new MindmapParticipant(user, saved);
+            mindmapParticipantRepository.save(participant);
+
+            return saved;
+        });
+        try {
+            String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + savedMindmap.getId());
+            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), presignedURL);
+        } catch (Exception e) {
+            mindmapRepository.delete(savedMindmap);
+            throw new CustomException(ErrorCode.S3_URL_FAIL);
         }
-
-        Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
-
-        Mindmap savedMindmap = mindmapRepository.save(mindmap);
-
-        MindmapParticipant participant = new MindmapParticipant(user, savedMindmap);
-
-        mindmapParticipantRepository.save(participant);
-        String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + savedMindmap.getId());
-
-        return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), presignedURL);
     }
 
     //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
@@ -122,7 +133,8 @@ public class MindmapService {
                 try {
                     String numPart = name.substring(prefixWithBracket.length(), name.length() - 1);
                     maxNum = Math.max(maxNum, Integer.parseInt(numPart));
-                } catch (NumberFormatException e) {}
+                } catch (NumberFormatException e) {
+                }
             }
         }
         if (!baseNameExists) {
