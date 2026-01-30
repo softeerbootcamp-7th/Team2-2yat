@@ -1,28 +1,26 @@
 package com.yat2.episode.mindmap;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
-import org.springframework.data.annotation.CreatedDate;
-import org.springframework.data.annotation.LastModifiedDate;
+import lombok.*;
+import org.hibernate.annotations.UuidGenerator;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Entity
 @Getter
-@Setter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mindmap")
 public class Mindmap {
-
     @Id
+    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
-    @Column(name = "created_at", nullable = false, updatable = false)
+    @Column(name = "created_at", insertable = false, updatable = false)
     private LocalDateTime createdAt;
 
-    @Column(name = "updated_at", nullable = false)
+    @Column(name = "updated_at", insertable = false)
     private LocalDateTime updatedAt;
 
     @Column(name = "name", nullable = false)
@@ -31,16 +29,11 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
-    @Column(name = "is_favorite", nullable = false)
+    @Column(name = "is_favorite", insertable = false)
     private boolean isFavorite;
 
-    protected Mindmap() {
-    }
-
-    public Mindmap(UUID id, boolean shared, boolean isFavorite) {
-        this.id = id;
+    public Mindmap(String name, boolean shared) {
+        this.name = name;
         this.shared = shared;
-        this.isFavorite = isFavorite;
     }
-
 }

@@ -1,0 +1,2 @@
+ALTER TABLE mindmap
+    MODIFY COLUMN is_favorite TINYINT(1) NOT NULL DEFAULT 0;

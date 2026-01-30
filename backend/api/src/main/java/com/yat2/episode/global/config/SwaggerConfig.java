@@ -1,4 +1,4 @@
-package com.yat2.episode.global;
+package com.yat2.episode.global.config;
 
 import io.swagger.v3.oas.models.Components;
 import io.swagger.v3.oas.models.OpenAPI;
