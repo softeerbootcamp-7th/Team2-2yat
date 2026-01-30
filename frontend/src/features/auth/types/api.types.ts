@@ -41,7 +41,7 @@ export function authCheckResponseToUser(response: AuthCheckResponse): User | nul
     return {
         userId: response.userId!,
         nickname: response.nickname!,
-        onboardingCompleted: response.onboardingCompleted,
-        featureGuideCompleted: response.featureGuideCompleted,
+        onboardingCompleted: response.onboardingCompleted!,
+        featureGuideCompleted: response.featureGuideCompleted!,
     };
 }
