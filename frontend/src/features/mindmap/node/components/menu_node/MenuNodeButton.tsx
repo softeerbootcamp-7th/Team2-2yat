@@ -1,7 +1,8 @@
-import { cn } from "@utils/cn";
-import Icon from "@shared/components/icon/Icon";
 import { cva, type VariantProps } from "class-variance-authority";
 import { ComponentPropsWithoutRef } from "react";
+
+import Icon from "@/shared/components/icon/Icon";
+import { cn } from "@/utils/cn";
 
 const nodeVariants = cva("w-5.5 h-5.5 cursor-pointer rounded-bl-xl rounded-tr-lg justify-center items-center flex", {
     variants: {

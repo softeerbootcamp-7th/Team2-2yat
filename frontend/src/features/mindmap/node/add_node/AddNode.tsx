@@ -1,8 +1,9 @@
-import { type NodeComponentProps } from "@features/mindmap/node/types/node";
 import { ComponentPropsWithoutRef } from "react";
-import AddNodeDot from "@features/mindmap/node/add_node/AddNodeDot";
-import AddNodeArrow from "@features/mindmap/node/add_node/AddNodeArrow";
-import { cn } from "@utils/cn";
+
+import AddNodeArrow from "@/features/mindmap/node/add_node/AddNodeArrow";
+import AddNodeDot from "@/features/mindmap/node/add_node/AddNodeDot";
+import { type NodeComponentProps } from "@/features/mindmap/node/types/node";
+import { cn } from "@/utils/cn";
 
 type Props = ComponentPropsWithoutRef<"div"> &
     NodeComponentProps & {

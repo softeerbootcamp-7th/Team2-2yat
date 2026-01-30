@@ -1,7 +1,8 @@
-import { COLOR_SET } from "@shared/styles/color_set";
-import { cn } from "@utils/cn";
 import { cva, type VariantProps } from "class-variance-authority";
-import { ComponentPropsWithoutRef, ComponentPropsWithRef, ReactNode } from "react";
+import { ComponentPropsWithRef, ReactNode } from "react";
+
+import { COLOR_SET } from "@/shared/styles/color_set";
+import { cn } from "@/utils/cn";
 
 type Props = ComponentPropsWithRef<"button"> &
     VariantProps<typeof buttonVariants> & {
@@ -22,9 +23,11 @@ const Button = ({
 }: Props) => {
     return (
         <button ref={ref} className={cn(buttonVariants({ variant, size, align }), className)} {...rest}>
-            {leftSlot ? leftSlot : null}
+            {leftSlot}
+
             <span className="flex-1">{children}</span>
-            {rightSlot ? rightSlot : null}
+
+            {rightSlot}
         </button>
     );
 };
@@ -45,13 +48,13 @@ const buttonVariants = cva("flex flex-row gap-2 items-center whitespace-nowrap",
             basic: [COLOR_SET.basic],
             basic_accent: [COLOR_SET.basic_accent],
             alert: [COLOR_SET.alert],
+            ghost: "text-text-main2 bg-transparent hover:bg-gray-100",
         },
         size: {
             xs: "rounded-lg typo-body-14-medium py-2 px-3",
-            sm: "rounded-2xl typo-body-18-semibold py-3 px-4 min-w-20",
+            sm: "rounded-2xl typo-body-14-medium py-3 px-4 min-w-20",
             md: "rounded-2xl typo-body-16-semibold w-full py-4 px-5",
             lg: "rounded-2xl typo-body-16-medium w-full py-5 px-10",
-            full: "rounded-2xl typo-body-16-medium w-full h-full px-4",
         },
         align: {
             left: "justify-start text-left",
