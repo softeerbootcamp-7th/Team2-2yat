@@ -1,5 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
-
+import { AuthProvider } from "@/features/auth/providers/AuthProvider";
 import EpisodeArchivePage from "@/features/episode_archive/pages/EpisodeArchivePage";
 import HomePage from "@/features/home/pages/HomePage";
 import LandingPage from "@/features/landing/pages/LandingPage";
@@ -33,7 +33,11 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    return <RouterProvider router={router} />;
+    return (
+        <AuthProvider>
+            <RouterProvider router={router} />
+        </AuthProvider>
+    );
 }
 
 export default App;
