@@ -1,4 +1,4 @@
-import { AUTH_REFRESH_API } from "@/features/auth/api/auth";
+import { AUTH_REFRESH_API } from "@/features/auth/api/api";
 import { ApiError, toSafeApiError } from "@/features/auth/types/api.types";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
 
