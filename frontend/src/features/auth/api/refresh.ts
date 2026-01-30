@@ -1,5 +1,4 @@
 import { AUTH_REFRESH_API } from "@/features/auth/api/api";
-import { ApiError, toSafeApiError } from "@/features/auth/types/api.types";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -38,18 +37,13 @@ export function setRefreshState(refreshing: boolean, promise: Promise<boolean> |
 /**
  * 토큰 갱신 함수
  */
-export async function refreshToken(): Promise<void | ApiError> {
+import { post } from "@/shared/api/method";
+
+export async function refreshToken(): Promise<boolean> {
     try {
-        const response = await fetch(`${API_BASE_URL}${AUTH_REFRESH_API}`, {
-            method: "POST",
-            credentials: "include",
-        });
-        if (!response.ok) {
-            const error: ApiError = await response.json();
-            return toSafeApiError(error);
-        }
-        return;
+        await post<void, {}>({ endpoint: AUTH_REFRESH_API });
+        return true;
     } catch (error) {
-        return toSafeApiError(error);
+        return false;
     }
 }
