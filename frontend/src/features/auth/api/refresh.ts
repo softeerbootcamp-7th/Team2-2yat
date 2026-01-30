@@ -1,5 +1,5 @@
-import { AUTH_REFRESH_API } from "@/features/auth/api/api";
-import { ApiError } from "@/features/auth/types/api.types";
+import { AUTH_REFRESH_API } from "@/features/auth/api/auth";
+import { ApiError, toSafeApiError } from "@/features/auth/types/api.types";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
@@ -46,17 +46,10 @@ export async function refreshToken(): Promise<void | ApiError> {
         });
         if (!response.ok) {
             const error: ApiError = await response.json();
-            return error as ApiError;
+            return toSafeApiError(error);
         }
         return;
     } catch (error) {
-        if (typeof error === "object" && error !== null && "status" in error && "code" in error && "message" in error) {
-            return error as ApiError;
-        }
-        return {
-            status: 0,
-            code: "NETWORK_ERROR",
-            message: "네트워크 오류가 발생했습니다.",
-        };
+        return toSafeApiError(error);
     }
 }

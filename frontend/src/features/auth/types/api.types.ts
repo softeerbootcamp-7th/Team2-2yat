@@ -30,3 +30,10 @@ export type ApiError = {
     code: string;
     message: string;
 };
+
+/**
+ * 다양한 에러를 안전하게 ApiError 타입으로 변환
+ */
+export function toSafeApiError(error: unknown): ApiError {
+    return toSafeApiError(error);
+}
