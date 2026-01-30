@@ -1,5 +1,6 @@
 import { ComponentPropsWithoutRef, type ReactNode } from "react";
-import { cn } from "@utils/cn";
+
+import { cn } from "@/utils/cn";
 
 type NewNodeProps = ComponentPropsWithoutRef<"div"> & {
     children?: ReactNode;

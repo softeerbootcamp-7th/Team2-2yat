@@ -1,8 +1,9 @@
 import IcIconMove from "@icons/ic_tool_move.svg?react";
-import { cn } from "@utils/cn";
-import { COLOR_CLASS_MAP, NodeColor } from "@features/mindmap/node/constants/colors";
-import { ComponentPropsWithoutRef } from "react";
 import { cva, VariantProps } from "class-variance-authority";
+import { ComponentPropsWithoutRef } from "react";
+
+import { COLOR_CLASS_MAP, NodeColor } from "@/features/mindmap/node/constants/colors";
+import { cn } from "@/utils/cn";
 
 type Props = Omit<ComponentPropsWithoutRef<"button">, "color"> &
     VariantProps<typeof DirectionProps> & {
@@ -18,7 +19,7 @@ const DirectionProps = cva("w-5 h-6 text-base-white", {
     },
 });
 
-export default function AddNodeArrow({ color, direction, className, ...rest }: Props) {
+export default function AddNodeArrow({ color, direction, className }: Props) {
     const handleAddNode = () => {
         // TODO: menu 컴포넌트 생성
     };
