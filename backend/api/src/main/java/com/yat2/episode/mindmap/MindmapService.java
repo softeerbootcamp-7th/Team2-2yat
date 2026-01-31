@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
@@ -79,8 +80,8 @@ public class MindmapService {
             return saved;
         });
         try {
-            String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + savedMindmap.getId());
-            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), presignedURL);
+            Map<String, String> uploadInfo = snapshotRepository.createPresignedUploadInfo("maps/" + savedMindmap.getId());
+            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), uploadInfo);
         } catch (Exception e) {
             mindmapRepository.delete(savedMindmap);
             throw new CustomException(ErrorCode.S3_URL_FAIL);

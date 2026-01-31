@@ -5,6 +5,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
@@ -28,25 +29,36 @@ public class S3Config {
 
     @Bean
     @Profile("local")
-    public S3Presigner localS3Presigner() {
+    public AwsCredentialsProvider localCredentialsProvider() {
+        return StaticCredentialsProvider.create(
+                AwsBasicCredentials.create(accessKey, secretKey)
+        );
+    }
+
+    @Bean
+    @Profile("prod")
+    public AwsCredentialsProvider prodCredentialsProvider() {
+        return DefaultCredentialsProvider.create(); // 여기서 EC2 Role을 알아서 찾아옴
+    }
+
+
+    @Bean
+    @Profile("local")
+    public S3Presigner localS3Presigner(AwsCredentialsProvider credentialsProvider) {
         return S3Presigner.builder()
                 .region(Region.of(region))
                 .endpointOverride(URI.create(endpoint))
-                .credentialsProvider(StaticCredentialsProvider.create(
-                        AwsBasicCredentials.create(accessKey, secretKey)
-                ))
-                .serviceConfiguration(S3Configuration.builder()
-                        .pathStyleAccessEnabled(true)
-                        .build())
+                .credentialsProvider(credentialsProvider)
+                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
                 .build();
     }
 
     @Bean
     @Profile("prod")
-    public S3Presigner prodS3Presigner() {
+    public S3Presigner prodS3Presigner(AwsCredentialsProvider credentialsProvider) {
         return S3Presigner.builder()
                 .region(Region.of(region))
-                .credentialsProvider(DefaultCredentialsProvider.create())
+                .credentialsProvider(credentialsProvider)
                 .build();
     }
 }
