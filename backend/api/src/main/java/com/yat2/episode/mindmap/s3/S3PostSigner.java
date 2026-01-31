@@ -2,6 +2,7 @@ package com.yat2.episode.mindmap.s3;
 
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
@@ -19,7 +20,8 @@ import java.util.Map;
 @Component
 public class S3PostSigner {
     private static final String HMAC_ALGORITHM = "HmacSHA256";
-    private static final long MAX_FILE_SIZE = 10 * 1024 * 1024; // 10MB
+    @Value("${aws.s3.max-upload-size:10485760}")
+    private long maxUploadSize;// 10MB
 
     public Map<String, String> generatePostFields(String bucket, String key, String region,
                                                   String endpoint, AwsCredentials credentials) {
@@ -52,7 +54,7 @@ public class S3PostSigner {
                 key,
                 credential,
                 xAmzDate,
-                MAX_FILE_SIZE
+                maxUploadSize
         );
 
         String policyBase64 = Base64.getEncoder().encodeToString(policyJson.getBytes(StandardCharsets.UTF_8));
