@@ -3,12 +3,13 @@ package com.yat2.episode.question;
 import com.yat2.episode.job.Job;
 import com.yat2.episode.competency.CompetencyType;
 import jakarta.persistence.*;
+import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
+import lombok.NoArgsConstructor;
 
 @Getter
-@Setter
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "question")
 public class Question {
 
@@ -20,18 +21,11 @@ public class Question {
     @JoinColumn(name = "competency_type_id", nullable = false)
     private CompetencyType competencyType;
 
-    @ManyToOne(fetch = FetchType.LAZY, optional = false)
-    @JoinColumn(name = "job_id", nullable = false)
-    private Job job;
-
     @Column(name = "content", nullable = false, length = 200)
     private String content;
 
     @Column(name = "guidance_message", nullable = false, length = 200)
     private String guidanceMessage;
-
-    protected Question() {
-    }
 
     public Question(
             CompetencyType competencyType,
@@ -40,7 +34,6 @@ public class Question {
             String guidanceMessage
     ) {
         this.competencyType = competencyType;
-        this.job = job;
         this.content = content;
         this.guidanceMessage = guidanceMessage;
     }

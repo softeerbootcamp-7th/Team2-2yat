@@ -23,6 +23,7 @@ public enum ErrorCode {
 
     //Users
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
+    JOB_NOT_SELECTED(HttpStatus.BAD_REQUEST, "JOB_NOT_SELECTED", "직무가 선택되지 않았습니다."),
 
     //Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 요청입니다."),
