@@ -7,7 +7,7 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
     //Mindmap
     MINDMAP_NOT_FOUND(HttpStatus.NOT_FOUND, "MINDMAP_NOT_FOUND", "마인드맵을 찾을 수 없습니다."),
-    INVALID_MINDMAP_UUID(HttpStatus.BAD_REQUEST, "INVALID_MINDMAP_UUID", "알맞지 않은 uuid 입니다."),
+    INVALID_MINDMAP_UUID(HttpStatus.BAD_REQUEST, "INVALID_MINDMAP_UUID", "알맞지 않은 UUID 입니다."),
     MINDMAP_TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "MINDMAP_TITLE_REQUIRED", "팀 마인드맵 생성 시에는 title 입력이 필수 입니다."),
     S3_URL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S3_URL_FAIL", "스냅샷 업로드를 위한 URL 생성에 실패했습니다."),
 
@@ -23,6 +23,7 @@ public enum ErrorCode {
 
     //Users
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "USER_NOT_FOUND", "존재하지 않는 유저입니다."),
+    JOB_NOT_SELECTED(HttpStatus.BAD_REQUEST, "JOB_NOT_SELECTED", "직무가 선택되지 않았습니다."),
 
     //Common
     INVALID_REQUEST(HttpStatus.BAD_REQUEST, "INVALID_REQUEST", "잘못된 요청입니다."),
