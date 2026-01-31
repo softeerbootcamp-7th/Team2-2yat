@@ -37,7 +37,7 @@ public class UsersController {
             ),
     })
     @AuthRequiredErrors
-    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND,ErrorCode.INTERNAL_ERROR})
+    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR})
     public ResponseEntity<UserMeResponse> getMe(@RequestAttribute(USER_ID) long userId){
         return ResponseEntity.ok(usersService.getMe(userId));
     }
