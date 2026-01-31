@@ -1,5 +1,6 @@
 package com.yat2.episode.global.swagger;
 
+import com.yat2.episode.auth.security.Public;
 import com.yat2.episode.global.exception.ErrorCode;
 import io.swagger.v3.oas.models.media.Content;
 import io.swagger.v3.oas.models.responses.ApiResponse;
@@ -73,6 +74,22 @@ public class SwaggerConfig {
                 ApiResponse response = createApiResponse(status, examples);
                 operation.getResponses().addApiResponse(String.valueOf(status), response);
             });
+
+            return operation;
+        };
+    }
+
+    @Bean
+    public OperationCustomizer publicApiCustomizer() {
+        return (operation, handlerMethod) -> {
+
+            boolean isPublic =
+                    AnnotatedElementUtils.hasAnnotation(handlerMethod.getMethod(), Public.class)
+                            || AnnotatedElementUtils.hasAnnotation(handlerMethod.getBeanType(), Public.class);
+
+            if (isPublic) {
+                operation.setSecurity(Collections.emptyList());
+            }
 
             return operation;
         };
