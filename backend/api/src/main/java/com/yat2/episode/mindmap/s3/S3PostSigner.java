@@ -1,5 +1,7 @@
 package com.yat2.episode.mindmap.s3;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,15 +15,15 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.Map;
+import java.util.*;
 
 @Component
 public class S3PostSigner {
     private static final String HMAC_ALGORITHM = "HmacSHA256";
+    private static final ObjectMapper objectMapper = new ObjectMapper();
+
     @Value("${aws.s3.max-upload-size:10485760}")
-    private long maxUploadSize;// 10MB
+    private long maxUploadSize;
 
     public Map<String, String> generatePostFields(String bucket, String key, String region,
                                                   String endpoint, AwsCredentials credentials) {
@@ -36,26 +38,7 @@ public class S3PostSigner {
         String xAmzDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
         String credential = accessKey + "/" + dateStamp + "/" + region + "/s3/aws4_request";
 
-        String policyJson = String.format(
-                "{" +
-                        "  \"expiration\": \"%s\"," +
-                        "  \"conditions\": [" +
-                        "    {\"bucket\": \"%s\"}," +
-                        "    [\"starts-with\", \"$key\", \"%s\"]," +
-                        "    {\"x-amz-algorithm\": \"AWS4-HMAC-SHA256\"}," +
-                        "    {\"x-amz-credential\": \"%s\"}," +
-                        "    {\"x-amz-date\": \"%s\"}," +
-                        (sessionToken != null ? String.format("    {\"x-amz-security-token\": \"%s\"},", sessionToken) : "") + // ⭐️ 토큰 있으면 정책에도 추가
-                        "    [\"content-length-range\", 0, %d]" +
-                        "  ]" +
-                        "}",
-                now.plusMinutes(10).format(DateTimeFormatter.ISO_INSTANT),
-                bucket,
-                key,
-                credential,
-                xAmzDate,
-                maxUploadSize
-        );
+        String policyJson = createPolicyJson(bucket, key, credential, xAmzDate, sessionToken, now);
 
         String policyBase64 = Base64.getEncoder().encodeToString(policyJson.getBytes(StandardCharsets.UTF_8));
         String signature = calculateSignature(policyBase64, secretKey, dateStamp, region);
@@ -78,6 +61,32 @@ public class S3PostSigner {
         fields.put("x-amz-signature", signature);
 
         return fields;
+    }
+
+    private String createPolicyJson(String bucket, String key, String credential,
+                                    String xAmzDate, String sessionToken, ZonedDateTime now) {
+        try {
+            Map<String, Object> policy = new LinkedHashMap<>();
+            policy.put("expiration", now.plusMinutes(10).format(DateTimeFormatter.ISO_INSTANT));
+
+            List<Object> conditions = new ArrayList<>();
+            conditions.add(Map.of("bucket", bucket));
+            conditions.add(List.of("starts-with", "$key", key));
+            conditions.add(Map.of("x-amz-algorithm", "AWS4-HMAC-SHA256"));
+            conditions.add(Map.of("x-amz-credential", credential));
+            conditions.add(Map.of("x-amz-date", xAmzDate));
+
+            if (sessionToken != null) {
+                conditions.add(Map.of("x-amz-security-token", sessionToken));
+            }
+
+            conditions.add(List.of("content-length-range", 0, maxUploadSize));
+
+            policy.put("conditions", conditions);
+            return objectMapper.writeValueAsString(policy);
+        } catch (JsonProcessingException e) {
+            throw new CustomException(ErrorCode.S3_URL_FAIL);
+        }
     }
 
     private String calculateSignature(String stringToSign, String secret, String dateStamp, String region) {
