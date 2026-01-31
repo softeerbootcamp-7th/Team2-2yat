@@ -13,10 +13,10 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class MindmapService {
     private final MindmapRepository mindmapRepository;
@@ -29,6 +29,7 @@ public class MindmapService {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
     }
 
+    @Transactional(readOnly = true)
     public List<MindmapDataDto> getMindmaps(Long userId, MindmapController.MindmapVisibility type) {
         return switch (type) {
             case PRIVATE -> getMindmapsByShared(userId, false);
@@ -52,6 +53,7 @@ public class MindmapService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<MindmapIdentityDto> getMindmapList(Long userId) {
         return mindmapRepository.findByUserIdOrderByCreatedDesc(userId)
                 .stream()
@@ -79,9 +81,10 @@ public class MindmapService {
             return saved;
         });
         try {
-            String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + savedMindmap.getId());
-            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), presignedURL);
-        } catch (Exception e) {
+            Map<String, String> uploadInfo = snapshotRepository.createPresignedUploadInfo("maps/" + savedMindmap.getId());
+            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), uploadInfo);
+        }
+        catch (Exception e) {
             mindmapRepository.delete(savedMindmap);
             throw new CustomException(ErrorCode.S3_URL_FAIL);
         }
@@ -99,6 +102,8 @@ public class MindmapService {
         }
     }
 
+
+    @Transactional(readOnly = true)
     public Mindmap getMindmapByUUIDString(Long userId, String uuidStr) {
         UUID mindmapId = getUUID(uuidStr);
         return mindmapRepository.findByIdAndUserId(mindmapId, userId)
