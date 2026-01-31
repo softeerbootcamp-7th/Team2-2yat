@@ -20,6 +20,7 @@ public class WebConfig implements WebMvcConfigurer {
         configurer.addPathPrefix(
                 "/api",
                 HandlerTypePredicate.forBasePackage("com.yat2.episode")
+                        .and(HandlerTypePredicate.forAnnotation(RestController.class))
         );
     }
 
