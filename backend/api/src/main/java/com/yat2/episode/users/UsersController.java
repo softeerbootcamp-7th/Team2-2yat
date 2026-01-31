@@ -1,6 +1,8 @@
 package com.yat2.episode.users;
 
-import com.yat2.episode.global.exception.ErrorResponse;
+import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.global.swagger.ApiErrorCodes;
+import com.yat2.episode.global.swagger.AuthRequiredErrors;
 import com.yat2.episode.users.dto.UserMeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -33,10 +35,9 @@ public class UsersController {
                     description = "조회 성공",
                     content = @Content(schema = @Schema(implementation = UserMeResponse.class))
             ),
-            @ApiResponse(responseCode = "401", description = "인증 실패(토큰 없음/만료/유효하지 않음)", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
+    @AuthRequiredErrors
+    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR})
     public ResponseEntity<UserMeResponse> getMe(@RequestAttribute(USER_ID) long userId){
         return ResponseEntity.ok(usersService.getMe(userId));
     }
