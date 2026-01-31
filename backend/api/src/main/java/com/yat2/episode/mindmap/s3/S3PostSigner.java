@@ -27,12 +27,11 @@ public class S3PostSigner {
         String sessionToken = (credentials instanceof AwsSessionCredentials)
                 ? ((AwsSessionCredentials) credentials).sessionToken() : null;
 
-        ZonedDateTime now = ZonedDateTime.now();
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         String dateStamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String xAmzDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
         String credential = accessKey + "/" + dateStamp + "/" + region + "/s3/aws4_request";
 
-        // 1. 정책(Policy) 생성
         String policyJson = String.format(
                 "{" +
                         "  \"expiration\": \"%s\"," +
