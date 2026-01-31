@@ -1,5 +1,5 @@
 import { DefinedVariantProps } from "@/shared/types/safe_variant_props";
-import { nodeVariants } from "../components/node/Node";
+import { nodeVariants } from "@/features/mindmap/node/components/node/Node";
 
 export type NodeMode = "default" | "highlight" | "selected";
 
