@@ -152,4 +152,14 @@
     .shadow-violet-glow {
         box-shadow: 0 0 15px 0 var(--color-node-violet-op-30, --color-node-violet-op-30);
     }
+
+    .node-group:hover .action-buttons {
+        opacity: 1;
+        visibility: visible;
+    }
+    .action-buttons {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s;
+    }
 }

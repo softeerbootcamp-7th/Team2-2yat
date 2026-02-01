@@ -1,4 +1,4 @@
-import { NodeData, NodeElement, NodeId, NodeType } from "@/features/mindmap/types/mindmap_type";
+import { NodeData, NodeElement, NodeId, NodeType } from "@/features/mindmap/types/mindmapType";
 import { EventBroker } from "@/utils/eventBroker";
 import generateId from "@/utils/generateId";
 
@@ -46,6 +46,7 @@ export default class NodeContainer {
             this.nodeContainer.set(nodeId, { ...node });
         }
 
+        console.log(nodeId.slice(0, 4), node?.type);
         this.broker.publish(nodeId);
     }
 
@@ -371,7 +372,7 @@ export default class NodeContainer {
 
             const newNodeElement: NodeElement = { ...rest, ...newNodeData, id };
 
-            this.nodeContainer.set(id, newNodeElement);
+            this.addNodeToContainer(newNodeElement);
 
             this.notify(id);
         } catch (e) {

@@ -1,9 +1,8 @@
-// MindMapContext.tsx
 import { createContext, useContext, useRef } from "react";
 import { useCallback, useSyncExternalStore } from "react";
 
-import { NodeId } from "@/features/mindmap/types/mindmap_type";
-import NodeContainer from "@/features/mindmap/utils/node_container";
+import { NodeId } from "@/features/mindmap/types/mindmapType";
+import NodeContainer from "@/features/mindmap/utils/nodeContainer";
 import { EventBroker } from "@/utils/eventBroker";
 
 const MindMapContext = createContext<{
@@ -46,6 +45,7 @@ export const useNode = (nodeId: NodeId) => {
     const subscribe = useCallback(
         // onStoreChange = 상태가 바뀌면 이걸 호출해라. 리렌더링은 내가 하겟다(key바꾸는 거랑 비슷한 매커니즘인듯)
         (onStoreChange: () => void) => {
+            console.log("useNode", nodeId);
             return broker.subscribe({ key: nodeId, callback: onStoreChange });
         },
         [container, nodeId],
