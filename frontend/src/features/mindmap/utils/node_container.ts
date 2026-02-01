@@ -37,7 +37,8 @@ export default class NodeContainer {
     }
 
     /**
-     * event broker의 publisher 호출. 원래 한 몸이었으나 성격이 달라 broker로 분리함.
+     * 배치가 바뀌었을 때 rerendering trigger 하기 위해 사용한다.
+     * 안쓰면 UI 업데이트 안될 것.
      */
     private notify(nodeId: NodeId) {
         const node = this.nodeContainer.get(nodeId);
