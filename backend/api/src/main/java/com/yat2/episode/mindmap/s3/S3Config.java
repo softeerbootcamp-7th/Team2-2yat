@@ -19,7 +19,7 @@ public class S3Config {
     @Value("${aws.s3.region}")
     private String region;
 
-    @Value("${s3.endpoint:}")
+    @Value("${aws.s3.endpoint:}")
     private String endpoint;
     @Value("${aws.s3.access-key:}")
     private String accessKey;

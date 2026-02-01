@@ -1,0 +1,103 @@
+spring:
+  application:
+    name: episode
+
+  # ===============================
+  # Datasource (MySQL)
+  # ===============================
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      connection-timeout: 3000
+
+  # ===============================
+  # JPA / Hibernate
+  # ===============================
+  jpa:
+    hibernate:
+      ddl-auto: none
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        dialect: org.hibernate.dialect.MySQLDialect
+
+  # ===============================
+  # Flyway
+  # ===============================
+  flyway:
+    enabled: true
+    baseline-version: 1
+    baseline-description: init
+
+  web:
+    resources:
+      add-mappings: false
+
+server:
+  port: 8080
+
+# ===============================
+# Custom & Third-party Settings
+# ===============================
+kakao:
+  client-id: ${KAKAO_CLIENT_ID}
+  client-secret: ${KAKAO_CLIENT_SECRET}
+  redirect-uri: ${KAKAO_REDIRECT_URI}
+
+jwt:
+  secret: ${JWT_SECRET}
+  access-token-expiry: 300000 # 5 min
+  refresh-token-expiry: 2592000000 # 30 days
+
+cookie:
+  domain: ${COOKIE_DOMAIN}
+  secure: ${COOKIE_SECURE}
+  same-site: ${COOKIE_SAME_SITE}
+
+auth:
+  redirect:
+    local: http://localhost:5173
+    prod: https://episode.io.kr
+
+cors:
+  allowed-origins: >
+    http://localhost:3000,
+    http://localhost:5173,
+    http://localhost:5174,
+    http://localhost:5175,
+    http://localhost:5176,
+    http://localhost:5177,
+    http://localhost:5178,
+    http://localhost:5179,
+    https://episode.io.kr
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui
+
+aws:
+  s3:
+    region: ${S3_REGION}
+    bucket:
+      name: ${S3_BUCKET_NAME}
+    access-key: ${S3_ACCESS_KEY}
+    secret-key: ${S3_SECRET_KEY}
+    endpoint: ${S3_ENDPOINT}
+
+cloud:
+  aws:
+    stack:
+      auto: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
