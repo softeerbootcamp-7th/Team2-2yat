@@ -143,4 +143,9 @@ public class MindmapService {
         return sb.toString();
     }
 
+
+    @Transactional
+    public void deleteMindmap(long userId, String mindmapId){
+        //todo: 마인드맵 참여자 내역 삭제
+    }
 }

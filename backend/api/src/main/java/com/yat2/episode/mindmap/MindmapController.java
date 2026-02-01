@@ -151,9 +151,8 @@ public class MindmapController {
     }
 
     @DeleteMapping("/{mindmapId}")
-    public ResponseEntity<Object> deleteMindmap(@PathVariable String mindmapId) {
-        // todo: userId 가져오기
-        // todo: mindmap participant 테이블 반영
-        return ResponseEntity.ok(null);
+    public ResponseEntity<?> deleteMindmap(@RequestAttribute(USER_ID) long userId, @PathVariable String mindmapId) {
+        mindmapService.deleteMindmap(userId, mindmapId);
+        return ResponseEntity.noContent().build();
     }
 }
