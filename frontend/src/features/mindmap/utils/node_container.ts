@@ -1,5 +1,5 @@
 import { NodeData, NodeElement, NodeId, NodeType } from "@/features/mindmap/types/mindmap_type";
-import { EventBroker } from "@/utils/broker";
+import { EventBroker } from "@/utils/eventBroker";
 import generateId from "@/utils/generateId";
 
 type QuadTreeManager = never;
