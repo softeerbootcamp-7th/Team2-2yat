@@ -1,7 +1,7 @@
 import { cva } from "class-variance-authority";
 import { ComponentPropsWithoutRef, ReactNode, useState } from "react";
 
-import AddNode from "@/features/mindmap/node/add_node/AddNode";
+import AddNode from "@/features/mindmap/node/components/add_node/AddNode";
 import MenuNodeButton from "@/features/mindmap/node/components/menu_node/MenuNodeButton";
 import { NodeColor } from "@/features/mindmap/node/constants/colors";
 import { NodeMode } from "@/features/mindmap/node/types/node";
