@@ -1,10 +1,15 @@
 package com.yat2.episode.mindmap;
 
 import com.yat2.episode.auth.AuthService;
+import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.global.swagger.ApiErrorCodes;
+import com.yat2.episode.global.swagger.AuthRequiredErrors;
+import com.yat2.episode.job.dto.OccupationWithJobsResponse;
 import com.yat2.episode.mindmap.dto.*;
 import com.yat2.episode.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.media.ArraySchema;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -150,6 +155,24 @@ public class MindmapController {
         return ResponseEntity.ok(null);
     }
 
+    @Operation(
+            summary = "마인드맵 삭제",
+            description = """
+                    마인드맵을 삭제합니다.
+                    팀 마인드맵/개인 마인드맵 참여 목록에서 사용자를 삭제합니다.
+                    다른 참여자가 존재하는 경우, 마인드맵 자체 데이터는 유지되어
+                    다른 참여자에게 영향이 가지 않습니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "204",
+                    description = "삭제 성공",
+                    content = @Content
+            )
+    })
+    @AuthRequiredErrors
+    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR})
     @DeleteMapping("/{mindmapId}")
     public ResponseEntity<?> deleteMindmap(@RequestAttribute(USER_ID) long userId, @PathVariable String mindmapId) {
         mindmapService.deleteMindmap(userId, mindmapId);
