@@ -147,10 +147,11 @@ public class MindmapService {
     @Transactional
     public void deleteMindmap(long userId, String mindmapId){
         UUID mindmapUUID = getUUID(mindmapId);
-        MindmapParticipant participant = mindmapParticipantRepository.findByMindmapIdAndUserId(mindmapUUID, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND));
+        int deletedCount = mindmapParticipantRepository.deleteByMindmapIdAndUserId(mindmapUUID, userId);
 
-        mindmapParticipantRepository.delete(participant);
+        if (deletedCount == 0) {
+            throw new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
+        }
 
         boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
 
