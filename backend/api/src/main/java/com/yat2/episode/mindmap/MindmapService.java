@@ -152,7 +152,7 @@ public class MindmapService {
 
         mindmapParticipantRepository.delete(participant);
 
-        boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmapId(mindmapUUID);
+        boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
 
         if (!hasOtherParticipants) {
             mindmapRepository.deleteById(mindmapUUID);
