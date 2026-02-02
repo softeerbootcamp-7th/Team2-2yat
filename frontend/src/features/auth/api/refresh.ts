@@ -1,4 +1,5 @@
 import { AUTH_REFRESH_API } from "@/features/auth/api/api";
+import { post } from "@/shared/api/method";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
 
 let isRefreshing = false;
@@ -35,11 +36,9 @@ export function setRefreshState(refreshing: boolean, promise: Promise<boolean> |
 /**
  * 토큰 갱신 함수
  */
-import { post } from "@/shared/api/method";
-
 export async function refreshToken(): Promise<boolean> {
     try {
-        await post<void, {}>({ endpoint: AUTH_REFRESH_API });
+        await post<void, Record<string, never>>({ endpoint: AUTH_REFRESH_API });
         return true;
     } catch {
         return false;
