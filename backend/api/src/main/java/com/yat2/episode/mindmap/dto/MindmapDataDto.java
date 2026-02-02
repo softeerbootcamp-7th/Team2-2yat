@@ -1,17 +1,15 @@
 package com.yat2.episode.mindmap.dto;
 
-import com.yat2.episode.mindmap.Mindmap;
 import com.yat2.episode.mindmap.MindmapParticipant;
 
-import java.sql.Date;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 public record MindmapDataDto (
     UUID mindmapId,
     String mindmapName,
-    LocalDateTime createAt,
-    LocalDateTime updateAt,
+    LocalDateTime createdAt,
+    LocalDateTime updatedAt,
     boolean isFavorite
 ){
     public static MindmapDataDto of(MindmapParticipant mindmapParticipant) {
