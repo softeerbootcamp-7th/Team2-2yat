@@ -155,7 +155,7 @@ public class MindmapService {
         Mindmap mindmap = mindmapRepository.findByIdWithLock(mindmapUUID)
                 .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
 
-        int deletedCount = mindmapParticipantRepository.deleteByMindmapIdAndUserId(mindmapUUID, userId);
+        int deletedCount = mindmapParticipantRepository.deleteByMindmap_IdAndUser_KakaoId(mindmapUUID, userId);
         if (deletedCount == 0) throw new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
 
         boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
