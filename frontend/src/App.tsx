@@ -6,6 +6,7 @@ import HomePage from "@/features/home/pages/HomePage";
 import LandingPage from "@/features/landing/pages/LandingPage";
 import MindmapPage from "@/features/mindmap/pages/MindmapPage";
 import SelfDiagnosisPage from "@/features/self_diagnosis/pages/SelfDiagnosisPage";
+import LoginPage from "@/features/user/login/pages/LoginPages";
 import { ROUTE_PATHS } from "@/shared/utils/route";
 
 const router = createBrowserRouter([
@@ -30,6 +31,10 @@ const router = createBrowserRouter([
     {
         path: ROUTE_PATHS.landing,
         element: <LandingPage />,
+    },
+    {
+        path: ROUTE_PATHS.login,
+        element: <LoginPage />,
     },
 ]);
 
