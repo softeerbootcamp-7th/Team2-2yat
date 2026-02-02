@@ -2,7 +2,7 @@ package com.yat2.episode.episode;
 
 import com.yat2.episode.competency.CompetencyType;
 import com.yat2.episode.mindmap.Mindmap;
-import com.yat2.episode.users.Users;
+import com.yat2.episode.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -24,7 +24,7 @@ public class Episode {
     @MapsId("userId")
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "mindmap_id", nullable = false)

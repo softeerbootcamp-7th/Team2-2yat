@@ -13,7 +13,7 @@ type Props = {
  * size를 주면 정사각형 크기, width height를 주면 직사각형 크기로 렌더링합니다.
  */
 function Icon({
-    color = "currentColor",
+    color,
     size = 24,
     width = size,
     height = size,
@@ -25,7 +25,7 @@ function Icon({
 }: Props) {
     return (
         <svg
-            color={color}
+            color={color ? color : "none"}
             width={width ? width : size}
             height={height ? height : size}
             strokeWidth={strokeWidth}
@@ -87,6 +87,7 @@ export const ICON_NAMES = [
     "ic_x_circle",
     "ic_x",
     "ic_logo",
+    "ic_kakao_login",
 ] as const;
 
 export type IconName = (typeof ICON_NAMES)[number];

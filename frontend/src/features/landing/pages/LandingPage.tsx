@@ -1,5 +1,8 @@
+import { Link } from "react-router";
+
 import Button from "@/shared/components/button/Button";
 import GlobalNavigationBar from "@/shared/components/global_navigation_bar/GlobalNavigationBar";
+import { routeHelper } from "@/shared/utils/route";
 
 const LandingPage = () => {
     return (
@@ -9,12 +12,11 @@ const LandingPage = () => {
                     variant="transparent"
                     rightSlot={
                         <div className="flex flex-row gap-2">
-                            <Button size="xs" variant="quaternary_accent_outlined">
-                                로그인
-                            </Button>
-                            <Button size="xs" variant="primary">
-                                가입하기
-                            </Button>
+                            <Link to={routeHelper.login()}>
+                                <Button size="xs" variant="quaternary_accent_outlined">
+                                    로그인
+                                </Button>
+                            </Link>
                         </div>
                     }
                 />
