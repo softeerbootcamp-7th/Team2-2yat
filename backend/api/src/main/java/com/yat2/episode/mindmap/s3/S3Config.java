@@ -1,6 +1,6 @@
 package com.yat2.episode.mindmap.s3;
 
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -15,23 +15,16 @@ import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import java.net.URI;
 
 @Configuration
+@RequiredArgsConstructor
 public class S3Config {
 
-    @Value("${aws.s3.region}")
-    private String region;
-
-    @Value("${aws.s3.endpoint:}")
-    private String endpoint;
-    @Value("${aws.s3.access-key:}")
-    private String accessKey;
-    @Value("${aws.s3.secret-key:}")
-    private String secretKey;
+    private final S3Properties s3Properties;
 
     @Bean
     @Profile("local")
     public AwsCredentialsProvider localCredentialsProvider() {
         return StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(accessKey, secretKey)
+                AwsBasicCredentials.create(s3Properties.getAccessKey(), s3Properties.getSecretKey())
         );
     }
 
@@ -46,8 +39,8 @@ public class S3Config {
     @Profile("local")
     public S3Presigner localS3Presigner(AwsCredentialsProvider credentialsProvider) {
         return S3Presigner.builder()
-                .region(Region.of(region))
-                .endpointOverride(URI.create(endpoint))
+                .region(Region.of(s3Properties.getRegion()))
+                .endpointOverride(URI.create(s3Properties.getEndpoint()))
                 .credentialsProvider(credentialsProvider)
                 .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
                 .build();
@@ -57,7 +50,7 @@ public class S3Config {
     @Profile("prod")
     public S3Presigner prodS3Presigner(AwsCredentialsProvider credentialsProvider) {
         return S3Presigner.builder()
-                .region(Region.of(region))
+                .region(Region.of(s3Properties.getRegion()))
                 .credentialsProvider(credentialsProvider)
                 .build();
     }
