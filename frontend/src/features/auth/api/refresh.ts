@@ -1,8 +1,8 @@
-import { AUTH_API } from "@/features/auth/api/api";
+import { AUTH_ENDPOINT } from "@/features/auth/api/api";
 import { post } from "@/shared/api/method";
 import { ERROR_CODE_KEYS, ERROR_CODES, ERROR_META, ErrorCodeKey } from "@/shared/constants/error";
 
-export const AUTH_REFRESH_API = `${AUTH_API}/refresh`;
+export const AUTH_REFRESH_ENDPOINT = `${AUTH_ENDPOINT}/refresh`;
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
@@ -43,7 +43,7 @@ export function setRefreshState(refreshing: boolean, promise: Promise<boolean> |
  */
 export async function refreshToken(): Promise<boolean> {
     try {
-        await post<void, Record<string, never>>({ endpoint: AUTH_REFRESH_API });
+        await post<void, Record<string, never>>({ endpoint: AUTH_REFRESH_ENDPOINT });
         return true;
     } catch {
         return false;
