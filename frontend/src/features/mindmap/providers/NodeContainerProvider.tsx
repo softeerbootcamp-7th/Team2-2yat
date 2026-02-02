@@ -45,7 +45,6 @@ export const useNode = (nodeId: NodeId) => {
     const subscribe = useCallback(
         // onStoreChange = 상태가 바뀌면 이걸 호출해라. 리렌더링은 내가 하겟다(key바꾸는 거랑 비슷한 매커니즘인듯)
         (onStoreChange: () => void) => {
-            console.log("useNode", nodeId);
             return broker.subscribe({ key: nodeId, callback: onStoreChange });
         },
         [container, nodeId],

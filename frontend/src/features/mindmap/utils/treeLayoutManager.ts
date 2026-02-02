@@ -18,17 +18,23 @@ export default class TreeLayoutManager {
     }
     public layout(rootId: NodeId) {
         this.subtreeHeightMap.clear();
+
         this.calculateSubtreeHeight(rootId);
 
         const rootNode = this.nodeContainer.safeGetNode(rootId);
+
         if (!rootNode) return;
 
         // [수정] rootNode.y를 믿지 말고, 고정된 상수를 사용하세요.
+
         // 예: 캔버스 중앙이나 특정 시작점
+
         const FIXED_ROOT_X = 100;
+
         const FIXED_ROOT_Y = 300;
 
         // Root의 높이가 변하더라도, Root의 "중심"을 300에 고정
+
         const startY = FIXED_ROOT_Y - (this.subtreeHeightMap.get(rootId) || rootNode.height) / 2;
 
         this.assignCoordinates(rootId, FIXED_ROOT_X, startY);
