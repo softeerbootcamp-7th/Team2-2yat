@@ -1,4 +1,5 @@
-import { ApiError, toSafeApiError } from "@/features/auth/types/api";
+import { toSafeApiError } from "@/features/auth/api/error";
+import { ApiError } from "@/features/auth/types/api";
 import { User } from "@/features/auth/types/user";
 import { get } from "@/shared/api/method";
 
