@@ -147,4 +147,21 @@ public class MindmapService {
         return sb.toString();
     }
 
+
+    @Transactional
+    public void deleteMindmap(long userId, String mindmapId) {
+        UUID mindmapUUID = getUUID(mindmapId);
+
+        Mindmap mindmap = mindmapRepository.findByIdWithLock(mindmapUUID)
+                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
+
+        int deletedCount = mindmapParticipantRepository.deleteByMindmap_IdAndUser_KakaoId(mindmapUUID, userId);
+        if (deletedCount == 0) throw new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
+
+        boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
+
+        if (!hasOtherParticipants) {
+            mindmapRepository.delete(mindmap);
+        }
+    }
 }
