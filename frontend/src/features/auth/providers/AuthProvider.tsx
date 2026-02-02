@@ -1,7 +1,7 @@
-import { useState, useCallback, useEffect } from "react";
+import { useCallback, useEffect, useState } from "react";
 
-import type { User } from "@/features/auth/types/user.types";
 import { AuthContext } from "@/features/auth/contexts/AuthContext";
+import type { User } from "@/features/auth/types/user.types";
 import { get } from "@/shared/api/method";
 
 const USER_API = "/api/users";
@@ -33,7 +33,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             const me = await get<User>({ endpoint: USER_ME_API });
             setUser(me);
             setIsAuthenticated(true);
-        } catch (e) {
+        } catch {
             setUser(null);
             setIsAuthenticated(false);
         } finally {
