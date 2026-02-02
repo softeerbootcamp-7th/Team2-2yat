@@ -14,10 +14,6 @@ public class UsersService {
 
     private final UsersRepository usersRepository;
 
-    public List<Users> getAllUsers() {
-        return usersRepository.findAll();
-    }
-
     public UserMeResponse getMe(long userId) {
         Users user = usersRepository.findById(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
