@@ -2,39 +2,47 @@ package com.yat2.episode.mindmap.s3;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
+import software.amazon.awssdk.auth.credentials.AwsCredentials;
+import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 import software.amazon.awssdk.services.s3.presigner.S3Presigner;
 import software.amazon.awssdk.services.s3.presigner.model.PutObjectPresignRequest;
 import software.amazon.awssdk.services.s3.presigner.model.PresignedPutObjectRequest;
 
 import java.time.Duration;
+import java.util.Map;
 
 @Repository
 public class S3SnapshotRepository {
-
-    private final S3Presigner s3Presigner;
+    private final S3PostSigner s3PostSigner;
+    private final AwsCredentialsProvider credentialsProvider;
     private final String bucketName;
+    private final String region;
+    private final String endpoint;
 
-    public S3SnapshotRepository(S3Presigner s3Presigner,
-                                @Value("${aws.s3.bucket.name}") String bucketName) {
-        this.s3Presigner = s3Presigner;
+    public S3SnapshotRepository(
+            S3PostSigner s3PostSigner,
+            AwsCredentialsProvider credentialsProvider,
+            @Value("${aws.s3.bucket.name}") String bucketName,
+            @Value("${aws.s3.region}") String region,
+            @Value("${s3.endpoint:}") String endpoint
+    ) {
+        this.s3PostSigner = s3PostSigner;
+        this.credentialsProvider = credentialsProvider;
         this.bucketName = bucketName;
+        this.region = region;
+        this.endpoint = endpoint;
     }
 
-    public String createPresignedUploadUrl(String objectKey) {
-        PutObjectRequest objectRequest = PutObjectRequest.builder()
-                .bucket(bucketName)
-                .key(objectKey)
-                .contentType("application/octet-stream")
-                .build();
+    public Map<String, String> createPresignedUploadInfo(String objectKey) {
+        AwsCredentials credentials = credentialsProvider.resolveCredentials();
 
-        PutObjectPresignRequest presignRequest = PutObjectPresignRequest.builder()
-                .signatureDuration(Duration.ofMinutes(5))
-                .putObjectRequest(objectRequest)
-                .build();
-
-        PresignedPutObjectRequest presignedRequest = s3Presigner.presignPutObject(presignRequest);
-
-        return presignedRequest.url().toString();
+        return s3PostSigner.generatePostFields(
+                bucketName,
+                objectKey,
+                region,
+                endpoint,
+                credentials
+        );
     }
 }

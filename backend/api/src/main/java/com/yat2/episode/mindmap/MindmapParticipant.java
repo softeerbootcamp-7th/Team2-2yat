@@ -1,6 +1,6 @@
 package com.yat2.episode.mindmap;
 
-import com.yat2.episode.users.Users;
+import com.yat2.episode.user.User;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -22,7 +22,7 @@ public class MindmapParticipant {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
-    private Users user;
+    private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "mindmap_id", nullable = false)

@@ -5,29 +5,32 @@ import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.mindmap.dto.*;
 import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
-import com.yat2.episode.users.Users;
-import com.yat2.episode.users.UsersRepository;
+import com.yat2.episode.user.User;
+import com.yat2.episode.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @RequiredArgsConstructor
-@Transactional(readOnly = true)
 @Service
 public class MindmapService {
     private final MindmapRepository mindmapRepository;
     private final MindmapParticipantRepository mindmapParticipantRepository;
     private final UsersRepository usersRepository;
+    private final S3SnapshotRepository snapshotRepository;
     private final TransactionTemplate transactionTemplate;
+    private final UserService userService;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
     }
 
+    @Transactional(readOnly = true)
     public List<MindmapDataDto> getMindmaps(Long userId, MindmapController.MindmapVisibility type) {
         return switch (type) {
             case PRIVATE -> getMindmapsByShared(userId, false);
@@ -51,12 +54,14 @@ public class MindmapService {
     }
 
 
+    @Transactional(readOnly = true)
     public List<MindmapIdentityDto> getMindmapList(Long userId) {
         return mindmapRepository.findByUserIdOrderByCreatedDesc(userId)
                 .stream()
                 .map(MindmapIdentityDto::of)
                 .toList();
     }
+
 
     @Transactional
     public MindmapDataExceptDateDto saveMindmapAndParticipant(long userId, MindmapArgsReqDto body) {
@@ -67,20 +72,36 @@ public class MindmapService {
             if (body.isShared()) throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
             finalTitle = getPrivateMindmapName(user);
         }
+  
+  Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
+        mindmapRepository.save(mindmap);
 
+        MindmapParticipant participant = new MindmapParticipant(user, mindmap);
+        mindmapParticipantRepository.save(participant);
+  
+      return MindmapDataExceptDateDto.of(participant);
+    }
+
+    @Transactional
+    public void rollbackMindmap(UUID mindmapId) {
+        mindmapRepository.findById(mindmapId).ifPresent(mindmapRepository::delete);
+    }
+    public MindmapCreatedWithUrlDto createMindmap(Long userId, MindmapArgsReqDto body) {
+        User user = userService.getUserOrThrow(userId);
 
         Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
         mindmapRepository.save(mindmap);
 
         MindmapParticipant participant = new MindmapParticipant(user, mindmap);
         mindmapParticipantRepository.save(participant);
-
-        return MindmapDataExceptDateDto.of(participant);
-    }
-
-    @Transactional
-    public void rollbackMindmap(UUID mindmapId) {
-        mindmapRepository.findById(mindmapId).ifPresent(mindmapRepository::delete);
+        try {
+            Map<String, String> uploadInfo = snapshotRepository.createPresignedUploadInfo("maps/" + savedMindmap.getId());
+            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), uploadInfo);
+        }
+        catch (Exception e) {
+            mindmapRepository.delete(savedMindmap);
+            throw new CustomException(ErrorCode.S3_URL_FAIL);
+        }
     }
 
     //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
@@ -95,11 +116,12 @@ public class MindmapService {
         }
     }
 
+
     public MindmapParticipant getMindmapByUUIDString(Long userId, String uuidStr) {
         return findParticipantOrThrow(uuidStr, userId);
     }
 
-    private String getPrivateMindmapName(Users user) {
+    private String getPrivateMindmapName(User user) {
         String baseName = user.getNickname() + MindmapConstants.PRIVATE_NAME;
         List<String> allNames = mindmapRepository.findAllNamesByBaseName(baseName, user.getKakaoId());
 
@@ -139,18 +161,20 @@ public class MindmapService {
 
 
     @Transactional
-    public void deleteMindmap(long userId, String mindmapId){
+    public void deleteMindmap(long userId, String mindmapId) {
         UUID mindmapUUID = getUUID(mindmapId);
-        int deletedCount = mindmapParticipantRepository.deleteByMindmapIdAndUserId(mindmapUUID, userId);
 
-        if (deletedCount == 0) {
-            throw new CustomException(ErrorCode.MINDMAP_NOT_FOUND);
-        }
+
+        Mindmap mindmap = mindmapRepository.findByIdWithLock(mindmapUUID)
+                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
+
+        int deletedCount = mindmapParticipantRepository.deleteByMindmapIdAndUserId(mindmapUUID, userId);
+        if (deletedCount == 0) throw new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
 
         boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
 
         if (!hasOtherParticipants) {
-            mindmapRepository.deleteById(mindmapUUID);
+            mindmapRepository.delete(mindmap);
         }
     }
 
