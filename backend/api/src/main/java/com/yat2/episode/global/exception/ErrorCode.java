@@ -11,9 +11,6 @@ public enum ErrorCode {
     MINDMAP_TITLE_REQUIRED(HttpStatus.BAD_REQUEST, "MINDMAP_TITLE_REQUIRED", "팀 마인드맵 생성 시에는 title 입력이 필수 입니다."),
     S3_URL_FAIL(HttpStatus.INTERNAL_SERVER_ERROR, "S3_URL_FAIL", "스냅샷 업로드를 위한 URL 생성에 실패했습니다."),
 
-    //Mindmap Participant
-    MINDMAP_PARTICIPANT_NOT_FOUND(HttpStatus.NOT_FOUND, "MINDMAP_PARTICIPANT_NOT_FOUND", "해당 마인드맵에 사용자가 참여하고 있지 않습니다."),
-
     //Auth
     TOKEN_EXPIRED(HttpStatus.UNAUTHORIZED, "TOKEN_EXPIRED", "토큰이 만료되었습니다."),
     INVALID_TOKEN(HttpStatus.UNAUTHORIZED, "INVALID_TOKEN", "유효하지 않은 토큰입니다."),

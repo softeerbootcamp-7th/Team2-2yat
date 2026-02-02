@@ -100,7 +100,7 @@ public class MindmapService {
     }
 
     public MindmapParticipant getMindmapByUUIDString(Long userId, String uuidStr) {
-        return findParticipantOrThrow(uuidStr, userId, ErrorCode.MINDMAP_NOT_FOUND);
+        return findParticipantOrThrow(uuidStr, userId);
     }
 
     private String getPrivateMindmapName(Users user) {
@@ -148,7 +148,7 @@ public class MindmapService {
         int deletedCount = mindmapParticipantRepository.deleteByMindmapIdAndUserId(mindmapUUID, userId);
 
         if (deletedCount == 0) {
-            throw new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
+            throw new CustomException(ErrorCode.MINDMAP_NOT_FOUND);
         }
 
         boolean hasOtherParticipants = mindmapParticipantRepository.existsByMindmap_Id(mindmapUUID);
@@ -160,15 +160,15 @@ public class MindmapService {
 
     @Transactional
     public MindmapDataDto updateFavoriteStatus(long userId, String mindmapId, boolean status) {
-        MindmapParticipant participant = findParticipantOrThrow(mindmapId, userId, ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
+        MindmapParticipant participant = findParticipantOrThrow(mindmapId, userId);
         participant.updateFavorite(status);
 
         return MindmapDataDto.of(participant);
     }
 
-    private MindmapParticipant findParticipantOrThrow(String mindmapId, long userId, ErrorCode errorCode) {
+    private MindmapParticipant findParticipantOrThrow(String mindmapId, long userId) {
         return mindmapParticipantRepository
                 .findByMindmapIdAndUserId(getUUID(mindmapId), userId)
-                .orElseThrow(() -> new CustomException(errorCode));
+                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
     }
 }
