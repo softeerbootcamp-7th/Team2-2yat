@@ -59,9 +59,7 @@ cookie:
   same-site: ${COOKIE_SAME_SITE}
 
 auth:
-  redirect:
-    local: http://localhost:5173
-    prod: https://episode.io.kr
+  redirect: ${AFTER_AUTH_REDIRECT_URI}
 
 cors:
   allowed-origins: >
