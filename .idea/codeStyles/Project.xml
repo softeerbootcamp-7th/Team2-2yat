@@ -3,6 +3,8 @@
     <JavaCodeStyleSettings>
       <option name="PRESERVE_MODULE_IMPORTS" value="false" />
       <option name="DELETE_UNUSED_MODULE_IMPORTS" value="true" />
+      <option name="CLASS_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99999" />
+      <option name="NAMES_COUNT_TO_USE_IMPORT_ON_DEMAND" value="99999" />
       <option name="IMPORT_LAYOUT_TABLE">
         <value>
           <package name="" withSubpackages="true" static="false" module="true" />
