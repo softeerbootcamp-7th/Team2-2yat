@@ -1,9 +1,5 @@
 export type ErrorCodeKey = keyof typeof ERROR_CODES;
 
-export function isErrorCodeKey(code: string): code is ErrorCodeKey {
-    return Object.prototype.hasOwnProperty.call(ERROR_CODES, code);
-}
-
 export const ERROR_CODES = {
     // Mindmap
     MINDMAP_NOT_FOUND: "마인드맵을 찾을 수 없습니다.",
@@ -29,6 +25,9 @@ export const ERROR_CODES = {
     INTERNAL_ERROR: "서버 오류가 발생했습니다.",
     NOT_FOUND: "존재하지 않는 API 입니다.",
     METHOD_NOT_ALLOWED: "지원하지 않는 HTTP 메서드입니다.",
+
+    // unknown
+    UNKNOWN_ERROR: "알 수 없는 오류가 발생했습니다.",
 } as const;
 
 export const ERROR_META = {
@@ -37,3 +36,8 @@ export const ERROR_META = {
         defaultMessage: "토큰 갱신에 실패했습니다.",
     },
 } as const;
+
+export const ERROR_CODE_KEYS = Object.entries(ERROR_CODES).reduce(
+    (acc, [key]) => ({ ...acc, [key]: key }),
+    {} as Record<ErrorCodeKey, ErrorCodeKey>,
+);

@@ -1,4 +1,5 @@
 import { ApiError } from "@/features/auth/types/api";
+import { ERROR_CODE_KEYS, ERROR_CODES } from "@/shared/constants/error";
 
 /**
  * ApiError 타입 가드
@@ -16,7 +17,7 @@ export function toSafeApiError(error: unknown): ApiError {
     }
     return {
         status: 500,
-        code: "UNKNOWN_ERROR",
-        message: error instanceof Error ? error.message : "알 수 없는 오류가 발생했습니다.",
+        code: ERROR_CODE_KEYS.UNKNOWN_ERROR,
+        message: error instanceof Error ? ERROR_CODES.UNKNOWN_ERROR : "알 수 없는 오류가 발생했습니다.",
     };
 }

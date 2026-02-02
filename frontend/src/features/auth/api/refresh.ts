@@ -1,6 +1,6 @@
 import { AUTH_API } from "@/features/auth/api/api";
 import { post } from "@/shared/api/method";
-import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
+import { ERROR_CODE_KEYS, ERROR_CODES, ERROR_META, ErrorCodeKey } from "@/shared/constants/error";
 
 export const AUTH_REFRESH_API = `${AUTH_API}/refresh`;
 
@@ -12,14 +12,15 @@ let refreshPromise: Promise<boolean> | null = null;
  *  해당 에러 발생 시 상위 컴포넌트에서 훅으로 로그인 페이지로 리다이렉트 처리
  */
 export class TokenRefreshError extends Error {
-    constructor(code: string = ERROR_CODES.TOKEN_EXPIRED) {
-        const message = isErrorCodeKey(code) ? ERROR_CODES[code] : ERROR_META.TOKEN_REFRESH_ERROR.defaultMessage;
+    code: ErrorCodeKey;
+
+    constructor(code: ErrorCodeKey = ERROR_CODE_KEYS.TOKEN_EXPIRED) {
+        const message = ERROR_CODES[code];
 
         super(message);
         this.name = ERROR_META.TOKEN_REFRESH_ERROR.name;
         this.code = code;
     }
-    code: string;
 }
 
 /**
