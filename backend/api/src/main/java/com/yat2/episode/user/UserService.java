@@ -22,6 +22,12 @@ public class UserService {
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
+    @Transactional
+    public User getOrCreateKakaoUser(long kakaoId, String nickname) {
+        return userRepository.findById(kakaoId)
+                .orElseGet(() -> userRepository.save(User.newUser(kakaoId, nickname)));
+    }
+
     @Transactional(readOnly = true)
     public UserMeResponse getMe(long userId) {
         User user = getUserOrThrow(userId);

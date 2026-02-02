@@ -40,7 +40,7 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new CustomException(ErrorCode.INVALID_TOKEN));
     }
 
-   @Transactional
+    @Transactional
     public void deleteByRefreshToken(String refreshToken) {
         if (refreshToken == null || refreshToken.isBlank()) return;
 
