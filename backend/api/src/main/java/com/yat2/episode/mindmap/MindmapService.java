@@ -25,6 +25,7 @@ public class MindmapService {
     private final UserRepository userRepository;
     private final S3SnapshotRepository snapshotRepository;
     private final TransactionTemplate transactionTemplate;
+    private final UserService userService;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
@@ -65,8 +66,7 @@ public class MindmapService {
 
     @Transactional
     public MindmapDataExceptDateDto saveMindmapAndParticipant(long userId, MindmapArgsReqDto body) {
-        User user = (User) userRepository.findByKakaoId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userService.getUserOrThrow(userId);
         String finalTitle = body.title();
         if (finalTitle == null || finalTitle.isBlank()) {
             if (body.isShared()) throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
