@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 import { logout as logoutApi } from "@/features/auth/api/auth";
 import { AuthContext } from "@/features/auth/hooks/useAuth";
@@ -13,46 +13,38 @@ type AuthProviderProps = {
 };
 
 export function AuthProvider({ children }: AuthProviderProps) {
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const [user, setUser] = useState<User | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const queryClient = useQueryClient();
 
-    const login = async (user: User) => {
-        setUser(user);
-        setIsAuthenticated(true);
+    const { data: user, isLoading } = useQuery({
+        queryKey: ["auth", "user"],
+        queryFn: async () => get<User>({ endpoint: USER_ME_ENDPOINT }),
+        staleTime: 1000 * 60 * 5,
+    });
+
+    const login = async (newUser: User): Promise<void> => {
+        queryClient.setQueryData(["auth", "user"], newUser);
     };
 
-    const logout = async () => {
-        try {
-            await logoutApi();
-        } finally {
-            setUser(null);
-            setIsAuthenticated(false);
-        }
-    };
+    const logoutMutation = useMutation({
+        mutationFn: async () => logoutApi(),
+        onSuccess: () => {
+            queryClient.removeQueries({ queryKey: ["auth", "user"] });
+        },
+    });
 
-    // checkAuth: 내 정보 API 호출로 인증 상태 확인
-    const checkAuth = useCallback(async () => {
-        setIsLoading(true);
-        try {
-            const me = await get<User>({ endpoint: USER_ME_ENDPOINT });
-            setUser(me);
-            setIsAuthenticated(true);
-        } catch {
-            setUser(null);
-            setIsAuthenticated(false);
-        } finally {
-            setIsLoading(false);
-        }
-    }, []);
-
-    // 마운트 시 자동으로 checkAuth 호출
-    useEffect(() => {
-        checkAuth();
-    }, [checkAuth]);
+    const isAuthenticated = !!user && !logoutMutation.isPending;
 
     return (
-        <AuthContext.Provider value={{ isAuthenticated, user, isLoading, login, logout, checkAuth }}>
+        <AuthContext.Provider
+            value={{
+                isAuthenticated,
+                user: user || null,
+                isLoading,
+                login,
+                logout: logoutMutation.mutateAsync,
+                checkAuth: () => queryClient.refetchQueries({ queryKey: ["auth", "user"] }),
+            }}
+        >
             {children}
         </AuthContext.Provider>
     );

@@ -1,3 +1,4 @@
+import { ApiError } from "@/features/auth/types/api";
 import { User } from "@/features/auth/types/user";
 
 /**
@@ -15,6 +16,6 @@ export type AuthState = {
  */
 export interface AuthContextValue extends AuthState {
     login: (user: User) => Promise<void>;
-    logout: () => Promise<void>;
+    logout: () => Promise<void | ApiError>;
     checkAuth: () => Promise<void>;
 }
