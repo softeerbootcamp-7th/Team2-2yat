@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from "react";
 
 import { logout as logoutApi } from "@/features/auth/api/auth";
-import { AuthContext } from "@/features/auth/contexts/AuthContext";
+import { AuthContext } from "@/features/auth/hooks/useAuth";
 import type { User } from "@/features/auth/types/user";
 import { get } from "@/shared/api/method";
 
