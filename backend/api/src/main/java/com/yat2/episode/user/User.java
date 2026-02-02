@@ -1,4 +1,4 @@
-package com.yat2.episode.users;
+package com.yat2.episode.user;
 
 import com.yat2.episode.job.Job;
 import jakarta.persistence.*;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "users")
-public class Users {
+public class User {
 
     @Id
     @Column(name = "kakao_id")
@@ -26,8 +26,8 @@ public class Users {
     @Column(name = "has_watched_feature_guide", nullable = false)
     private Boolean hasWatchedFeatureGuide;
 
-    public static Users newUser(Long kakaoId, String nickname) {
-        Users u = new Users();
+    public static User newUser(Long kakaoId, String nickname) {
+        User u = new User();
         u.kakaoId = kakaoId;
         u.nickname = nickname;
         u.hasWatchedFeatureGuide = false;

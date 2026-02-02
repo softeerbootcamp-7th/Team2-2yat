@@ -1,9 +1,9 @@
-package com.yat2.episode.users;
+package com.yat2.episode.user;
 
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
-import com.yat2.episode.users.dto.UserMeResponse;
+import com.yat2.episode.user.dto.UserMeResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -22,8 +22,8 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 @RequiredArgsConstructor
 @RequestMapping("/users")
 @Tag(name = "Users", description = "유저 관련 API")
-public class UsersController {
-    private final UsersService usersService;
+public class UserController {
+    private final UserService userService;
 
     @GetMapping("/me")
     @Operation(
@@ -40,7 +40,7 @@ public class UsersController {
     @AuthRequiredErrors
     @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR})
     public UserMeResponse getMe(@RequestAttribute(USER_ID) long userId){
-        return usersService.getMe(userId);
+        return userService.getMe(userId);
     }
 
     @Operation(
@@ -58,7 +58,7 @@ public class UsersController {
             @RequestAttribute(USER_ID) long userId,
             @RequestParam @NotNull @Positive Integer jobId
     ) {
-        usersService.updateJob(userId, jobId);
+        userService.updateJob(userId, jobId);
     }
 
     @Operation(
@@ -73,6 +73,6 @@ public class UsersController {
     @PatchMapping("/me/feature-guide")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void markFeatureGuideWatched(@RequestAttribute(USER_ID) long userId) {
-        usersService.markFeatureGuideWatched(userId);
+        userService.markFeatureGuideWatched(userId);
     }
 }

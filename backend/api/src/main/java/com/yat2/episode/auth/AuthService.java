@@ -7,8 +7,8 @@ import com.yat2.episode.auth.refresh.RefreshTokenService;
 import com.yat2.episode.auth.jwt.JwtProvider;
 import com.yat2.episode.auth.oauth.KakaoIdTokenVerifier;
 import com.yat2.episode.auth.oauth.KakaoOAuthClient;
-import com.yat2.episode.users.Users;
-import com.yat2.episode.users.UsersRepository;
+import com.yat2.episode.user.User;
+import com.yat2.episode.user.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,7 +21,7 @@ public class AuthService {
 
     private final KakaoOAuthClient kakaoOAuthClient;
     private final KakaoIdTokenVerifier kakaoIdTokenVerifier;
-    private final UsersRepository usersRepository;
+    private final UserRepository userRepository;
     private final JwtProvider jwtProvider;
     private final RefreshTokenService refreshTokenService;
 
@@ -35,8 +35,8 @@ public class AuthService {
         String nickname = Optional.ofNullable((String) claims.getClaim("nickname"))
                 .orElse("USER_" + kakaoUserId);
 
-        Users user = usersRepository.findByKakaoId(kakaoUserId)
-                .orElseGet(() -> usersRepository.save(Users.newUser(kakaoUserId, nickname)));
+        User user = userRepository.findById(kakaoUserId)
+                .orElseGet(() -> userRepository.save(User.newUser(kakaoUserId, nickname)));
 
         if (!nickname.equals(user.getNickname())) {
             user.changeNickname(nickname);
