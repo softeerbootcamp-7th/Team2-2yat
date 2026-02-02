@@ -38,14 +38,14 @@ public class MindmapService {
     }
 
     private List<MindmapDataDto> getMindmapsByShared(Long userId, boolean shared) {
-        return mindmapRepository.findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(userId, shared)
+        return mindmapParticipantRepository.findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(userId, shared)
                 .stream()
                 .map(MindmapDataDto::of)
                 .toList();
     }
 
     private List<MindmapDataDto> getAllMindmap(Long userId) {
-        return mindmapRepository.findByUserIdOrderByFavoriteAndUpdatedDesc(userId)
+        return mindmapParticipantRepository.findByUserIdOrderByFavoriteAndUpdatedDesc(userId)
                 .stream()
                 .map(MindmapDataDto::of)
                 .toList();
@@ -63,7 +63,7 @@ public class MindmapService {
         Users user = usersRepository.findByKakaoId(userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
 
-        Mindmap savedMindmap = transactionTemplate.execute(status -> {
+        MindmapParticipant mindmapParticipant = transactionTemplate.execute(status -> {
             String finalTitle = body.title();
             if (finalTitle == null || finalTitle.isBlank()) {
                 if (body.isShared()) throw new CustomException(ErrorCode.MINDMAP_TITLE_REQUIRED);
@@ -76,13 +76,13 @@ public class MindmapService {
             MindmapParticipant participant = new MindmapParticipant(user, saved);
             mindmapParticipantRepository.save(participant);
 
-            return saved;
+            return participant;
         });
         try {
-            String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + savedMindmap.getId());
-            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(savedMindmap), presignedURL);
+            String presignedURL = snapshotRepository.createPresignedUploadUrl("maps/" + mindmapParticipant.getMindmap().getId());
+            return new MindmapCreatedWithUrlDto(MindmapDataExceptDateDto.of(mindmapParticipant), presignedURL);
         } catch (Exception e) {
-            mindmapRepository.delete(savedMindmap);
+            mindmapRepository.delete(mindmapParticipant.getMindmap());
             throw new CustomException(ErrorCode.S3_URL_FAIL);
         }
     }
@@ -99,9 +99,9 @@ public class MindmapService {
         }
     }
 
-    public Mindmap getMindmapByUUIDString(Long userId, String uuidStr) {
+    public MindmapParticipant getMindmapByUUIDString(Long userId, String uuidStr) {
         UUID mindmapId = getUUID(uuidStr);
-        return mindmapRepository.findByIdAndUserId(mindmapId, userId)
+        return mindmapParticipantRepository.findByIdAndUserId(mindmapId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
     }
 

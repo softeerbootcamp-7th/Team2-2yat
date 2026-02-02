@@ -1,6 +1,7 @@
 package com.yat2.episode.mindmap.dto;
 
 import com.yat2.episode.mindmap.Mindmap;
+import com.yat2.episode.mindmap.MindmapParticipant;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -10,11 +11,11 @@ public record MindmapDataExceptDateDto (
         String mindmapName,
         boolean isFavorite
 ){
-    public static MindmapDataExceptDateDto of(Mindmap mindmap) {
+    public static MindmapDataExceptDateDto of(MindmapParticipant mindmapParticipant) {
         return new MindmapDataExceptDateDto(
-                mindmap.getId(),
-                mindmap.getName(),
-                mindmap.isFavorite()
+                mindmapParticipant.getMindmap().getId(),
+                mindmapParticipant.getMindmap().getName(),
+                mindmapParticipant.isFavorite()
         );
     }
 }

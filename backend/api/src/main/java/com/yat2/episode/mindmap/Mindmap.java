@@ -29,9 +29,6 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
-    @Column(name = "is_favorite", insertable = false)
-    private boolean isFavorite;
-
     public Mindmap(String name, boolean shared) {
         this.name = name;
         this.shared = shared;

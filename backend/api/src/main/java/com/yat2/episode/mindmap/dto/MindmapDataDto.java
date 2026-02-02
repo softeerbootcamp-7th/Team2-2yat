@@ -1,6 +1,7 @@
 package com.yat2.episode.mindmap.dto;
 
 import com.yat2.episode.mindmap.Mindmap;
+import com.yat2.episode.mindmap.MindmapParticipant;
 
 import java.sql.Date;
 import java.time.LocalDateTime;
@@ -13,13 +14,13 @@ public record MindmapDataDto (
     LocalDateTime updateAt,
     boolean isFavorite
 ){
-    public static MindmapDataDto of(Mindmap mindmap) {
+    public static MindmapDataDto of(MindmapParticipant mindmapParticipant) {
         return new MindmapDataDto(
-                mindmap.getId(),
-                mindmap.getName(),
-                mindmap.getCreatedAt(),
-                mindmap.getUpdatedAt(),
-                mindmap.isFavorite()
+                mindmapParticipant.getMindmap().getId(),
+                mindmapParticipant.getMindmap().getName(),
+                mindmapParticipant.getMindmap().getCreatedAt(),
+                mindmapParticipant.getMindmap().getUpdatedAt(),
+                mindmapParticipant.isFavorite()
         );
     }
 }
