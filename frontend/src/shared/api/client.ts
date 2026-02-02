@@ -49,8 +49,9 @@ export async function fetchWithAuth<T>(endpoint: string, options: FetchOptions =
 
     if (!response.ok) {
         const error: ApiError = await response.json().catch(() => ({
-            error: "Unknown error",
-            message: `HTTP ${response.status}`,
+            status: response.status,
+            code: "UNKNOWN_ERROR",
+            message: `HTTP ${response.status}: ${response.statusText}`,
         }));
         throw new Error(error.message || `HTTP ${response.status}`);
     }
