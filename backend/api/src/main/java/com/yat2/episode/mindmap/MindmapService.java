@@ -100,9 +100,7 @@ public class MindmapService {
     }
 
     public MindmapParticipant getMindmapByUUIDString(Long userId, String uuidStr) {
-        UUID mindmapId = getUUID(uuidStr);
-        return mindmapParticipantRepository.findByMindmapIdAndUserId(mindmapId, userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
+        return findParticipantOrThrow(uuidStr, userId, ErrorCode.MINDMAP_NOT_FOUND);
     }
 
     private String getPrivateMindmapName(Users user) {
@@ -162,12 +160,15 @@ public class MindmapService {
 
     @Transactional
     public MindmapDataDto updateFavoriteStatus(long userId, String mindmapId, boolean status) {
-        MindmapParticipant participant = mindmapParticipantRepository
-                .findByMindmapIdAndUserId(getUUID(mindmapId), userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND));
-
+        MindmapParticipant participant = findParticipantOrThrow(mindmapId, userId, ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND);
         participant.updateFavorite(status);
 
         return MindmapDataDto.of(participant);
+    }
+
+    private MindmapParticipant findParticipantOrThrow(String mindmapId, long userId, ErrorCode errorCode) {
+        return mindmapParticipantRepository
+                .findByMindmapIdAndUserId(getUUID(mindmapId), userId)
+                .orElseThrow(() -> new CustomException(errorCode));
     }
 }
