@@ -2,8 +2,6 @@ package com.yat2.episode.question;
 
 
 import com.yat2.episode.job.Job;
-import com.yat2.episode.mindmap.Mindmap;
-import com.yat2.episode.users.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
