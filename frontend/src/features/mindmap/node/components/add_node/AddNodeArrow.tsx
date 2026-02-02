@@ -1,23 +1,24 @@
 import { ComponentPropsWithoutRef } from "react";
 
 import { COLOR_CLASS_MAP, NodeColor } from "@/features/mindmap/node/constants/colors";
-import { cn } from "@/utils/cn";
 import Icon from "@/shared/components/icon/Icon";
+import { cn } from "@/utils/cn";
 
 type DirectionVariantProps = {
     direction: "left" | "right";
 };
 
-type Props = Omit<ComponentPropsWithoutRef<"button">, "color"> & DirectionVariantProps & {
-    color: NodeColor;
-};
+type Props = Omit<ComponentPropsWithoutRef<"button">, "color"> &
+    DirectionVariantProps & {
+        color: NodeColor;
+    };
 
 const DIRECTION_ROTATE_MAP: Record<DirectionVariantProps["direction"], number> = {
     left: 310,
     right: 135,
 };
 
-export default function AddNodeArrow({ color, direction, className }: Props) {
+export default function AddNodeArrow({ color, direction }: Props) {
     const handleAddNode = () => {
         // TODO: menu 컴포넌트 생성
     };

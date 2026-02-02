@@ -1,10 +1,10 @@
 package com.yat2.episode.auth;
 
+import com.yat2.episode.auth.cookie.AuthCookieFactory;
 import com.yat2.episode.auth.jwt.IssuedTokens;
 import com.yat2.episode.auth.oauth.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
 import com.yat2.episode.auth.refresh.RefreshTokenService;
-import com.yat2.episode.auth.cookie.AuthCookieFactory;
 import com.yat2.episode.auth.security.Public;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
@@ -15,7 +15,6 @@ import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +34,7 @@ public class AuthController {
 
     @Value("${auth.redirect}")
     private String oauthRedirect;
+
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
@@ -49,25 +49,30 @@ public class AuthController {
             @ApiResponse(responseCode = "302", description = "카카오 인가 페이지로 Redirect")
     })
     @ApiErrorCodes(ErrorCode.INTERNAL_ERROR)
-    public ResponseEntity<Void> loginWithKakao(HttpSession session, HttpServletRequest request) {
-        String clientId = kakaoProperties.getClientId();
-        String redirectUri = kakaoProperties.getRedirectUri();
-        String authUrl = kakaoProperties.authUrl();
+    public ResponseEntity<Void> loginWithKakao(HttpSession session) {
+        try {
+            String clientId = kakaoProperties.getClientId();
+            String redirectUri = kakaoProperties.getRedirectUri();
+            String authUrl = kakaoProperties.authUrl();
 
-        String state = OAuthUtil.generateState();
-        session.setAttribute(SESSION_STATE, state);
+            String state = OAuthUtil.generateState();
+            session.setAttribute(SESSION_STATE, state);
 
-        String redirect = UriComponentsBuilder.fromUriString(authUrl)
-                .queryParam("response_type", "code")
-                .queryParam("client_id", clientId)
-                .queryParam("redirect_uri", redirectUri)
-                .queryParam("state", state)
-                .build()
-                .toUriString();
+            String redirect = UriComponentsBuilder.fromUriString(authUrl)
+                    .queryParam("response_type", "code")
+                    .queryParam("client_id", clientId)
+                    .queryParam("redirect_uri", redirectUri)
+                    .queryParam("state", state)
+                    .build()
+                    .toUriString();
 
-        return ResponseEntity.status(302)
-                .header(HttpHeaders.LOCATION, redirect)
-                .build();
+            return ResponseEntity.status(302)
+                    .header(HttpHeaders.LOCATION, redirect)
+                    .build();
+        } catch (Exception e) {
+            safeInvalidate(session);
+            return redirectToFrontWithError(ErrorCode.INTERNAL_ERROR);
+        }
     }
 
     @GetMapping("/callback")
@@ -81,30 +86,37 @@ public class AuthController {
     @ApiErrorCodes({
             ErrorCode.INVALID_OAUTH_STATE,
             ErrorCode.INVALID_OAUTH_ID_TOKEN,
-            ErrorCode.INTERNAL_ERROR})
+            ErrorCode.INTERNAL_ERROR
+    })
     public ResponseEntity<Void> kakaoCallback(
             HttpSession session,
             @RequestParam("code") String code,
             @RequestParam("state") String state
     ) {
-        String sessionState = (String) session.getAttribute(SESSION_STATE);
+        try {
+            String sessionState = (String) session.getAttribute(SESSION_STATE);
+            if (sessionState == null || !sessionState.equals(state)) {
+                throw new CustomException(ErrorCode.INVALID_OAUTH_STATE);
+            }
 
-        if (sessionState == null || !sessionState.equals(state)) {
-            throw new CustomException(ErrorCode.INVALID_OAUTH_STATE);
+            IssuedTokens tokens = authService.handleKakaoCallback(code);
+
+            ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
+            ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
+
+            return ResponseEntity.status(302)
+                    .header(HttpHeaders.LOCATION, oauthRedirect)
+                    .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
+                    .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
+                    .build();
+
+        } catch (CustomException e) {
+            return redirectToFrontWithError(e.getErrorCode());
+        } catch (Exception e) {
+            return redirectToFrontWithError(ErrorCode.INTERNAL_ERROR);
+        } finally {
+            safeInvalidate(session);
         }
-
-        session.invalidate();
-
-        IssuedTokens tokens = authService.handleKakaoCallback(code);
-
-        ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
-        ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
-
-        return ResponseEntity.status(302)
-                .header(HttpHeaders.LOCATION, oauthRedirect)
-                .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
-                .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
-                .build();
     }
 
     @PostMapping("/refresh")
@@ -162,5 +174,22 @@ public class AuthController {
                 .header(HttpHeaders.SET_COOKIE, expiredAccess.toString())
                 .header(HttpHeaders.SET_COOKIE, expiredRefresh.toString())
                 .build();
+    }
+
+    private ResponseEntity<Void> redirectToFrontWithError(ErrorCode errorCode) {
+        String redirect = UriComponentsBuilder.fromUriString(oauthRedirect)
+                .queryParam("error_code", errorCode.getCode())
+                .build()
+                .toUriString();
+
+        return ResponseEntity.status(302)
+                .header(HttpHeaders.LOCATION, redirect)
+                .build();
+    }
+
+    private void safeInvalidate(HttpSession session) {
+        try {
+            session.invalidate();
+        } catch (Exception ignored) {}
     }
 }

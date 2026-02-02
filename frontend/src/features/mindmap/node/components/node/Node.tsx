@@ -6,8 +6,8 @@ import MenuNodeButton from "@/features/mindmap/node/components/menu_node/MenuNod
 import { NodeColor } from "@/features/mindmap/node/constants/colors";
 import { NodeMode } from "@/features/mindmap/node/types/node";
 import { colorBySize, shadowClass } from "@/features/mindmap/node/utils/style";
-import { cn } from "@/utils/cn";
 import { NonNullableVariantProps } from "@/shared/types/safe_variant_props";
+import { cn } from "@/utils/cn";
 
 type Props = ComponentPropsWithoutRef<"div"> & {
     children?: ReactNode;

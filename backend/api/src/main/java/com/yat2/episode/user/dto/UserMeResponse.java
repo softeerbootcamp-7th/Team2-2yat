@@ -1,4 +1,4 @@
-package com.yat2.episode.users.dto;
+package com.yat2.episode.user.dto;
 
 public record UserMeResponse(
         Long userId,

@@ -4,6 +4,9 @@ import Spacer from "@/shared/components/spacer/Spacer";
 import Top from "@/shared/components/top/Top";
 
 const LoginPage = () => {
+    const handleKakaoLogin = () => {
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/auth/login`;
+    };
     return (
         <MaxWidth align="center" gap="lg" maxWidth="lg">
             <Spacer y={70} />
@@ -18,8 +21,11 @@ const LoginPage = () => {
                 }
             />
 
-            <button className="flex flex-row gap-4 justify-center items-center w-full bg-[#FEE500] rounded-xl py-3">
-                <Icon name="ic_kakao_login" color="var(--color-black)" size={18} />
+            <button
+                onClick={handleKakaoLogin}
+                className="flex flex-row gap-4 justify-center items-center w-full bg-[#FEE500] rounded-xl py-3"
+            >
+                <Icon name="ic_kakao_login" size={18} />
                 <div>카카오로 시작하기</div>
             </button>
 

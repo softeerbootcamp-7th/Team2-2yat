@@ -1,6 +1,6 @@
 package com.yat2.episode.auth.refresh;
 
-import com.yat2.episode.users.Users;
+import com.yat2.episode.user.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -20,7 +20,7 @@ public class RefreshToken {
 
     @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "user_id", nullable = false, unique = true)
-    private Users user;
+    private User user;
 
     @Column(name = "token_hash", nullable = false, unique = true)
     private String tokenHash;
