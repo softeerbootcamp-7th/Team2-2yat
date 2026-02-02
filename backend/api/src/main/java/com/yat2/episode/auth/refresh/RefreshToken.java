@@ -1,5 +1,6 @@
 package com.yat2.episode.auth.refresh;
 
+import com.yat2.episode.users.Users;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,8 +18,9 @@ public class RefreshToken {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name = "user_id", nullable = false, unique = true)
-    private Long userId;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false, unique = true)
+    private Users user;
 
     @Column(name = "token_hash", nullable = false, unique = true)
     private String tokenHash;

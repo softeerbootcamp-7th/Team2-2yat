@@ -17,8 +17,11 @@ public class WebConfig implements WebMvcConfigurer {
 
     @Override
     public void configurePathMatch(PathMatchConfigurer configurer) {
-        configurer.addPathPrefix("/api",
-                HandlerTypePredicate.forAnnotation(RestController.class));
+        configurer.addPathPrefix(
+                "/api",
+                HandlerTypePredicate.forBasePackage("com.yat2.episode")
+                        .and(HandlerTypePredicate.forAnnotation(RestController.class))
+        );
     }
 
     @Override
@@ -33,6 +36,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(authInterceptor)
-                .addPathPatterns("/**");
+                .addPathPatterns("/**")
+                .excludePathPatterns(
+                        "/swagger-ui/**",
+                        "/v3/api-docs/**"
+                );
     }
 }

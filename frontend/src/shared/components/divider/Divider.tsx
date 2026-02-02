@@ -1,4 +1,4 @@
-import { cn } from "@utils/cn";
+import { cn } from "@/utils/cn";
 
 type Direction = "x" | "y";
 type Props = React.ComponentPropsWithoutRef<"div"> & {

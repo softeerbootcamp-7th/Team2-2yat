@@ -1,20 +1,24 @@
 package com.yat2.episode.mindmap;
 
 import com.yat2.episode.auth.AuthService;
-import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
-import com.yat2.episode.mindmap.dto.MindmapDataDto;
-import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
+import com.yat2.episode.mindmap.dto.*;
+import com.yat2.episode.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import java.net.URI;
 import java.util.List;
+
+import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 
 
 @RequiredArgsConstructor
@@ -39,7 +43,9 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "마인드맵 목록 조회 성공"),
-            @ApiResponse(responseCode = "401", description = "인증 실패")
+            @ApiResponse(responseCode = "401", description = "인증 실패", content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
     })
     @GetMapping
     public ResponseEntity<List<MindmapDataDto>> getMindmaps(
@@ -52,6 +58,26 @@ public class MindmapController {
     }
 
     @Operation(
+            summary = "마인드맵 조회",
+            description = """
+                    입력된 마인드맵의 UUID를 기반으로 마인드맵 데이터를 조회합니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "200", description = "마인드맵 조회 성공"),
+            @ApiResponse(responseCode = "401", description = "인증 실패(토큰 없음/만료/유효하지 않음)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
+    })
+    @GetMapping("/{mindmapId}")
+    public ResponseEntity<MindmapDataDto> getMindmap(
+            @RequestAttribute(USER_ID) long userId,
+            @PathVariable String mindmapId
+    ) {
+        return ResponseEntity.ok(mindmapService.getMindmapById(userId, mindmapId));
+    }
+
+    @Operation(
             summary = "내 마인드맵 이름 목록 조회",
             description = """
                     로그인한 사용자가 참여 중인 마인드맵의 식별 정보(아이디, 이름) 목록을 조회합니다.
@@ -60,34 +86,52 @@ public class MindmapController {
     )
     @ApiResponses({
             @ApiResponse(responseCode = "200", description = "마인드맵 이름 목록 조회 성공"),
-            @ApiResponse(
-                    responseCode = "401",
-                    description = """
-                            인증 실패  
-                            - UNAUTHORIZED  
-                            - AUTH_EXPIRED  
-                            - INVALID_TOKEN  
-                            - INVALID_TOKEN_SIGNATURE  
-                            - INVALID_TOKEN_ISSUER  
-                            - INVALID_TOKEN_TYPE  
-                            """,
-                    content = @Content
-            )
+            @ApiResponse(responseCode = "401", description = "인증 실패(토큰 없음/만료/유효하지 않음)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
 
     })
     @GetMapping("/titles")
-    public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@CookieValue(name = "access_token", required = false) String token) {
-        Long userId = authService.getUserIdByToken(token);
+    public ResponseEntity<List<MindmapIdentityDto>> getMyMindmapNames(@RequestAttribute(USER_ID) long userId) {
         return ResponseEntity.ok(mindmapService.getMindmapList(userId));
     }
 
+    @Operation(
+            summary = "내 마인드맵 생성",
+            description = """
+                    마인드맵을 생성합니다.
+                    팀 마인드맵 생성 시에는 중심 노드가 되는 프로젝트 명이 default 마인드맵 명이 됩니다. 입력이 필수입니다.
+                    개인 마인드맵 생성 시에는 사용자 명을 기반으로 생성된 이름이 default 마인드맵 명이 됩니다.
+                     입력 값이 있으면 해당 이름으로 생성됩니다. (프론트에서의 api 호출 유연성을 위함.)
+                    웹 소켓 연결은 별도 요청이 필요합니다.
+                    """
+    )
+    @ApiResponses({
+            @ApiResponse(responseCode = "201", description = "마인드맵 생성 성공"),
+            @ApiResponse(
+                    responseCode = "400",
+                    description = """
+                            잘못된 요청
+                            - MINDMAP_TITLE_REQUIRED: 팀 마인드맵 생성 시 제목 누락
+                            """,
+                    content = @Content
+            ),
+            @ApiResponse(responseCode = "401", description = "인증 실패(토큰 없음/만료/유효하지 않음)", content = @Content),
+            @ApiResponse(responseCode = "404", description = "존재하지 않는 사용자", content = @Content),
+            @ApiResponse(responseCode = "500", description = "서버 오류", content = @Content)
 
+    })
     @PostMapping()
-    public ResponseEntity<Object> createMindmap(@RequestBody MindmapArgsReqDto reqBody) {
-        // todo: userId 가져오기
-        // todo: isShared 여부 기반 웹소켓 로직 추가
-        // todo: 기본 활동 타입 인자 기반으로 yDoc 베이스 제공 필요
-        return ResponseEntity.ok(null);
+    public ResponseEntity<MindmapCreatedWithUrlDto> createMindmap(@RequestAttribute(USER_ID) long userId, @RequestBody MindmapArgsReqDto reqBody) {
+        MindmapCreatedWithUrlDto resBody = mindmapService.createMindmap(userId, reqBody);
+        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
+                .path("/{mindmapId}")
+                .buildAndExpand(resBody.mindmap().mindmapId())
+                .toUri();
+
+        return ResponseEntity
+                .created(location)
+                .body(resBody);
     }
 
     @PostMapping("/connect/{mindmapId}")

@@ -67,7 +67,7 @@ public class KakaoIdTokenVerifier {
 
             return claims;
         } catch (Exception e) {
-            throw new CustomException(ErrorCode.OAUTH_ID_TOKEN_INVALID);
+            throw new CustomException(ErrorCode.INVALID_OAUTH_ID_TOKEN);
         }
     }
 }

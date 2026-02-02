@@ -1,6 +1,7 @@
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@utils/cn";
-import { COLOR_SET } from "@shared/styles/color_set";
+
+import { COLOR_SET } from "@/shared/styles/color_set";
+import { cn } from "@/utils/cn";
 
 type Props = VariantProps<typeof profileIconVariants> & {
     name: string;

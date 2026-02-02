@@ -1,6 +1,7 @@
-import { cn } from "@utils/cn";
 import { cva, VariantProps } from "class-variance-authority";
 import { ReactNode } from "react";
+
+import { cn } from "@/utils/cn";
 
 type Props = VariantProps<typeof variants> & {
     children: ReactNode;

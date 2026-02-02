@@ -1,4 +1,4 @@
-import Icon from "@shared/components/icon/Icon";
+import Icon from "@/shared/components/icon/Icon";
 
 type Props = {
     name?: string;
