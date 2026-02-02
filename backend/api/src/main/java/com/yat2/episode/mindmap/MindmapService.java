@@ -6,12 +6,10 @@ import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.mindmap.dto.*;
 import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
 import com.yat2.episode.user.User;
-import com.yat2.episode.user.UserRepository;
 import com.yat2.episode.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
@@ -24,9 +22,7 @@ import java.util.UUID;
 public class MindmapService {
     private final MindmapRepository mindmapRepository;
     private final MindmapParticipantRepository mindmapParticipantRepository;
-    private final UserRepository userRepository;
     private final S3SnapshotRepository snapshotRepository;
-    private final TransactionTemplate transactionTemplate;
     private final UserService userService;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
