@@ -23,15 +23,13 @@ public class S3SnapshotRepository {
     public S3SnapshotRepository(
             S3PostSigner s3PostSigner,
             AwsCredentialsProvider credentialsProvider,
-            @Value("${aws.s3.bucket.name}") String bucketName,
-            @Value("${aws.s3.region}") String region,
-            @Value("${s3.endpoint:}") String endpoint
+            S3Properties s3Properties
     ) {
         this.s3PostSigner = s3PostSigner;
         this.credentialsProvider = credentialsProvider;
-        this.bucketName = bucketName;
-        this.region = region;
-        this.endpoint = endpoint;
+        this.bucketName = s3Properties.getBucket().getName();
+        this.region = s3Properties.getRegion();
+        this.endpoint = s3Properties.getEndpoint();
     }
 
     public Map<String, String> createPresignedUploadInfo(String objectKey) {

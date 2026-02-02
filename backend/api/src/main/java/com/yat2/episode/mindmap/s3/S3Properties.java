@@ -15,4 +15,11 @@ public class S3Properties {
     private String endpoint;
     private String accessKey;
     private String secretKey;
+    private Bucket bucket = new Bucket();
+
+    @Getter
+    @Setter
+    public static class Bucket {
+        private String name;
+    }
 }
