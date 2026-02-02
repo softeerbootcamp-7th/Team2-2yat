@@ -1,6 +1,7 @@
 package com.yat2.episode.mindmap;
 
 import com.yat2.episode.auth.AuthService;
+import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
@@ -16,7 +17,6 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
@@ -35,6 +35,7 @@ public class MindmapController {
 
     private final MindmapService mindmapService;
     private final AuthService authService;
+    private final MindmapFacade mindmapFacade;
 
     @Operation(
             summary = "마인드맵 목록 조회 (통합)",
@@ -126,12 +127,8 @@ public class MindmapController {
     })
     @PostMapping()
     public ResponseEntity<MindmapCreatedWithUrlDto> createMindmap(@RequestAttribute(USER_ID) long userId, @RequestBody MindmapArgsReqDto reqBody) {
-        MindmapCreatedWithUrlDto resBody = mindmapService.createMindmap(userId, reqBody);
-        URI location = ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{mindmapId}")
-                .buildAndExpand(resBody.mindmap().mindmapId())
-                .toUri();
-
+        MindmapCreatedWithUrlDto resBody = mindmapFacade.createMindmap(userId, reqBody);
+        URI location = mindmapService.getCreatedURI(resBody.mindmap().mindmapId());
         return ResponseEntity
                 .created(location)
                 .body(resBody);
@@ -170,10 +167,32 @@ public class MindmapController {
             )
     })
     @AuthRequiredErrors
-    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.MINDMAP_PARTICIPANT_NOT_FOUND})
+    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.MINDMAP_NOT_FOUND})
     @DeleteMapping("/{mindmapId}")
     public ResponseEntity<?> deleteMindmap(@RequestAttribute(USER_ID) long userId, @PathVariable String mindmapId) {
         mindmapService.deleteMindmap(userId, mindmapId);
         return ResponseEntity.noContent().build();
+    }
+    @Operation(
+            summary = "마인드맵 즐겨찾기 상태 변경",
+            description = "마인드맵의 즐겨찾기 여부를 설정하거나 해제합니다."
+    )
+    @ApiResponses({
+            @ApiResponse(
+                    responseCode = "200",
+                    description = "업데이트 성공",
+                    content = @Content(schema = @Schema(implementation = MindmapDataDto.class))
+            )
+    })
+    @AuthRequiredErrors
+    @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.MINDMAP_NOT_FOUND})
+    @PatchMapping("/{mindmapId}/favorite")
+    public ResponseEntity<MindmapDataDto> updateFavoriteStatus(
+            @RequestAttribute(USER_ID) long userId,
+            @PathVariable String mindmapId,
+            @RequestParam boolean status
+    ) {
+        MindmapDataDto updatedMindmap = mindmapService.updateFavoriteStatus(userId, mindmapId, status);
+        return ResponseEntity.ok(updatedMindmap);
     }
 }

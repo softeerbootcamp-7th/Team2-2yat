@@ -19,41 +19,9 @@ public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
                 FROM MindmapParticipant p
                 JOIN p.mindmap m
                 WHERE p.user.kakaoId = :userId
-                  AND m.shared = :shared
-                ORDER BY m.isFavorite DESC, m.updatedAt DESC
-            """)
-    List<Mindmap> findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(
-            @Param("userId") Long userId,
-            @Param("shared") boolean shared
-    );
-
-
-    @Query("""
-                SELECT m
-                FROM MindmapParticipant p
-                JOIN p.mindmap m
-                WHERE p.user.kakaoId = :userId
-                ORDER BY m.isFavorite DESC, m.updatedAt DESC
-            """)
-    List<Mindmap> findByUserIdOrderByFavoriteAndUpdatedDesc(@Param("userId") Long userId);
-
-
-    @Query("""
-                SELECT m
-                FROM MindmapParticipant p
-                JOIN p.mindmap m
-                WHERE p.user.kakaoId = :userId
                 ORDER BY m.createdAt DESC
             """)
     List<Mindmap> findByUserIdOrderByCreatedDesc(@Param("userId") Long userId);
-
-    @Query("""
-                SELECT m
-                FROM MindmapParticipant p
-                JOIN p.mindmap m
-                WHERE m.id = :uuid and p.user.kakaoId = :userId
-            """)
-    Optional<Mindmap> findByIdAndUserId(@Param("uuid") UUID uuid, @Param("userId") Long userId);
 
     @Query("""
                 SELECT m.name
