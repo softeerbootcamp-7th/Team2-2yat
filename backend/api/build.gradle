@@ -2,18 +2,11 @@ plugins {
 	id 'java'
 	id 'org.springframework.boot' version '4.0.1'
 	id 'io.spring.dependency-management' version '1.1.7'
-	id 'checkstyle'
 }
 
 group = 'com.yat2'
 version = '0.0.1-SNAPSHOT'
 description = 'episode'
-
-checkstyle {
-	toolVersion = "12.3.1"
-	configFile = file("checkstyle.xml")
-	ignoreFailures = false
-}
 
 java {
 	toolchain {
