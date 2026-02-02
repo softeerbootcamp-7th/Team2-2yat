@@ -1,6 +1,8 @@
-import { AUTH_REFRESH_API } from "@/features/auth/api/api";
+import { AUTH_API } from "@/features/auth/api/api";
 import { post } from "@/shared/api/method";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
+
+export const AUTH_REFRESH_API = `${AUTH_API}/refresh`;
 
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
