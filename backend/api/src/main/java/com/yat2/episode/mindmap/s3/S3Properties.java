@@ -8,7 +8,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Configuration
 @ConfigurationProperties(prefix = "aws.s3")
 public class S3Properties {
     private String region;
