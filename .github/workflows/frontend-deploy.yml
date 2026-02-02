@@ -1,10 +1,12 @@
 name: Frontend Deploy
 
-on:
-    push:
-        paths:
-            - "frontend/**"
-            - ".github/workflows/frontend-deploy.yml"
+# on:
+#   push:
+#     branches:
+#       - main
+#     paths:
+#       - 'frontend/**'
+#       - '.github/workflows/frontend-deploy.yml'
 
 jobs:
     build:
