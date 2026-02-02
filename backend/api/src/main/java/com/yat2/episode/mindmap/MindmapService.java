@@ -5,8 +5,8 @@ import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.mindmap.dto.*;
 import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
-import com.yat2.episode.users.Users;
-import com.yat2.episode.users.UsersRepository;
+import com.yat2.episode.user.User;
+import com.yat2.episode.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,9 +21,9 @@ import java.util.UUID;
 public class MindmapService {
     private final MindmapRepository mindmapRepository;
     private final MindmapParticipantRepository mindmapParticipantRepository;
-    private final UsersRepository usersRepository;
     private final S3SnapshotRepository snapshotRepository;
     private final TransactionTemplate transactionTemplate;
+    private final UserService userService;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
@@ -62,8 +62,7 @@ public class MindmapService {
     }
 
     public MindmapCreatedWithUrlDto createMindmap(Long userId, MindmapArgsReqDto body) {
-        Users user = usersRepository.findByKakaoId(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        User user = userService.getUserOrThrow(userId);
 
         Mindmap savedMindmap = transactionTemplate.execute(status -> {
             String finalTitle = body.title();
@@ -110,7 +109,7 @@ public class MindmapService {
                 .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
     }
 
-    private String getPrivateMindmapName(Users user) {
+    private String getPrivateMindmapName(User user) {
         String baseName = user.getNickname() + MindmapConstants.PRIVATE_NAME;
         List<String> allNames = mindmapRepository.findAllNamesByBaseName(baseName, user.getKakaoId());
 
