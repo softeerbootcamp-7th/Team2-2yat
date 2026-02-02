@@ -1,6 +1,5 @@
 package com.yat2.episode.auth;
 
-import com.yat2.episode.auth.oauth.OAuthRedirectProperties;
 import com.yat2.episode.auth.jwt.IssuedTokens;
 import com.yat2.episode.auth.oauth.KakaoProperties;
 import com.yat2.episode.auth.oauth.OAuthUtil;
@@ -19,6 +18,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
@@ -32,12 +32,12 @@ import org.springframework.web.util.UriComponentsBuilder;
 @Tag(name = "Auth", description = "인증 관련")
 public class AuthController {
     private static final String SESSION_STATE = "OAUTH_STATE";
-    private static final String SESSION_LOCAL_DEV = "OAUTH_LOCAL_DEV";
 
+    @Value("${auth.redirect}")
+    private String oauthRedirect;
     private final KakaoProperties kakaoProperties;
     private final AuthService authService;
     private final AuthCookieFactory authCookieFactory;
-    private final OAuthRedirectProperties oAuthRedirectProperties;
     private final RefreshTokenService refreshTokenService;
 
     @GetMapping("/login")
@@ -56,13 +56,6 @@ public class AuthController {
 
         String state = OAuthUtil.generateState();
         session.setAttribute(SESSION_STATE, state);
-
-        String referer = request.getHeader("Referer");
-
-        boolean isLocalDev =
-                referer != null && (referer.startsWith("http://localhost") || referer.startsWith("http://127.0.0.1"));
-
-        session.setAttribute(SESSION_LOCAL_DEV, isLocalDev);
 
         String redirect = UriComponentsBuilder.fromUriString(authUrl)
                 .queryParam("response_type", "code")
@@ -100,10 +93,6 @@ public class AuthController {
             throw new CustomException(ErrorCode.INVALID_OAUTH_STATE);
         }
 
-        boolean isLocalDev = Boolean.TRUE.equals(
-                session.getAttribute(SESSION_LOCAL_DEV)
-        );
-
         session.invalidate();
 
         IssuedTokens tokens = authService.handleKakaoCallback(code);
@@ -111,10 +100,8 @@ public class AuthController {
         ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
         ResponseCookie refreshCookie = authCookieFactory.refresh(tokens.refreshToken());
 
-        String redirect = isLocalDev ? oAuthRedirectProperties.getLocal() : oAuthRedirectProperties.getProd();
-
         return ResponseEntity.status(302)
-                .header(HttpHeaders.LOCATION, redirect)
+                .header(HttpHeaders.LOCATION, oauthRedirect)
                 .header(HttpHeaders.SET_COOKIE, accessCookie.toString())
                 .header(HttpHeaders.SET_COOKIE, refreshCookie.toString())
                 .build();
