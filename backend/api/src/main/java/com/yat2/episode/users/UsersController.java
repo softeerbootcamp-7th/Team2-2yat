@@ -9,11 +9,12 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import java.util.List;
 
 import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 
@@ -38,8 +39,16 @@ public class UsersController {
     })
     @AuthRequiredErrors
     @ApiErrorCodes({ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR})
-    public ResponseEntity<UserMeResponse> getMe(@RequestAttribute(USER_ID) long userId){
-        return ResponseEntity.ok(usersService.getMe(userId));
+    public UserMeResponse getMe(@RequestAttribute(USER_ID) long userId){
+        return usersService.getMe(userId);
     }
 
+    @PatchMapping("/me/job")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void updateMyJob(
+            @RequestAttribute(USER_ID) long userId,
+            @RequestParam @NotNull @Positive Integer jobId
+    ) {
+        usersService.updateJob(userId, jobId);
+    }
 }
