@@ -7,7 +7,6 @@ import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
 import com.yat2.episode.mindmap.dto.*;
 import com.yat2.episode.global.exception.ErrorResponse;
-import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -36,7 +35,7 @@ public class MindmapController {
 
     private final MindmapService mindmapService;
     private final AuthService authService;
-    private final S3SnapshotRepository snapshotRepository;
+    private final MindmapFacade mindmapFacade;
 
     @Operation(
             summary = "마인드맵 목록 조회 (통합)",
@@ -128,19 +127,11 @@ public class MindmapController {
     })
     @PostMapping()
     public ResponseEntity<MindmapCreatedWithUrlDto> createMindmap(@RequestAttribute(USER_ID) long userId, @RequestBody MindmapArgsReqDto reqBody) {
-        MindmapDataExceptDateDto mindmapData = mindmapService.saveMindmapAndParticipant(userId, reqBody);
-        try {
-            MindmapCreatedWithUrlDto resBody = mindmapService.getUploadInfo(mindmapData);
-            URI location = mindmapService.getCreatedURI(mindmapData.mindmapId());
-
-            return ResponseEntity
-                    .created(location)
-                    .body(resBody);
-        }
-        catch (CustomException e){
-            mindmapService.rollbackMindmap(mindmapData.mindmapId());
-            throw e;
-        }
+        MindmapCreatedWithUrlDto resBody = mindmapFacade.createMindmap(userId, reqBody);
+        URI location = mindmapService.getCreatedURI(resBody.mindmap().mindmapId());
+        return ResponseEntity
+                .created(location)
+                .body(resBody);
     }
 
     @PostMapping("/connect/{mindmapId}")
