@@ -1,4 +1,4 @@
-import { User } from "@/features/auth/types/user.types";
+import { User } from "@/features/auth/types/user";
 
 /**
  *  인증 상태 인터페이스

@@ -1,5 +1,5 @@
-import { ApiError, toSafeApiError } from "@/features/auth/types/api.types";
-import { User } from "@/features/auth/types/user.types";
+import { ApiError, toSafeApiError } from "@/features/auth/types/api";
+import { User } from "@/features/auth/types/user";
 import { get } from "@/shared/api/method";
 
 const USER_API = "/users";

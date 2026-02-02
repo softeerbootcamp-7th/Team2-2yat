@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 
 import { logout as logoutApi } from "@/features/auth/api/auth";
 import { AuthContext } from "@/features/auth/contexts/AuthContext";
-import type { User } from "@/features/auth/types/user.types";
+import type { User } from "@/features/auth/types/user";
 import { get } from "@/shared/api/method";
 
 const USER_API = "/users";

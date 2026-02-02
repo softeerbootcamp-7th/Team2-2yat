@@ -1,5 +1,5 @@
 import { AUTH_API } from "@/features/auth/api/api";
-import { type ApiError, toSafeApiError } from "@/features/auth/types/api.types";
+import { type ApiError, toSafeApiError } from "@/features/auth/types/api";
 import { post } from "@/shared/api/method";
 
 export const AUTH_LOGOUT_API = `${AUTH_API}/logout`;

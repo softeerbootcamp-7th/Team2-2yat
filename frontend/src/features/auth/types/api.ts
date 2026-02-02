@@ -1,4 +1,4 @@
-import { User } from "@/features/auth/types/user.types";
+import { User } from "@/features/auth/types/user";
 
 /**
  * 카카오 로그인 API
