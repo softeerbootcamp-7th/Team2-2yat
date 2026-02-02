@@ -15,7 +15,7 @@ import java.util.Map;
 @Repository
 public class S3SnapshotRepository {
     private final S3PostSigner s3PostSigner;
-    private final AwsCredentialsProvider credentialsProvider; // ⭐️ 이게 핵심!
+    private final AwsCredentialsProvider credentialsProvider;
     private final String bucketName;
     private final String region;
     private final String endpoint;
