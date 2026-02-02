@@ -4,7 +4,7 @@ import { AuthContext } from "@/features/auth/contexts/AuthContext";
 import type { User } from "@/features/auth/types/user.types";
 import { get } from "@/shared/api/method";
 
-const USER_API = "/api/users";
+const USER_API = "/users";
 const USER_ME_API = `${USER_API}/me`;
 
 type AuthProviderProps = {
