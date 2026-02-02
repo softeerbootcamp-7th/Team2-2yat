@@ -18,11 +18,7 @@ public interface MindmapParticipantRepository extends JpaRepository<MindmapParti
     Optional<MindmapParticipant> findByMindmapIdAndUserId(@Param("uuid") UUID uuid, @Param("userId") Long userId);
 
     @Modifying
-    @Query("""
-    DELETE FROM MindmapParticipant p
-    WHERE p.mindmap.id = :uuid AND p.user.kakaoId = :userId
-""")
-    int deleteByMindmapIdAndUserId(@Param("uuid") UUID uuid, @Param("userId") Long userId);
+    int deleteByMindmap_IdAndUser_KakaoId(UUID uuid, Long userId);
 
     boolean existsByMindmap_Id(UUID mindmapId);
 
