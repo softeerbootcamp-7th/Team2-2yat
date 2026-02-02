@@ -1,8 +1,6 @@
 import { AUTH_REFRESH_API } from "@/features/auth/api/api";
 import { ERROR_CODES, ERROR_META, isErrorCodeKey } from "@/shared/constants/error";
 
-const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
-
 let isRefreshing = false;
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -43,7 +41,7 @@ export async function refreshToken(): Promise<boolean> {
     try {
         await post<void, {}>({ endpoint: AUTH_REFRESH_API });
         return true;
-    } catch (error) {
+    } catch {
         return false;
     }
 }
