@@ -1,11 +1,5 @@
 package com.yat2.episode.mindmap;
 
-import com.yat2.episode.auth.AuthService;
-import com.yat2.episode.global.exception.ErrorCode;
-import com.yat2.episode.global.swagger.ApiErrorCodes;
-import com.yat2.episode.global.swagger.AuthRequiredErrors;
-import com.yat2.episode.mindmap.dto.*;
-import com.yat2.episode.global.exception.ErrorResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
