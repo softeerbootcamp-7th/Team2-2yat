@@ -1,5 +1,5 @@
 package com.yat2.episode.diagnosis.dto;
 
-import java.util.List;
+import java.util.Set;
 
-public record DiagnosisArgsReqDto(List<Integer> unansweredQuestionIds) {}
+public record DiagnosisArgsReqDto(Set<Integer> unansweredQuestionIds) {}
