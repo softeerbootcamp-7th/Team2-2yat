@@ -12,15 +12,20 @@ export default class MindmapContainer {
     public nodes: Map<NodeId, NodeElement>;
     private quadTreeManager: QuadTreeManager;
     private broker: EventBroker<NodeId>;
+    private isThrowError: boolean;
 
     constructor({
         quadTreeManager,
         broker,
         name = ROOT_NODE_CONTENTS,
+
+        // TODO: 개발 단계에서는 error boundary로 대체되면 디버깅이 어려우므로 해당 옵션을 제공.
+        isThrowError = true,
     }: {
         quadTreeManager: QuadTreeManager;
         broker: EventBroker<NodeId>;
         name?: string;
+        isThrowError?: boolean;
     }) {
         // initialization
         this.nodes = new Map();
@@ -35,6 +40,7 @@ export default class MindmapContainer {
         // inject dependency
         this.quadTreeManager = quadTreeManager;
         this.broker = broker;
+        this.isThrowError = isThrowError;
     }
 
     /**
@@ -83,9 +89,13 @@ export default class MindmapContainer {
             this.notify(parentNode.id);
         } catch (e) {
             if (e instanceof Error) {
-                alert(e.message);
+                console.error(e.message);
             } else {
-                alert(String(e));
+                console.error(String(e));
+            }
+
+            if (this.isThrowError) {
+                throw e;
             }
         }
     }
@@ -108,9 +118,13 @@ export default class MindmapContainer {
             }
         } catch (e) {
             if (e instanceof Error) {
-                alert(e.message);
+                console.error(e.message);
             } else {
-                alert(String(e));
+                console.error(String(e));
+            }
+
+            if (this.isThrowError) {
+                throw e;
             }
         }
     }
@@ -208,9 +222,13 @@ export default class MindmapContainer {
             // this.notify(nodeId);
         } catch (e) {
             if (e instanceof Error) {
-                alert(e.message);
+                console.error(e.message);
             } else {
-                alert(String(e));
+                console.error(String(e));
+            }
+
+            if (this.isThrowError) {
+                throw e;
             }
         }
     }
@@ -300,9 +318,13 @@ export default class MindmapContainer {
             }
         } catch (e) {
             if (e instanceof Error) {
-                alert(e.message);
+                console.error(e.message);
             } else {
-                alert(String(e));
+                console.error(String(e));
+            }
+
+            if (this.isThrowError) {
+                throw e;
             }
         }
     }
@@ -377,27 +399,13 @@ export default class MindmapContainer {
             this.notify(id);
         } catch (e) {
             if (e instanceof Error) {
-                alert(e.message);
+                console.error(e.message);
             } else {
-                alert(String(e));
+                console.error(String(e));
             }
-        }
-    }
 
-    /**
-     * view 단에서 errorBoundary를 바로 보여주는게 위험할 수 있음. 왜냐면 프론트엔드의 실수가 있을 수 있는데 바로 사용 못하게 EB띄우는 것보다 toast로만 띄워줘도 좋을 것 같음. 그래서 try catch사용함.
-     */
-    getNodeFromContainer(nodeId: NodeId) {
-        try {
-            const node = this._getNode(nodeId);
-
-            return node;
-        } catch (e) {
-            // TODO: toast UI로 대체
-            if (e instanceof Error) {
-                alert(e.message);
-            } else {
-                alert(String(e));
+            if (this.isThrowError) {
+                throw e;
             }
         }
     }
