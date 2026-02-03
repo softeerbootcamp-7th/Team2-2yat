@@ -8,6 +8,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,7 +17,7 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mindmap")
-public class Mindmap {
+public class Mindmap implements Persistable<UUID> {
     @Id
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
@@ -47,5 +48,10 @@ public class Mindmap {
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean isNew() {
+        return createdAt == null;
     }
 }
