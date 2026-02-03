@@ -1,7 +1,6 @@
 package com.yat2.episode.mindmap;
 
 import com.yat2.episode.auth.AuthService;
-import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
