@@ -8,7 +8,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 
 import com.yat2.episode.diagnosis.dto.DiagnosisArgsReqDto;
-import com.yat2.episode.diagnosis.dto.DiagnosisSimpleDto;
+import com.yat2.episode.diagnosis.dto.DiagnosisSimpleNoDateDto;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.question.Question;
@@ -25,7 +25,7 @@ public class DiagnosisResultService {
     private final UserService userService;
 
     @Transactional
-    public DiagnosisSimpleDto createDiagnosis(Long userId, DiagnosisArgsReqDto reqDto) {
+    public DiagnosisSimpleNoDateDto createDiagnosis(Long userId, DiagnosisArgsReqDto reqDto) {
         User user = userService.getUserOrThrow(userId);
         if (user.getJob() == null) throw new CustomException(ErrorCode.JOB_NOT_SELECTED);
         DiagnosisResult diagnosisResult =
@@ -36,7 +36,7 @@ public class DiagnosisResultService {
             diagnosisWeaknessRepository.save(DiagnosisWeakness.newDiagnosisWeakness(diagnosisResult, question));
         }
 
-        return DiagnosisSimpleDto.of(diagnosisResult, reqDto.unansweredQuestionIds().size());
+        return DiagnosisSimpleNoDateDto.of(diagnosisResult, reqDto.unansweredQuestionIds().size());
     }
 
     public URI getCreatedURI(Integer diagnosisId) {

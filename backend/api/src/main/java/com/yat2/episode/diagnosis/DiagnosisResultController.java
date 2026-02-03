@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.net.URI;
 
 import com.yat2.episode.diagnosis.dto.DiagnosisArgsReqDto;
-import com.yat2.episode.diagnosis.dto.DiagnosisSimpleDto;
+import com.yat2.episode.diagnosis.dto.DiagnosisSimpleNoDateDto;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
@@ -38,9 +38,9 @@ public class DiagnosisResultController {
     @ApiErrorCodes({ ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.QUESTION_NOT_FOUND,
                      ErrorCode.JOB_NOT_SELECTED })
     @PostMapping()
-    public ResponseEntity<DiagnosisSimpleDto> createMindmap(@RequestAttribute(USER_ID) long userId,
-                                                            @RequestBody DiagnosisArgsReqDto reqBody) {
-        DiagnosisSimpleDto resBody = diagnosisResultService.createDiagnosis(userId, reqBody);
+    public ResponseEntity<DiagnosisSimpleNoDateDto> createMindmap(@RequestAttribute(USER_ID) long userId,
+                                                                  @RequestBody DiagnosisArgsReqDto reqBody) {
+        DiagnosisSimpleNoDateDto resBody = diagnosisResultService.createDiagnosis(userId, reqBody);
         URI location = diagnosisResultService.getCreatedURI(resBody.diagnosisId());
         return ResponseEntity.created(location).body(resBody);
     }
