@@ -1,8 +1,5 @@
 package com.yat2.episode.auth.refresh;
 
-import com.yat2.episode.auth.jwt.JwtProperties;
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -15,6 +12,10 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Base64;
 
+import com.yat2.episode.auth.jwt.JwtProperties;
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
+
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -26,8 +27,7 @@ public class RefreshTokenService {
     @Transactional
     public void save(Long userId, String refreshToken) {
         String tokenHash = hash(refreshToken);
-        LocalDateTime expiresAt = LocalDateTime.now()
-                .plus(Duration.ofMillis(jwtProperties.getRefreshTokenExpiry()));
+        LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(jwtProperties.getRefreshTokenExpiry()));
 
         refreshTokenRepository.upsertByUserId(userId, tokenHash, expiresAt);
     }

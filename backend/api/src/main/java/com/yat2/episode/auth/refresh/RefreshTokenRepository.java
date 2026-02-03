@@ -20,7 +20,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshToken, Long
                 token_hash = VALUES(token_hash),
                 expires_at = VALUES(expires_at)
             """, nativeQuery = true)
-    void upsertByUserId(@Param("userId") Long userId, @Param("tokenHash") String tokenHash, @Param("expiresAt") LocalDateTime expiresAt);
+    void upsertByUserId(@Param("userId") Long userId, @Param("tokenHash") String tokenHash,
+                        @Param("expiresAt") LocalDateTime expiresAt);
 
     void deleteByUser_KakaoId(Long kakaoId);
 

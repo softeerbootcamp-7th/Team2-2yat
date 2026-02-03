@@ -2,55 +2,63 @@ name: CI
 
 on:
   pull_request:
-    branches:
-      - dev
-      - release
+    branches: [ dev, release ]
   push:
-    branches:
-      - dev
+    branches: [ dev ]
 
 jobs:
-  ci:
+  detect-changes:
+    name: Detect Changes
     runs-on: ubuntu-latest
+    outputs:
+      backend: ${{ steps.filter.outputs.backend }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v2
+        id: filter
+        with:
+          filters: |
+            backend:
+              - 'backend/api/**'
 
+  lint:
+    name: Check Style
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
     defaults:
       run:
         working-directory: backend/api
-
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
+      - uses: actions/checkout@v4
       - name: Set up JDK 17
         uses: actions/setup-java@v4
         with:
           distribution: temurin
           java-version: 17
           cache: gradle
+      - run: chmod +x ./gradlew
 
-      - name: Grant execute permission to gradlew
-        run: chmod +x ./gradlew
+      - name: Run Checkstyle
+        run: ./gradlew checkstyleMain checkstyleTest --no-daemon
 
-      - name: Detect backend changes
-        id: changes
-        run: |
-          if [ "${{ github.event_name }}" = "pull_request" ]; then
-            BASE=origin/${{ github.base_ref }}
-            git fetch origin ${{ github.base_ref }}
-          else
-            BASE=HEAD~1
-          fi
+  build:
+    name: Build & Test
+    needs: detect-changes
+    if: needs.detect-changes.outputs.backend == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/api
+    steps:
+      - uses: actions/checkout@v4
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+      - run: chmod +x ./gradlew
 
-          if git diff --name-only $BASE...HEAD | grep '^backend/'; then
-            echo "changed=true" >> $GITHUB_OUTPUT
-          else
-            echo "changed=false" >> $GITHUB_OUTPUT
-          fi
-
-      - name: Build & Test
-        if: steps.changes.outputs.changed == 'true'
-        run: ./gradlew build
-
-      - name: Skip backend CI
-        if: steps.changes.outputs.changed == 'false'
-        run: echo "No backend changes detected. Skipping backend CI."
+      - name: Build
+        run: ./gradlew build -x checkstyleMain -x checkstyleTest --no-daemon

@@ -1,12 +1,15 @@
 package com.yat2.episode.auth.cookie;
 
-import com.yat2.episode.auth.jwt.JwtProperties;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseCookie;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
-import static com.yat2.episode.auth.cookie.AuthCookieNames.*;
+
+import com.yat2.episode.auth.jwt.JwtProperties;
+
+import static com.yat2.episode.auth.cookie.AuthCookieNames.ACCESS_COOKIE_NAME;
+import static com.yat2.episode.auth.cookie.AuthCookieNames.REFRESH_COOKIE_NAME;
 
 @Component
 @RequiredArgsConstructor
@@ -33,12 +36,8 @@ public class AuthCookieFactory {
 
     private ResponseCookie build(Spec spec, String value, Duration maxAge) {
         ResponseCookie.ResponseCookieBuilder builder =
-                ResponseCookie.from(spec.name, value)
-                        .httpOnly(true)
-                        .secure(cookieProps.isSecure())
-                        .sameSite(cookieProps.getSameSite())
-                        .path(spec.path)
-                        .maxAge(maxAge);
+                ResponseCookie.from(spec.name, value).httpOnly(true).secure(cookieProps.isSecure())
+                        .sameSite(cookieProps.getSameSite()).path(spec.path).maxAge(maxAge);
 
         if (cookieProps.getDomain() != null && !cookieProps.getDomain().isBlank()) {
             builder.domain(cookieProps.getDomain());
@@ -49,12 +48,8 @@ public class AuthCookieFactory {
 
     private ResponseCookie delete(Spec spec) {
         ResponseCookie.ResponseCookieBuilder builder =
-                ResponseCookie.from(spec.name, "")
-                        .httpOnly(true)
-                        .secure(cookieProps.isSecure())
-                        .sameSite(cookieProps.getSameSite())
-                        .path(spec.path)
-                        .maxAge(Duration.ZERO);
+                ResponseCookie.from(spec.name, "").httpOnly(true).secure(cookieProps.isSecure())
+                        .sameSite(cookieProps.getSameSite()).path(spec.path).maxAge(Duration.ZERO);
 
         if (cookieProps.getDomain() != null && !cookieProps.getDomain().isBlank()) {
             builder.domain(cookieProps.getDomain());
@@ -64,8 +59,7 @@ public class AuthCookieFactory {
     }
 
     enum Spec {
-        ACCESS(ACCESS_COOKIE_NAME, "/api"),
-        REFRESH(REFRESH_COOKIE_NAME, "/api/auth");
+        ACCESS(ACCESS_COOKIE_NAME, "/api"), REFRESH(REFRESH_COOKIE_NAME, "/api/auth");
 
         final String name;
         final String path;

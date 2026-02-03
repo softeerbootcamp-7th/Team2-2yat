@@ -12,18 +12,10 @@ public class ErrorResponse {
     private String message;
 
     public static ErrorResponse from(ErrorCode errorCode) {
-        return new ErrorResponse(
-                errorCode.getHttpStatus().value(),
-                errorCode.getCode(),
-                errorCode.getMessage()
-        );
+        return new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getCode(), errorCode.getMessage());
     }
 
     public static ErrorResponse of(ErrorCode errorCode, String message) {
-        return new ErrorResponse(
-                errorCode.getHttpStatus().value(),
-                errorCode.getCode(),
-                message
-        );
+        return new ErrorResponse(errorCode.getHttpStatus().value(), errorCode.getCode(), message);
     }
 }

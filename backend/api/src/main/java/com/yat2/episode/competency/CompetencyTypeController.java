@@ -1,17 +1,18 @@
 package com.yat2.episode.competency;
 
-import com.yat2.episode.auth.AuthService;
-import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
-import com.yat2.episode.mindmap.Mindmap;
-import com.yat2.episode.mindmap.MindmapService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestAttribute;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
+
+import com.yat2.episode.auth.AuthService;
+import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
+import com.yat2.episode.mindmap.MindmapService;
 
 import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 
@@ -31,12 +32,9 @@ public class CompetencyTypeController {
 
     @GetMapping("/mindmap/{mindmapId}")
     public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(
-            @RequestAttribute(USER_ID) long userId,
-            @PathVariable String mindmapId) {
+            @RequestAttribute(USER_ID) long userId, @PathVariable String mindmapId) {
         mindmapService.getMindmapByUUIDString(userId, mindmapId);
-        return ResponseEntity.ok(
-                competencyTypeService.getCompetencyTypesInMindmap(mindmapId)
-        );
+        return ResponseEntity.ok(competencyTypeService.getCompetencyTypesInMindmap(mindmapId));
     }
 
 }
