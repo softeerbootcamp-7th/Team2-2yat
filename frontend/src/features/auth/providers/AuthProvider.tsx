@@ -43,7 +43,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
             // 끝에 붙은 / 제거
             const cleanPath = currentPath.endsWith("/") && currentPath !== "/" ? currentPath.slice(0, -1) : currentPath;
 
-            const isExcludedPage = ["/", "/landing", "/login"].includes(cleanPath);
+            const isExcludedPage = ["/landing", "/login"].includes(cleanPath);
 
             if (!isExcludedPage) {
                 toast.error("로그인이 필요합니다.");
