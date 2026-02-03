@@ -1,13 +1,16 @@
 package com.yat2.episode.job;
 
-import com.yat2.episode.job.dto.JobDto;
-import com.yat2.episode.job.dto.OccupationWithJobsResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
+
+import com.yat2.episode.job.dto.JobDto;
+import com.yat2.episode.job.dto.OccupationWithJobsResponse;
 
 @Service
 @RequiredArgsConstructor

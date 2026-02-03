@@ -139,3 +139,6 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 .idea
+!.idea/codeStyles/
+!.idea/codeStyles/Project.xml
+!.idea/codeStyles/codeStyleConfig.xml

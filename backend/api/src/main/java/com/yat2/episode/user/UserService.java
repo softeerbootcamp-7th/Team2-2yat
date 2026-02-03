@@ -1,13 +1,14 @@
 package com.yat2.episode.user;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.job.Job;
 import com.yat2.episode.job.JobRepository;
 import com.yat2.episode.user.dto.UserMeResponse;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -18,14 +19,12 @@ public class UserService {
 
     @Transactional(readOnly = true)
     public User getUserOrThrow(long userId) {
-        return userRepository.findById(userId)
-                .orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
+        return userRepository.findById(userId).orElseThrow(() -> new CustomException(ErrorCode.USER_NOT_FOUND));
     }
 
     @Transactional
     public User getOrCreateKakaoUser(long kakaoId, String nickname) {
-        return userRepository.findById(kakaoId)
-                .orElseGet(() -> userRepository.save(User.newUser(kakaoId, nickname)));
+        return userRepository.findById(kakaoId).orElseGet(() -> userRepository.save(User.newUser(kakaoId, nickname)));
     }
 
     @Transactional(readOnly = true)
@@ -34,20 +33,14 @@ public class UserService {
 
         boolean onboarded = user.getJob() != null;
 
-        return new UserMeResponse(
-                user.getKakaoId(),
-                user.getNickname(),
-                onboarded,
-                user.getHasWatchedFeatureGuide()
-        );
+        return new UserMeResponse(user.getKakaoId(), user.getNickname(), onboarded, user.getHasWatchedFeatureGuide());
     }
 
     @Transactional
     public void updateJob(long userId, int jobId) {
         User user = getUserOrThrow(userId);
 
-        Job job = jobRepository.findById(jobId)
-                .orElseThrow(() -> new CustomException(ErrorCode.JOB_NOT_FOUND));
+        Job job = jobRepository.findById(jobId).orElseThrow(() -> new CustomException(ErrorCode.JOB_NOT_FOUND));
 
         user.updateJob(job);
     }

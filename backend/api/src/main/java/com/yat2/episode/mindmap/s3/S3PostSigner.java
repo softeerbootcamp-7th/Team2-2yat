@@ -2,20 +2,25 @@ package com.yat2.episode.mindmap.s3;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
 
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Base64;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
 
 @Component
 @RequiredArgsConstructor
@@ -24,13 +29,14 @@ public class S3PostSigner {
     private static final ObjectMapper objectMapper = new ObjectMapper();
     private final S3Properties s3Properties;
 
-    public Map<String, String> generatePostFields(String bucket, String key, String region,
-                                                  String endpoint, AwsCredentials credentials) {
+    public Map<String, String> generatePostFields(String bucket, String key, String region, String endpoint,
+                                                  AwsCredentials credentials) {
 
         String accessKey = credentials.accessKeyId();
         String secretKey = credentials.secretAccessKey();
-        String sessionToken = (credentials instanceof AwsSessionCredentials)
-                ? ((AwsSessionCredentials) credentials).sessionToken() : null;
+        String sessionToken =
+                (credentials instanceof AwsSessionCredentials) ? ((AwsSessionCredentials) credentials).sessionToken() :
+                null;
 
         ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
         String dateStamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
@@ -44,9 +50,8 @@ public class S3PostSigner {
 
         Map<String, String> fields = new LinkedHashMap<>();
 
-        String actionUrl = (endpoint != null && !endpoint.isEmpty())
-                ? endpoint + "/" + bucket
-                : "https://" + bucket + ".s3." + region + ".amazonaws.com";
+        String actionUrl = (endpoint != null && !endpoint.isEmpty()) ? endpoint + "/" + bucket :
+                           "https://" + bucket + ".s3." + region + ".amazonaws.com";
 
         fields.put("action", actionUrl);
         fields.put("key", key);
@@ -62,8 +67,8 @@ public class S3PostSigner {
         return fields;
     }
 
-    private String createPolicyJson(String bucket, String key, String credential,
-                                    String xAmzDate, String sessionToken, ZonedDateTime now) {
+    private String createPolicyJson(String bucket, String key, String credential, String xAmzDate, String sessionToken,
+                                    ZonedDateTime now) {
         try {
             Map<String, Object> policy = new LinkedHashMap<>();
             policy.put("expiration", now.plusMinutes(10).format(DateTimeFormatter.ISO_INSTANT));

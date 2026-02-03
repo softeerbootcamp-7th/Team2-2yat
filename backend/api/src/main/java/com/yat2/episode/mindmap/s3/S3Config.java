@@ -24,8 +24,7 @@ public class S3Config {
     @Profile("local")
     public AwsCredentialsProvider localCredentialsProvider() {
         return StaticCredentialsProvider.create(
-                AwsBasicCredentials.create(s3Properties.getAccessKey(), s3Properties.getSecretKey())
-        );
+                AwsBasicCredentials.create(s3Properties.getAccessKey(), s3Properties.getSecretKey()));
     }
 
     @Bean
@@ -38,20 +37,15 @@ public class S3Config {
     @Bean
     @Profile("local")
     public S3Presigner localS3Presigner(AwsCredentialsProvider credentialsProvider) {
-        return S3Presigner.builder()
-                .region(Region.of(s3Properties.getRegion()))
-                .endpointOverride(URI.create(s3Properties.getEndpoint()))
-                .credentialsProvider(credentialsProvider)
-                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build())
-                .build();
+        return S3Presigner.builder().region(Region.of(s3Properties.getRegion()))
+                .endpointOverride(URI.create(s3Properties.getEndpoint())).credentialsProvider(credentialsProvider)
+                .serviceConfiguration(S3Configuration.builder().pathStyleAccessEnabled(true).build()).build();
     }
 
     @Bean
     @Profile("prod")
     public S3Presigner prodS3Presigner(AwsCredentialsProvider credentialsProvider) {
-        return S3Presigner.builder()
-                .region(Region.of(s3Properties.getRegion()))
-                .credentialsProvider(credentialsProvider)
-                .build();
+        return S3Presigner.builder().region(Region.of(s3Properties.getRegion()))
+                .credentialsProvider(credentialsProvider).build();
     }
 }
