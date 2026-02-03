@@ -1,5 +1,15 @@
 package com.yat2.episode.mindmap;
 
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.mindmap.constants.MindmapConstants;
+import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
+import com.yat2.episode.mindmap.dto.MindmapDataDto;
+import com.yat2.episode.mindmap.dto.MindmapDataExceptDateDto;
+import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
+import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
+import com.yat2.episode.user.User;
+import com.yat2.episode.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -9,18 +19,6 @@ import java.net.URI;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
-import com.yat2.episode.mindmap.constants.MindmapConstants;
-import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
-import com.yat2.episode.mindmap.dto.MindmapCreatedWithUrlDto;
-import com.yat2.episode.mindmap.dto.MindmapDataDto;
-import com.yat2.episode.mindmap.dto.MindmapDataExceptDateDto;
-import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
-import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
-import com.yat2.episode.user.User;
-import com.yat2.episode.user.UserService;
 
 @RequiredArgsConstructor
 @Service
@@ -61,7 +59,7 @@ public class MindmapService {
 
 
     @Transactional
-    public MindmapDataExceptDateDto saveMindmapAndParticipant(long userId, MindmapArgsReqDto body) {
+    public MindmapDataExceptDateDto saveMindmapAndParticipant(long userId, MindmapArgsReqDto body, UUID mindmapId) {
         User user = userService.getUserOrThrow(userId);
         String finalTitle = body.title();
         if (finalTitle == null || finalTitle.isBlank()) {
@@ -69,7 +67,7 @@ public class MindmapService {
             finalTitle = getPrivateMindmapName(user);
         }
 
-        Mindmap mindmap = new Mindmap(finalTitle, body.isShared());
+        Mindmap mindmap = new Mindmap(mindmapId, finalTitle, body.isShared());
         mindmapRepository.save(mindmap);
 
         MindmapParticipant participant = new MindmapParticipant(user, mindmap);
@@ -78,15 +76,8 @@ public class MindmapService {
         return MindmapDataExceptDateDto.of(participant);
     }
 
-    @Transactional
-    public void rollbackMindmap(UUID mindmapId) {
-        mindmapRepository.findById(mindmapId).ifPresent(mindmapRepository::delete);
-    }
-
-    public MindmapCreatedWithUrlDto getUploadInfo(MindmapDataExceptDateDto mindmapDatas) {
-        Map<String, String> uploadInfo =
-                snapshotRepository.createPresignedUploadInfo("maps/" + mindmapDatas.mindmapId());
-        return new MindmapCreatedWithUrlDto(mindmapDatas, uploadInfo);
+    public Map<String, String> getUploadInfo(UUID mindmapId) {
+        return snapshotRepository.createPresignedUploadInfo("maps/" + mindmapId);
     }
 
     //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
