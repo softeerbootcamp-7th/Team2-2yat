@@ -1,4 +1,5 @@
 import { createBrowserRouter, RouterProvider } from "react-router";
+import { Toaster } from "sonner";
 
 import { AuthProvider } from "@/features/auth/providers/AuthProvider";
 import EpisodeArchivePage from "@/features/episode_archive/pages/EpisodeArchivePage";
@@ -12,7 +13,11 @@ import { ROUTE_PATHS } from "@/shared/utils/route";
 const router = createBrowserRouter([
     {
         path: ROUTE_PATHS.home,
-        element: <HomePage />,
+        element: (
+            <AuthProvider>
+                <HomePage />
+            </AuthProvider>
+        ),
         children: [
             {
                 path: ROUTE_PATHS.mindmap.list,
@@ -40,9 +45,10 @@ const router = createBrowserRouter([
 
 function App() {
     return (
-        <AuthProvider>
-            <RouterProvider router={router} />
-        </AuthProvider>
+        <>
+            <Toaster position="top-center" duration={2000} />
+            <RouterProvider router={router}></RouterProvider>
+        </>
     );
 }
 

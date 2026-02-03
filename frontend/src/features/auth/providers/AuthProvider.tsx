@@ -5,7 +5,6 @@ import { toast } from "sonner";
 
 import { logout as logoutApi } from "@/features/auth/api/auth";
 import { isApiError } from "@/features/auth/api/error";
-import { hasAuthTokens } from "@/features/auth/api/refresh";
 import { AuthContext } from "@/features/auth/hooks/useAuth";
 import type { User } from "@/features/auth/types/user";
 import { get } from "@/shared/api/method";
@@ -29,9 +28,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         error,
     } = useQuery({
         queryKey: ["auth", "user"],
-        queryFn: async () => get<User>({ endpoint: USER_ME_ENDPOINT }),
+        queryFn: async () => get<User>({ endpoint: USER_ME_ENDPOINT, options: { skipRefresh: true } }),
         staleTime: 1000 * 60 * 5,
-        enabled: hasAuthTokens(),
+        retry: false,
     });
 
     // 페이지 이동 시 ref만 업데이트(useEffect 실행 안 함)
@@ -42,6 +41,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
     useEffect(() => {
         if (isApiError(error) && error.status === 401) {
             const currentPath = pathnameRef.current;
+
             // 끝에 붙은 / 제거
             const cleanPath = currentPath.endsWith("/") && currentPath !== "/" ? currentPath.slice(0, -1) : currentPath;
 
@@ -49,7 +49,7 @@ export function AuthProvider({ children }: AuthProviderProps) {
 
             if (!isExcludedPage) {
                 toast.error("로그인이 필요합니다.");
-                navigate("/landing");
+                navigate("/login");
                 queryClient.clear();
             }
         }
