@@ -170,6 +170,14 @@ public class MindmapService {
         return MindmapDataDto.of(participant);
     }
 
+    @Transactional
+    public MindmapDataDto updateName(long userId, String mindmapId, String name) {
+        MindmapParticipant participant = findParticipantOrThrow(mindmapId, userId);
+        participant.getMindmap().updateName(name);
+
+        return MindmapDataDto.of(participant);
+    }
+
     private MindmapParticipant findParticipantOrThrow(String mindmapId, long userId) {
         return mindmapParticipantRepository.findByMindmapIdAndUserId(getUUID(mindmapId), userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
