@@ -1,6 +1,7 @@
 import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 import { Toaster } from "sonner";
 
+import { middleWare } from "@/features/auth/middleware/middleware";
 import { AuthProvider } from "@/features/auth/providers/AuthProvider";
 import EpisodeArchivePage from "@/features/episode_archive/pages/EpisodeArchivePage";
 import HomePage from "@/features/home/pages/HomePage";
@@ -26,8 +27,13 @@ const router = createBrowserRouter([
         children: [
             {
                 path: ROUTE_PATHS.home,
+                middleware: [middleWare],
                 element: <HomePage />,
                 children: [
+                    {
+                        index: true,
+                        element: <MindmapPage />,
+                    },
                     {
                         path: ROUTE_PATHS.mindmap.list,
                         element: <MindmapPage />,
