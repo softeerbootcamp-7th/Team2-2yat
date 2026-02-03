@@ -9,18 +9,12 @@ import LandingPage from "@/features/landing/pages/LandingPage";
 import MindmapPage from "@/features/mindmap/pages/MindmapPage";
 import SelfDiagnosisPage from "@/features/self_diagnosis/pages/SelfDiagnosisPage";
 import LoginPage from "@/features/user/login/pages/LoginPages";
-import Header from "@/shared/components/header/Header";
 import { ROUTE_PATHS } from "@/shared/utils/route";
 
 function RootLayout() {
     return (
         <AuthProvider>
-            <div className="flex flex-col min-h-screen">
-                <Header />
-                <main className="flex-1">
-                    <Outlet />
-                </main>
-            </div>
+            <Outlet />
         </AuthProvider>
     );
 }
