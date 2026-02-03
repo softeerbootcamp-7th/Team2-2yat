@@ -7,10 +7,8 @@ import { logout as logoutApi } from "@/features/auth/api/auth";
 import { isApiError } from "@/features/auth/api/error";
 import { AuthContext } from "@/features/auth/hooks/useAuth";
 import type { User } from "@/features/auth/types/user";
+import { USER_ME_ENDPOINT } from "@/shared/api/api";
 import { get } from "@/shared/api/method";
-
-const USER_ENDPOINT = "/users";
-const USER_ME_ENDPOINT = `${USER_ENDPOINT}/me`;
 
 type AuthProviderProps = {
     children: React.ReactNode;

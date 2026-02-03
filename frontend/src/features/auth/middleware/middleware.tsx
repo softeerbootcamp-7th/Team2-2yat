@@ -1,10 +1,9 @@
 import { redirect } from "react-router";
 
 import { User } from "@/features/auth/types/user";
+import { USER_ME_ENDPOINT } from "@/shared/api/api";
 import { get } from "@/shared/api/method";
 import { queryClient } from "@/shared/api/query_client";
-
-const USER_ME_ENDPOINT = "/users/me";
 
 export async function middleWare() {
     let user = queryClient.getQueryData(["auth", "user"]);
