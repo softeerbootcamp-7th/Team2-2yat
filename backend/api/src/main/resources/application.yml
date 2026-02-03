@@ -22,11 +22,8 @@ spring:
     show-sql: true
     properties:
       hibernate:
-        order-inserts: true
         format_sql: true
         dialect: org.hibernate.dialect.MySQLDialect
-        jdbc:
-          batch_size: 15
   
   
   # ===============================
