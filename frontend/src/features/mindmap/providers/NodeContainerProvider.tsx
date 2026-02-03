@@ -22,7 +22,7 @@ export const MindMapProvider = ({ children }: { children: React.ReactNode }) => 
             container: new MindmapContainer({
                 broker,
                 // TODO: 지금은 없으므로 ..
-                quadTreeManager: () => {},
+                quadTreeManager: undefined,
             }),
             broker,
         };

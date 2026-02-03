@@ -3,7 +3,7 @@ import { EventBroker } from "@/utils/eventBroker";
 import generateId from "@/utils/generateId";
 
 // TODO: quadtree 준비되면 의존성 주입
-type QuadTreeManager = any;
+type QuadTreeManager = undefined;
 
 const ROOT_NODE_PARENT_ID = "empty";
 const ROOT_NODE_CONTENTS = "김현대의 마인드맵";
