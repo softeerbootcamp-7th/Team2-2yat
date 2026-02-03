@@ -30,10 +30,8 @@ public interface MindmapParticipantRepository extends JpaRepository<MindmapParti
                   AND m.shared = :shared
                 ORDER BY p.isFavorite DESC, m.updatedAt DESC
             """)
-    List<MindmapParticipant> findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(
-            @Param("userId") Long userId,
-            @Param("shared") boolean shared
-    );
+    List<MindmapParticipant> findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(@Param("userId") Long userId,
+                                                                                @Param("shared") boolean shared);
 
 
     @Query("""

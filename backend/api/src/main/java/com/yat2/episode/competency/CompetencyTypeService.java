@@ -15,15 +15,10 @@ public class CompetencyTypeService {
     }
 
     public List<DetailCompetencyTypeDto> getAllData() {
-        return competencyTypeRepository.findAll().stream().map(
-                DetailCompetencyTypeDto::of
-        ).toList();
+        return competencyTypeRepository.findAll().stream().map(DetailCompetencyTypeDto::of).toList();
     }
 
     public List<DetailCompetencyTypeDto> getCompetencyTypesInMindmap(String mindmapId) {
-        return competencyTypeRepository.findByMindmapId(mindmapId)
-                .stream().map(
-                        DetailCompetencyTypeDto::of
-                ).toList();
+        return competencyTypeRepository.findByMindmapId(mindmapId).stream().map(DetailCompetencyTypeDto::of).toList();
     }
 }

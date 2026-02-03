@@ -25,8 +25,7 @@ public class AuthInterceptor implements HandlerInterceptor {
     private final JwtProvider jwtProvider;
 
     @Override
-    public boolean preHandle(@NonNull HttpServletRequest request,
-                             @NonNull HttpServletResponse response,
+    public boolean preHandle(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                              @NonNull Object handler) {
         if (!(handler instanceof HandlerMethod hm)) return true;
 
@@ -34,8 +33,7 @@ public class AuthInterceptor implements HandlerInterceptor {
             return true;
         }
 
-        String token = extractAccessToken(request)
-                .orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
+        String token = extractAccessToken(request).orElseThrow(() -> new CustomException(ErrorCode.UNAUTHORIZED));
 
         Long userId = jwtProvider.verifyAccessTokenAndGetUserId(token);
         request.setAttribute(RequestAttrs.USER_ID, userId);
@@ -47,11 +45,7 @@ public class AuthInterceptor implements HandlerInterceptor {
         Cookie[] cookies = request.getCookies();
         if (cookies == null || cookies.length == 0) return Optional.empty();
 
-        return Arrays.stream(cookies)
-                .filter(c -> ACCESS_COOKIE_NAME.equals(c.getName()))
-                .map(Cookie::getValue)
-                .map(v -> v == null ? "" : v.trim())
-                .filter(v -> !v.isBlank())
-                .findFirst();
+        return Arrays.stream(cookies).filter(c -> ACCESS_COOKIE_NAME.equals(c.getName())).map(Cookie::getValue)
+                .map(v -> v == null ? "" : v.trim()).filter(v -> !v.isBlank()).findFirst();
     }
 }

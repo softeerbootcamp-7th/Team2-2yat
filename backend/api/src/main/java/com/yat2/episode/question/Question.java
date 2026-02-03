@@ -36,12 +36,7 @@ public class Question {
     @Column(name = "guidance_message", nullable = false, length = 200)
     private String guidanceMessage;
 
-    public Question(
-            CompetencyType competencyType,
-            Job job,
-            String content,
-            String guidanceMessage
-    ) {
+    public Question(CompetencyType competencyType, Job job, String content, String guidanceMessage) {
         this.competencyType = competencyType;
         this.content = content;
         this.guidanceMessage = guidanceMessage;

@@ -32,19 +32,14 @@ public class QuestionService {
 
         List<Question> questions = questionRepository.findAllWithCompetencyByJobId(user.getJob().getId());
 
-        Map<CompetencyType.Category, List<Question>> questionsByCategory = questions.stream()
-                .collect(Collectors.groupingBy(q -> q.getCompetencyType().getCategory()));
+        Map<CompetencyType.Category, List<Question>> questionsByCategory =
+                questions.stream().collect(Collectors.groupingBy(q -> q.getCompetencyType().getCategory()));
 
-        return questionsByCategory.entrySet().stream()
-                .sorted(Map.Entry.comparingByKey())
-                .map(entry -> {
-                    CompetencyType.Category category = entry.getKey();
-                    List<SimpleQuestionDto> questionDtos = entry.getValue().stream()
-                            .map(SimpleQuestionDto::of)
-                            .toList();
+        return questionsByCategory.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(entry -> {
+            CompetencyType.Category category = entry.getKey();
+            List<SimpleQuestionDto> questionDtos = entry.getValue().stream().map(SimpleQuestionDto::of).toList();
 
-                    return new CategoryGroupResponseDto(category, questionDtos);
-                })
-                .toList();
+            return new CategoryGroupResponseDto(category, questionDtos);
+        }).toList();
     }
 }

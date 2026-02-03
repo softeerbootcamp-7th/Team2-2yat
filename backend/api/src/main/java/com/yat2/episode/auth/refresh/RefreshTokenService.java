@@ -27,8 +27,7 @@ public class RefreshTokenService {
     @Transactional
     public void save(Long userId, String refreshToken) {
         String tokenHash = hash(refreshToken);
-        LocalDateTime expiresAt = LocalDateTime.now()
-                .plus(Duration.ofMillis(jwtProperties.getRefreshTokenExpiry()));
+        LocalDateTime expiresAt = LocalDateTime.now().plus(Duration.ofMillis(jwtProperties.getRefreshTokenExpiry()));
 
         refreshTokenRepository.upsertByUserId(userId, tokenHash, expiresAt);
     }

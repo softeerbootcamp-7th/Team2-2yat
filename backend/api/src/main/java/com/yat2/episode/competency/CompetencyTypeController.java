@@ -32,12 +32,9 @@ public class CompetencyTypeController {
 
     @GetMapping("/mindmap/{mindmapId}")
     public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(
-            @RequestAttribute(USER_ID) long userId,
-            @PathVariable String mindmapId) {
+            @RequestAttribute(USER_ID) long userId, @PathVariable String mindmapId) {
         mindmapService.getMindmapByUUIDString(userId, mindmapId);
-        return ResponseEntity.ok(
-                competencyTypeService.getCompetencyTypesInMindmap(mindmapId)
-        );
+        return ResponseEntity.ok(competencyTypeService.getCompetencyTypesInMindmap(mindmapId));
     }
 
 }

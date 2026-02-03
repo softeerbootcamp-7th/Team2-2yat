@@ -27,37 +27,21 @@ public class KakaoIdTokenVerifier {
     private final DefaultJWTClaimsVerifier<SecurityContext> claimsVerifier;
 
     public KakaoIdTokenVerifier(KakaoProperties props) throws MalformedURLException {
-        DefaultResourceRetriever retriever =
-                new DefaultResourceRetriever(2000, 5000);
+        DefaultResourceRetriever retriever = new DefaultResourceRetriever(2000, 5000);
 
-        JWKSource<SecurityContext> jwkSource =
-                new RemoteJWKSet<>(
-                        new URL(props.jwksUrl()),
-                        retriever
-                );
+        JWKSource<SecurityContext> jwkSource = new RemoteJWKSet<>(new URL(props.jwksUrl()), retriever);
 
-        JWSKeySelector<SecurityContext> keySelector =
-                new JWSVerificationKeySelector<>(
-                        JWSAlgorithm.RS256,
-                        jwkSource
-                );
+        JWSKeySelector<SecurityContext> keySelector = new JWSVerificationKeySelector<>(JWSAlgorithm.RS256, jwkSource);
 
-        DefaultJWTProcessor<SecurityContext> processor =
-                new DefaultJWTProcessor<>();
+        DefaultJWTProcessor<SecurityContext> processor = new DefaultJWTProcessor<>();
         processor.setJWSKeySelector(keySelector);
 
         this.jwtProcessor = processor;
 
-        JWTClaimsSet expectedClaims = new JWTClaimsSet.Builder()
-                .issuer(props.issuer())
-                .audience(props.getClientId())
-                .build();
+        JWTClaimsSet expectedClaims =
+                new JWTClaimsSet.Builder().issuer(props.issuer()).audience(props.getClientId()).build();
 
-        this.claimsVerifier =
-                new DefaultJWTClaimsVerifier<>(
-                        expectedClaims,
-                        Set.of("sub", "exp", "iat")
-                );
+        this.claimsVerifier = new DefaultJWTClaimsVerifier<>(expectedClaims, Set.of("sub", "exp", "iat"));
     }
 
     public JWTClaimsSet verify(String idToken) {

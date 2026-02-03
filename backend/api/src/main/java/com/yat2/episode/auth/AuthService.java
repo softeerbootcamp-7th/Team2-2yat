@@ -33,8 +33,7 @@ public class AuthService {
 
         Long kakaoUserId = Long.parseLong(claims.getSubject());
 
-        String nickname = Optional.ofNullable((String) claims.getClaim("nickname"))
-                .orElse("USER_" + kakaoUserId);
+        String nickname = Optional.ofNullable((String) claims.getClaim("nickname")).orElse("USER_" + kakaoUserId);
 
         User user = userService.getOrCreateKakaoUser(kakaoUserId, nickname);
 

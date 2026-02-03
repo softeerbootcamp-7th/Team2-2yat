@@ -30,8 +30,7 @@ public class EpisodeId implements Serializable {
     public boolean equals(Object o) {
         if (this == o) return true;
         if (!(o instanceof EpisodeId that)) return false;
-        return Objects.equals(nodeId, that.nodeId) &&
-                Objects.equals(userId, that.userId);
+        return Objects.equals(nodeId, that.nodeId) && Objects.equals(userId, that.userId);
     }
 
     @Override

@@ -44,26 +44,19 @@ public class MindmapService {
     }
 
     private List<MindmapDataDto> getMindmapsByShared(Long userId, boolean shared) {
-        return mindmapParticipantRepository.findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(userId, shared)
-                .stream()
-                .map(MindmapDataDto::of)
-                .toList();
+        return mindmapParticipantRepository.findByUserIdAndSharedOrderByFavoriteAndUpdatedDesc(userId, shared).stream()
+                .map(MindmapDataDto::of).toList();
     }
 
     private List<MindmapDataDto> getAllMindmap(Long userId) {
-        return mindmapParticipantRepository.findByUserIdOrderByFavoriteAndUpdatedDesc(userId)
-                .stream()
-                .map(MindmapDataDto::of)
-                .toList();
+        return mindmapParticipantRepository.findByUserIdOrderByFavoriteAndUpdatedDesc(userId).stream()
+                .map(MindmapDataDto::of).toList();
     }
 
 
     @Transactional(readOnly = true)
     public List<MindmapIdentityDto> getMindmapList(Long userId) {
-        return mindmapRepository.findByUserIdOrderByCreatedDesc(userId)
-                .stream()
-                .map(MindmapIdentityDto::of)
-                .toList();
+        return mindmapRepository.findByUserIdOrderByCreatedDesc(userId).stream().map(MindmapIdentityDto::of).toList();
     }
 
 
@@ -178,15 +171,11 @@ public class MindmapService {
     }
 
     private MindmapParticipant findParticipantOrThrow(String mindmapId, long userId) {
-        return mindmapParticipantRepository
-                .findByMindmapIdAndUserId(getUUID(mindmapId), userId)
+        return mindmapParticipantRepository.findByMindmapIdAndUserId(getUUID(mindmapId), userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.MINDMAP_NOT_FOUND));
     }
 
     public URI getCreatedURI(UUID mindmapId) {
-        return ServletUriComponentsBuilder.fromCurrentRequest()
-                .path("/{mindmapId}")
-                .buildAndExpand(mindmapId)
-                .toUri();
+        return ServletUriComponentsBuilder.fromCurrentRequest().path("/{mindmapId}").buildAndExpand(mindmapId).toUri();
     }
 }

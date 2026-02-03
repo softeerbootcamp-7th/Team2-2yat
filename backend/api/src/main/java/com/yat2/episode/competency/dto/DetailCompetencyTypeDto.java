@@ -13,9 +13,7 @@ public class DetailCompetencyTypeDto {
 
 
     public static DetailCompetencyTypeDto of(CompetencyType competencyType) {
-        return DetailCompetencyTypeDto.builder()
-                .id(competencyType.getId())
-                .competencyType(competencyType.getTypeName())
+        return DetailCompetencyTypeDto.builder().id(competencyType.getId()).competencyType(competencyType.getTypeName())
                 .build();
     }
 }
