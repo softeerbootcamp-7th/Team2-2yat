@@ -1,13 +1,19 @@
 name: CD(Stage)
 
+concurrency:
+  group: stage-deploy
+  cancel-in-progress: false
+
 on:
   push:
-    branches: [dev]
+    branches: [ dev ]
     paths:
       - "backend/**"
+      - "infra/stage/**"
 
 jobs:
   deploy:
+    name: Deploy (Stage)
     runs-on: ubuntu-latest
 
     permissions:
@@ -42,7 +48,7 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build & Push Image (stage)
+      - name: Build & Push Image (Stage)
         run: |
           IMAGE=ghcr.io/${{ github.repository_owner }}/episode-api
           TAG=${GITHUB_SHA::7}
@@ -62,19 +68,29 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.STAGE_EC2_HOST }} >> ~/.ssh/known_hosts
 
-      - name: Deploy via SSH (stage)
+      - name: Sync infra files to server
+        working-directory: .
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            infra/stage/ \
+            ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }}:/home/${{ secrets.STAGE_EC2_USER }}/app/
+
+      - name: Deploy via SSH (Stage)
         run: |
           ssh ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }} << 'EOF'
             set -e
             cd /home/${{ secrets.STAGE_EC2_USER }}/app
 
-            docker pull ghcr.io/${{ github.repository_owner }}/episode-api:stage
+            docker compose pull
             docker compose up -d
+            docker compose exec -T caddy caddy validate --config /etc/caddy/Caddyfile
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
 
             docker image prune -f
           EOF
 
-      - name: Health check (stage)
+      - name: Health check (Stage)
         run: |
           set -e
           URL="https://stage.episode.io.kr/actuator/health"

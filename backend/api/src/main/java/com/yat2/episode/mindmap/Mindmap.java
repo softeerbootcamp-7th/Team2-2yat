@@ -34,6 +34,10 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
+    public void updateName(String name) {
+        this.name = name;
+    }
+
     public Mindmap(String name, boolean shared) {
         this.name = name;
         this.shared = shared;

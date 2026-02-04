@@ -1,13 +1,19 @@
 name: CD
 
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 on:
   push:
-    branches: [release]
+    branches: [ release ]
     paths:
       - "backend/**"
+      - "infra/prod/**"
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     permissions:
@@ -62,15 +68,24 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Sync infra files to server
+        working-directory: .
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            infra/prod/ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app/
+
       - name: Deploy via SSH
         run: |
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
-
             cd /home/${{ secrets.EC2_USER }}/app
 
-            docker pull ghcr.io/${{ github.repository_owner }}/episode-api:latest
+            docker compose pull
             docker compose up -d
+            docker compose exec -T caddy caddy validate --config /etc/caddy/Caddyfile
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
 
             docker image prune -f
           EOF
