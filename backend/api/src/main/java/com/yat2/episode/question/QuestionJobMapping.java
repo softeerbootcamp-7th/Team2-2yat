@@ -18,7 +18,7 @@ import com.yat2.episode.job.Job;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "question_job_mapping")
+@Table(name = "question_job_mappings")
 public class QuestionJobMapping {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

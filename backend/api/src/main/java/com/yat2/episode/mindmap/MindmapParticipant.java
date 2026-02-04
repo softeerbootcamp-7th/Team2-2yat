@@ -18,8 +18,9 @@ import com.yat2.episode.user.User;
 
 @Entity
 @Getter
-@Table(name = "mindmap_participant", uniqueConstraints = @UniqueConstraint(name = "uk_mindmap_participant_user_mindmap",
-        columnNames = { "user_id", "mindmap_id" }))
+@Table(name = "mindmap_participants",
+        uniqueConstraints = @UniqueConstraint(name = "uk_mindmap_participant_user_mindmap",
+                columnNames = { "user_id", "mindmap_id" }))
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class MindmapParticipant {
 

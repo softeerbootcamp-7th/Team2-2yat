@@ -1,0 +1,10 @@
+ALTER TABLE competency_type RENAME TO competency_types;
+ALTER TABLE diagnosis_result RENAME TO diagnosis_results;
+ALTER TABLE diagnosis_weakness RENAME TO diagnosis_weaknesses;
+ALTER TABLE episode RENAME TO episodes;
+ALTER TABLE job RENAME TO jobs;
+ALTER TABLE mindmap RENAME TO mindmaps;
+ALTER TABLE mindmap_participant RENAME TO mindmap_participants;
+ALTER TABLE occupation RENAME TO occupations;
+ALTER TABLE question RENAME TO questions;
+ALTER TABLE question_job_mapping RENAME TO question_job_mappings;

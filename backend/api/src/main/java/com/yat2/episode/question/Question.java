@@ -19,7 +19,7 @@ import com.yat2.episode.job.Job;
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "question")
+@Table(name = "questions")
 public class Question {
 
     @Id

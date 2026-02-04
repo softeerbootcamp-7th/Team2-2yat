@@ -15,7 +15,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "mindmap")
+@Table(name = "mindmaps")
 public class Mindmap {
     @Id
     @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
@@ -34,12 +34,12 @@ public class Mindmap {
     @Column(name = "is_shared", nullable = false)
     private boolean shared;
 
-    public void updateName(String name) {
-        this.name = name;
-    }
-
     public Mindmap(String name, boolean shared) {
         this.name = name;
         this.shared = shared;
+    }
+
+    public void updateName(String name) {
+        this.name = name;
     }
 }

@@ -1,4 +1,4 @@
-INSERT INTO question_job_mapping (question_id, job_id)
+INSERT INTO question_job_mappings (question_id, job_id)
 SELECT q.id, j.id
 FROM (
          SELECT '공동의 목표를 가진 팀 활동 중 가장 기억에 남는 경험을 한 가지 선택하여, 팀에서의 역할과 기여, 성과를 구체적으로 작성해 주세요.' AS q_content, '경영기획·전략·사업기획' AS j_name UNION ALL
@@ -502,10 +502,10 @@ FROM (
          SELECT '주어진 업무 외에 스스로 필요성을 느껴 주도적으로 실행한 경험을 서술해 주십시오.' AS q_content, '현장시공·관리·공무' AS j_name UNION ALL
          SELECT '주어진 업무 외에 스스로 필요성을 느껴 주도적으로 실행한 경험을 서술해 주십시오.' AS q_content, '안전관리·환경' AS j_name
      ) AS seed
-         JOIN question q ON q.content = seed.q_content
-         JOIN job j ON j.name = seed.j_name;
+         JOIN questions q ON q.content = seed.q_content
+         JOIN jobs j ON j.name = seed.j_name;
 
-INSERT INTO question_job_mapping (question_id, job_id)
+INSERT INTO question_job_mappings (question_id, job_id)
 SELECT q.id, j.id
 FROM (
          SELECT '주어진 업무 외에 스스로 필요성을 느껴 주도적으로 실행한 경험을 서술해 주십시오.' AS q_content, '견적·원가·시공관리' AS j_name UNION ALL
@@ -1009,10 +1009,10 @@ FROM (
          SELECT '여러 대안 중에서 어려운 선택을 해야 했던 경험을 제시하고, 선택 기준과 의사결정 과정을 상세히 작성해 주세요.' AS q_content, '디지털마케팅·퍼포먼스·그로스해킹' AS j_name UNION ALL
          SELECT '여러 대안 중에서 어려운 선택을 해야 했던 경험을 제시하고, 선택 기준과 의사결정 과정을 상세히 작성해 주세요.' AS q_content, '시장조사·리서치' AS j_name
      ) AS seed
-         JOIN question q ON q.content = seed.q_content
-         JOIN job j ON j.name = seed.j_name;
+         JOIN questions q ON q.content = seed.q_content
+         JOIN jobs j ON j.name = seed.j_name;
 
-INSERT INTO question_job_mapping (question_id, job_id)
+INSERT INTO question_job_mappings (question_id, job_id)
 SELECT q.id, j.id
 FROM (
          SELECT '여러 대안 중에서 어려운 선택을 해야 했던 경험을 제시하고, 선택 기준과 의사결정 과정을 상세히 작성해 주세요.' AS q_content, '콘텐츠마케팅' AS j_name UNION ALL
@@ -1516,10 +1516,10 @@ FROM (
          SELECT '주변에서 모두가 당연하게 받아들이던 방식을 창의적으로 바꾸어 성과를 낸 사례가 있다면 설명해 주십시오.' AS q_content, '작가·시나리오' AS j_name UNION ALL
          SELECT '주변에서 모두가 당연하게 받아들이던 방식을 창의적으로 바꾸어 성과를 낸 사례가 있다면 설명해 주십시오.' AS q_content, '브랜드디자인·패키지' AS j_name
      ) AS seed
-         JOIN question q ON q.content = seed.q_content
-         JOIN job j ON j.name = seed.j_name;
+         JOIN questions q ON q.content = seed.q_content
+         JOIN jobs j ON j.name = seed.j_name;
 
-INSERT INTO question_job_mapping (question_id, job_id)
+INSERT INTO question_job_mappings (question_id, job_id)
 SELECT q.id, j.id
 FROM (
          SELECT '주변에서 모두가 당연하게 받아들이던 방식을 창의적으로 바꾸어 성과를 낸 사례가 있다면 설명해 주십시오.' AS q_content, '방송·영상제작' AS j_name UNION ALL
@@ -1793,5 +1793,5 @@ FROM (
          SELECT '짧은 시간 안에 많은 일을 처리해야 했던 상황에서, 어떻게 우선순위를 정하고 실행하여 마무리했는지 작성해 주세요.' AS q_content, '택배·배송·기사' AS j_name UNION ALL
          SELECT '짧은 시간 안에 많은 일을 처리해야 했던 상황에서, 어떻게 우선순위를 정하고 실행하여 마무리했는지 작성해 주세요.' AS q_content, '물류운전·포크레인·트럭' AS j_name
      ) AS seed
-         JOIN question q ON q.content = seed.q_content
-         JOIN job j ON j.name = seed.j_name;
+         JOIN questions q ON q.content = seed.q_content
+         JOIN jobs j ON j.name = seed.j_name;
