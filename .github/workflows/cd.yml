@@ -13,6 +13,7 @@ on:
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     permissions:
@@ -71,6 +72,7 @@ jobs:
         working-directory: .
         run: |
           rsync -avz --delete \
+            --exclude='.env' \
             infra/prod/ \
             ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app/
 
