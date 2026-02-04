@@ -1,0 +1,20 @@
+api.episode.io.kr {
+
+    encode zstd gzip
+
+    header {
+               Strict-Transport-Security "max-age=31536000;"
+               X-Frame-Options DENY
+               X-Content-Type-Options nosniff
+           }
+    log {
+            output stdout
+            format console
+        }
+
+    reverse_proxy api:8080 {
+                               header_up Host {host}
+                               header_up X-Real-IP {remote_host}
+                               header_up X-Forwarded-Proto {scheme}
+                           }
+}
