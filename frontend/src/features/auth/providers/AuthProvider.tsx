@@ -10,7 +10,7 @@ import { AuthContext } from "@/features/auth/hooks/useAuth";
 import type { User } from "@/features/auth/types/user";
 import { USER_ME_ENDPOINT } from "@/shared/api/api";
 import { get } from "@/shared/api/method";
-import { ROUTE_PATHS } from "@/shared/utils/route";
+import { routeHelper } from "@/shared/utils/route";
 
 type AuthProviderProps = {
     children: React.ReactNode;
@@ -39,11 +39,11 @@ export function AuthProvider({ children }: AuthProviderProps) {
             // 끝에 붙은 / 제거
             const cleanPath = currentPath.endsWith("/") && currentPath !== "/" ? currentPath.slice(0, -1) : currentPath;
 
-            const isExcludedPage = cleanPath === ROUTE_PATHS.landing || cleanPath === ROUTE_PATHS.login;
+            const isExcludedPage = cleanPath === routeHelper.landing() || cleanPath === routeHelper.login();
 
             if (!isExcludedPage) {
                 toast.error("로그인이 필요합니다.");
-                navigate(ROUTE_PATHS.login);
+                navigate(routeHelper.login());
                 queryClient.clear();
             }
         }

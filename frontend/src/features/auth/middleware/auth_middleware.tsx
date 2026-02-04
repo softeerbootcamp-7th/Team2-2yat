@@ -5,7 +5,7 @@ import { User } from "@/features/auth/types/user";
 import { USER_ME_ENDPOINT } from "@/shared/api/api";
 import { get } from "@/shared/api/method";
 import { queryClient } from "@/shared/api/query_client";
-import { ROUTE_PATHS } from "@/shared/utils/route";
+import { routeHelper } from "@/shared/utils/route";
 
 export async function authMiddleWare() {
     let user = queryClient.getQueryData(AUTH_QUERY_KEYS.user);
@@ -18,7 +18,7 @@ export async function authMiddleWare() {
             });
             queryClient.setQueryData(AUTH_QUERY_KEYS.user, user);
         } catch {
-            throw redirect(ROUTE_PATHS.landing);
+            throw redirect(routeHelper.landing());
         }
     }
 }

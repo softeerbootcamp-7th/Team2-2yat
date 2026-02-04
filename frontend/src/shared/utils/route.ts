@@ -1,4 +1,4 @@
-export const ROUTE_PATHS = {
+const ROUTE_PATHS = {
     home: "/",
     mindmap: {
         list: "/mindmaps",

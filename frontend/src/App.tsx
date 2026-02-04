@@ -9,7 +9,7 @@ import MindmapPage from "@/features/mindmap/pages/MindmapPage";
 import SelfDiagnosisPage from "@/features/self_diagnosis/pages/SelfDiagnosisPage";
 import LoginPage from "@/features/user/login/pages/LoginPages";
 import { Toaster } from "@/shared/components/ui/sonner";
-import { ROUTE_PATHS } from "@/shared/utils/route";
+import { routeHelper } from "@/shared/utils/route";
 
 function RootLayout() {
     return (
@@ -32,27 +32,27 @@ const router = createBrowserRouter([
                         element: <MindmapPage />,
                     },
                     {
-                        path: ROUTE_PATHS.mindmap.list,
+                        path: routeHelper.mindmap.list(),
                         element: <MindmapPage />,
                     },
                     {
-                        path: ROUTE_PATHS.episode_archive,
+                        path: routeHelper.episode_archive(),
                         element: <EpisodeArchivePage />,
                     },
                     {
-                        path: ROUTE_PATHS.self_diagnosis.list,
+                        path: routeHelper.self_diagnosis.list(),
                         element: <SelfDiagnosisPage />,
                     },
                 ],
             },
             {
-                path: ROUTE_PATHS.landing,
+                path: routeHelper.landing(),
                 element: <LandingPage />,
             },
         ],
     },
     {
-        path: ROUTE_PATHS.login,
+        path: routeHelper.login(),
         element: <LoginPage />,
     },
 ]);
