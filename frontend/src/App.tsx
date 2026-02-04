@@ -1,5 +1,6 @@
-import { createBrowserRouter, RouterProvider } from "react-router";
+import { createBrowserRouter, Outlet, RouterProvider } from "react-router";
 
+import { authMiddleWare } from "@/features/auth/middleware/auth_middleware";
 import { AuthProvider } from "@/features/auth/providers/AuthProvider";
 import EpisodeArchivePage from "@/features/episode_archive/pages/EpisodeArchivePage";
 import HomePage from "@/features/home/pages/HomePage";
@@ -7,42 +8,61 @@ import LandingPage from "@/features/landing/pages/LandingPage";
 import MindmapPage from "@/features/mindmap/pages/MindmapPage";
 import SelfDiagnosisPage from "@/features/self_diagnosis/pages/SelfDiagnosisPage";
 import LoginPage from "@/features/user/login/pages/LoginPages";
-import { ROUTE_PATHS } from "@/shared/utils/route";
+import { Toaster } from "@/shared/components/ui/sonner";
+import { routeHelper } from "@/shared/utils/route";
+
+function RootLayout() {
+    return (
+        <AuthProvider>
+            <Outlet />
+        </AuthProvider>
+    );
+}
 
 const router = createBrowserRouter([
     {
-        path: ROUTE_PATHS.home,
-        element: <HomePage />,
+        element: <RootLayout />,
         children: [
             {
-                path: ROUTE_PATHS.mindmap.list,
-                element: <MindmapPage />,
+                element: <HomePage />,
+                middleware: [authMiddleWare],
+                children: [
+                    {
+                        index: true,
+                        element: <MindmapPage />,
+                    },
+                    {
+                        path: routeHelper.mindmap.list(),
+                        element: <MindmapPage />,
+                    },
+                    {
+                        path: routeHelper.episode_archive(),
+                        element: <EpisodeArchivePage />,
+                    },
+                    {
+                        path: routeHelper.self_diagnosis.list(),
+                        element: <SelfDiagnosisPage />,
+                    },
+                ],
             },
             {
-                path: ROUTE_PATHS.episode_archive,
-                element: <EpisodeArchivePage />,
-            },
-            {
-                path: ROUTE_PATHS.self_diagnosis.list,
-                element: <SelfDiagnosisPage />,
+                path: routeHelper.landing(),
+                element: <LandingPage />,
             },
         ],
     },
     {
-        path: ROUTE_PATHS.landing,
-        element: <LandingPage />,
-    },
-    {
-        path: ROUTE_PATHS.login,
+        path: routeHelper.login(),
         element: <LoginPage />,
     },
 ]);
 
 function App() {
     return (
-        <AuthProvider>
-            <RouterProvider router={router} />
-        </AuthProvider>
+        <>
+            <Toaster position="top-center" duration={2000} />
+            <RouterProvider router={router}></RouterProvider>
+        </>
     );
 }
 

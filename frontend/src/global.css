@@ -134,6 +134,12 @@
     --color-postit-bg: #ffdcd7;
     --color-postit-text: var(--color-postit-base);
     --color-postit-dot: color-mix(in srgb, var(--color-postit-base), transparent 40%);
+
+    /* toast */
+    --popover: #e7000b77;
+    --popover-foreground: #f9f9f9;
+    --border: #fff1f2;
+    --radius: 0.625rem;
 }
 
 /**
