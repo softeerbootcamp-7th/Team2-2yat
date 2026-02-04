@@ -29,15 +29,3 @@ export const ERROR_CODES = {
     // unknown
     UNKNOWN_ERROR: "알 수 없는 오류가 발생했습니다.",
 } as const;
-
-export const ERROR_META = {
-    TOKEN_REFRESH_ERROR: {
-        name: "TOKEN_REFRESH_ERROR",
-        defaultMessage: "토큰 갱신에 실패했습니다.",
-    },
-} as const;
-
-export const ERROR_CODE_KEYS = Object.entries(ERROR_CODES).reduce(
-    (acc, [key]) => ({ ...acc, [key]: key }),
-    {} as Record<ErrorCodeKey, ErrorCodeKey>,
-);

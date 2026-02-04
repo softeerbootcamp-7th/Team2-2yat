@@ -2,13 +2,13 @@ import { toSafeApiError } from "@/features/auth/api/error";
 import { getRefreshState, refreshToken, setRefreshState } from "@/features/auth/api/refresh";
 import { ApiError } from "@/features/auth/types/api";
 import type { FetchOptions } from "@/shared/api/types";
-import { ERROR_CODE_KEYS, ERROR_CODES } from "@/shared/constants/error";
+import { ERROR_CODES } from "@/shared/constants/error";
 
 const API_BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const TOKEN_REFRESH_ERROR: ApiError = {
     status: 401,
-    code: ERROR_CODE_KEYS.TOKEN_EXPIRED,
+    code: "TOKEN_EXPIRED",
     message: ERROR_CODES.TOKEN_EXPIRED,
 };
 
@@ -60,7 +60,7 @@ export async function fetchWithAuth<T>(endpoint: string, options: FetchOptions =
         if (!response.ok) {
             const error: ApiError = await response.json().catch(() => ({
                 status: response.status,
-                code: ERROR_CODE_KEYS.UNKNOWN_ERROR,
+                code: "UNKNOWN_ERROR",
                 message: `HTTP ${response.status}: ${response.statusText}`,
             }));
             throw error;
