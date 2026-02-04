@@ -1,5 +1,5 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router";
 import { toast } from "sonner";
 
@@ -20,7 +20,6 @@ export function AuthProvider({ children }: AuthProviderProps) {
     const queryClient = useQueryClient();
     const navigate = useNavigate();
     const { pathname } = useLocation();
-    const pathnameRef = useRef(pathname);
 
     const {
         data: user,
@@ -33,14 +32,9 @@ export function AuthProvider({ children }: AuthProviderProps) {
         retry: false,
     });
 
-    // 페이지 이동 시 ref만 업데이트(useEffect 실행 안 함)
-    useEffect(() => {
-        pathnameRef.current = pathname;
-    }, [pathname]);
-
     useEffect(() => {
         if (isApiError(error) && error.status === 401) {
-            const currentPath = pathnameRef.current;
+            const currentPath = pathname;
 
             // 끝에 붙은 / 제거
             const cleanPath = currentPath.endsWith("/") && currentPath !== "/" ? currentPath.slice(0, -1) : currentPath;
