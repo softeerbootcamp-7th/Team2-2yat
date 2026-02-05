@@ -8,10 +8,14 @@ public record DiagnosisSummaryDto(
         int diagnosisId,
         String jobName,
         LocalDateTime createdAt,
-        int lackCountOfCompetency
+        int weaknessCount
 ) {
-    public static DiagnosisSummaryDto of(DiagnosisResult diagnosisResult, int lackCountOfCompetency) {
+    public DiagnosisSummaryDto(int diagnosisId, String jobName, LocalDateTime createdAt, Long weaknessCount) {
+        this(diagnosisId, jobName, createdAt, weaknessCount.intValue());
+    }
+
+    public static DiagnosisSummaryDto of(DiagnosisResult diagnosisResult, int weaknessCount) {
         return new DiagnosisSummaryDto(diagnosisResult.getId(), diagnosisResult.getJob().getName(),
-                                       diagnosisResult.getCreatedAt(), lackCountOfCompetency);
+                                       diagnosisResult.getCreatedAt(), weaknessCount);
     }
 }
