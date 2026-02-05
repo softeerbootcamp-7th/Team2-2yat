@@ -1,5 +1,6 @@
 import { Point } from "@/features/quad_tree/types/point";
 import { Rect } from "@/features/quad_tree/types/rect";
+import { intersects, isPointInRect } from "@/features/quad_tree/utils/helpers/rect_helper";
 
 /**
  * QuadTree
@@ -44,20 +45,10 @@ export default class QuadTree {
         };
     }
 
-    /** 해당 점이 현재 Quad의 영역 내에 포함되는지 확인 */
-    contains(point: Point) {
-        return (
-            this.bounds.minX <= point.x &&
-            point.x <= this.bounds.maxX &&
-            this.bounds.minY <= point.y &&
-            point.y <= this.bounds.maxY
-        );
-    }
-
-    /** 새로운 점을 트리에 삽입, 개수 > limit 이면, 하위 영역으로 분할하고 자식 노드로 전달 */
+    /** [Add/Drop] 점 삽입: 개수 > limit 이면, 하위 영역으로 분할하고 자식 노드로 전달 */
     insert(point: Point): boolean {
         // 삽입하려는 점이 현재 Quad 영역에 속하지 않으면 삽입 거부
-        if (!this.contains(point)) {
+        if (!this.isPointInBounds(point)) {
             return false;
         }
 
@@ -80,9 +71,9 @@ export default class QuadTree {
         return this.delegateInsert(point);
     }
 
-    /** 트리에서 특정 점을 삭제하고, 삭제 후 데이터 밀도가 낮아지면 영역 병합 */
+    /** [Remove/DragStart] 점 삭제 : 삭제 후 데이터 밀도가 낮아지면 tryMerge */
     remove(point: Point): boolean {
-        if (!this.contains(point)) {
+        if (!this.isPointInBounds(point)) {
             return false;
         }
 
@@ -101,8 +92,29 @@ export default class QuadTree {
         return removed;
     }
 
+    /**[DragMove] 범위 탐색 : 마우스 주변의 스냅 가능한 노드 확보 */
+    getPointsInRange(range: Rect, found: Point[] = []): Point[] {
+        if (!intersects(this.bounds, range)) {
+            return found;
+        }
+
+        this.points.forEach((point) => {
+            if (isPointInRect(point, range)) {
+                found.push(point);
+            }
+        });
+
+        if (this.children) {
+            this.children.NW.getPointsInRange(range, found);
+            this.children.NE.getPointsInRange(range, found);
+            this.children.SW.getPointsInRange(range, found);
+            this.children.SE.getPointsInRange(range, found);
+        }
+        return found;
+    }
+
     /** 하위 노드들의 점 개수 합 <= limit 이하일 경우, 부모 노드로 병합 */
-    private tryMerge() {
+    tryMerge() {
         if (!this.children) {
             return;
         }
@@ -113,6 +125,11 @@ export default class QuadTree {
             this.collectAllPoints(this.points);
             this.children = null; // 자식 Quad 연결 해제
         }
+    }
+
+    /** 해당 점이 현재 Quad의 영역 내에 포함되는지 확인 */
+    private isPointInBounds(point: Point) {
+        return isPointInRect(point, this.bounds);
     }
 
     /** 현재 노드 이하의 총 노드 개수 반환 */
@@ -140,7 +157,7 @@ export default class QuadTree {
     }
 
     /** 현재 노드가 보유한 점들을 자식 노드로 이동시킨 후 현재 목록 비우기 */
-    moveToChild() {
+    private moveToChild() {
         this.points.forEach((point) => this.delegateInsert(point));
         this.points.clear();
     }
@@ -149,10 +166,10 @@ export default class QuadTree {
     private delegateInsert(point: Point): boolean {
         const { NW, NE, SW, SE } = this.children!;
 
-        if (NW.contains(point)) return NW.insert(point);
-        if (NE.contains(point)) return NE.insert(point);
-        if (SW.contains(point)) return SW.insert(point);
-        if (SE.contains(point)) return SE.insert(point);
+        if (NW.isPointInBounds(point)) return NW.insert(point);
+        if (NE.isPointInBounds(point)) return NE.insert(point);
+        if (SW.isPointInBounds(point)) return SW.insert(point);
+        if (SE.isPointInBounds(point)) return SE.insert(point);
 
         return false;
     }
@@ -161,10 +178,10 @@ export default class QuadTree {
     private delegateRemove(point: Point): boolean {
         const { NW, NE, SW, SE } = this.children!;
 
-        if (NW.contains(point)) return NW.remove(point);
-        if (NE.contains(point)) return NE.remove(point);
-        if (SW.contains(point)) return SW.remove(point);
-        if (SE.contains(point)) return SE.remove(point);
+        if (NW.isPointInBounds(point)) return NW.remove(point);
+        if (NE.isPointInBounds(point)) return NE.remove(point);
+        if (SW.isPointInBounds(point)) return SW.remove(point);
+        if (SE.isPointInBounds(point)) return SE.remove(point);
 
         return false;
     }
