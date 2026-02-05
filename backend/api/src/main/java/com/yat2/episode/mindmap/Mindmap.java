@@ -43,6 +43,7 @@ public class Mindmap implements Persistable<UUID> {
     public Mindmap(UUID id, String name, boolean shared) {
         this.id = id;
         this.name = name;
+        this.shared = shared;
     }
 
     public void updateName(String name) {
