@@ -72,10 +72,6 @@ class QuestionServiceTest {
 
         List<CategoryGroupResponseDto> result = questionService.getQuestionSetByUserId(userId);
 
-        result.forEach(group -> {
-            group.questions().forEach(q -> System.out.println("  - [" + q.id() + "] " + q.content()));
-        });
-
         assertThat(result).hasSize(2);
         assertThat(result.get(0).category()).isEqualTo(CompetencyType.Category.협업_커뮤니케이션_역량);
         assertThat(result.get(0).questions()).hasSize(2);
