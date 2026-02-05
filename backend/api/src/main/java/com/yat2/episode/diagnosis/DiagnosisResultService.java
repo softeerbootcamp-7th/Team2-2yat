@@ -44,6 +44,10 @@ public class DiagnosisResultService {
         return DiagnosisSummaryDto.of(diagnosisResult, weaknesses.size());
     }
 
+    public List<DiagnosisSummaryDto> getDiagnosisSummariesByUserId(Long userId) {
+        return diagnosisResultRepository.findDiagnosisSummariesByUserId(userId);
+    }
+
     private void validateUserJob(User user) {
         if (user.getJob() == null) {
             throw new CustomException(ErrorCode.JOB_NOT_SELECTED);
