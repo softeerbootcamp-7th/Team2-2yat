@@ -6,6 +6,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import com.yat2.episode.diagnosis.dto.DiagnosisSummaryDto;
 
@@ -27,6 +28,23 @@ public interface DiagnosisResultRepository extends JpaRepository<DiagnosisResult
                     """
     )
     List<DiagnosisSummaryDto> findDiagnosisSummariesByUserId(
+            @Param("userId") Long userId
+    );
+
+    @Query(
+            """
+                        SELECT DISTINCT d
+                        FROM DiagnosisResult d
+                        LEFT JOIN FETCH d.job
+                        LEFT JOIN FETCH d.user
+                        LEFT JOIN FETCH DiagnosisWeakness w ON w.diagnosisResult = d
+                        LEFT JOIN FETCH w.question q
+                        WHERE d.id = :diagnosisId
+                          AND d.user.kakaoId = :userId
+                    """
+    )
+    Optional<DiagnosisResult> findDetailByIdAndUserId(
+            @Param("diagnosisId") Integer diagnosisId,
             @Param("userId") Long userId
     );
 }

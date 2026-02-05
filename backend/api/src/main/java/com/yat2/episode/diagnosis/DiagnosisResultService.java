@@ -7,11 +7,13 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 import com.yat2.episode.diagnosis.dto.DiagnosisArgsReqDto;
+import com.yat2.episode.diagnosis.dto.DiagnosisDetailDto;
 import com.yat2.episode.diagnosis.dto.DiagnosisSummaryDto;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.question.Question;
 import com.yat2.episode.question.QuestionRepository;
+import com.yat2.episode.question.dto.QuestionDetailDto;
 import com.yat2.episode.user.User;
 import com.yat2.episode.user.UserService;
 
@@ -46,6 +48,18 @@ public class DiagnosisResultService {
 
     public List<DiagnosisSummaryDto> getDiagnosisSummariesByUserId(Long userId) {
         return diagnosisResultRepository.findDiagnosisSummariesByUserId(userId);
+    }
+
+    public DiagnosisDetailDto getDiagnosisDetailById(Integer diagnosisId, Long userId) {
+        DiagnosisResult diagnosis = diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, userId)
+                .orElseThrow(() -> new CustomException(ErrorCode.DIAGNOSIS_NOT_FOUND));
+
+        List<QuestionDetailDto> weaknesses =
+                diagnosis.getWeaknesses().stream().map(DiagnosisWeakness::getQuestion).map(QuestionDetailDto::of)
+                        .toList();
+
+        return new DiagnosisDetailDto(diagnosis.getId(), diagnosis.getJob().getName(), diagnosis.getCreatedAt(),
+                                      weaknesses);
     }
 
     private void validateUserJob(User user) {
