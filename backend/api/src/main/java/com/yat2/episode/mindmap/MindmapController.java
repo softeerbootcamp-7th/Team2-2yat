@@ -32,6 +32,7 @@ import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.exception.ErrorResponse;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
+import com.yat2.episode.global.utils.UriUtil;
 import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
 import com.yat2.episode.mindmap.dto.MindmapCreatedWithUrlDto;
 import com.yat2.episode.mindmap.dto.MindmapDataDto;
