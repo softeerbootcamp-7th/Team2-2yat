@@ -37,5 +37,9 @@
         <module name="UnusedImports"/>
         <module name="AvoidStarImport"/>
 
+        <module name="AnnotationLocation">
+            <property name="allowSamelineMultipleAnnotations" value="false"/>
+        </module>
+
     </module>
 </module>

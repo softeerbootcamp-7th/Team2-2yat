@@ -16,7 +16,7 @@ import java.util.UUID;
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@Table(name = "mindmap")
+@Table(name = "mindmaps")
 public class Mindmap implements Persistable<UUID> {
     @Id
     @Column(name = "id", columnDefinition = "BINARY(16)")
@@ -43,7 +43,6 @@ public class Mindmap implements Persistable<UUID> {
     public Mindmap(UUID id, String name, boolean shared) {
         this.id = id;
         this.name = name;
-        this.shared = shared;
     }
 
     public void updateName(String name) {

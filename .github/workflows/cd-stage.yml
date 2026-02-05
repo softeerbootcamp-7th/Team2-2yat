@@ -1,0 +1,171 @@
+name: CD(Stage)
+
+concurrency:
+  group: stage-deploy
+  cancel-in-progress: false
+
+on:
+  push:
+    branches: [ dev ]
+    paths:
+      - "backend/**"
+      - "infra/stage/**"
+      - ".github/workflows/cd-stage.yml"
+
+jobs:
+  deploy:
+    name: Deploy (Stage)
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      packages: write
+
+    defaults:
+      run:
+        working-directory: backend/api
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 17
+          cache: gradle
+
+      - name: Build JAR
+        run: ./gradlew clean bootJar
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Login to GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Build & Push Image (Stage)
+        run: |
+          IMAGE=ghcr.io/${{ github.repository_owner }}/episode-api
+          TAG=${GITHUB_SHA::7}
+
+          docker buildx build \
+            --cache-from type=gha \
+            --cache-to type=gha,mode=max \
+            --platform linux/arm64 \
+            -t $IMAGE:stage \
+            -t $IMAGE:stage-$TAG \
+            --push .
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.STAGE_EC2_SSH_KEY }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.STAGE_EC2_HOST }} >> ~/.ssh/known_hosts
+
+      - name: Backup infra files
+        run: |
+          ssh ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }} << 'EOF'
+            set -e
+            cd /home/${{ secrets.STAGE_EC2_USER }}/app
+          
+            [ -f docker-compose.yml ] && cp docker-compose.yml .docker-compose.prev.yml || echo "No docker-compose to backup"
+            [ -f Caddyfile ] && cp Caddyfile .Caddyfile.prev || echo "No Caddyfile to backup"
+          EOF
+
+      - name: Sync infra files to server
+        working-directory: .
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            --exclude='.Caddyfile.prev' \
+            --exclude='.docker-compose.prev.yml' \
+            infra/stage/ \
+            ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }}:/home/${{ secrets.STAGE_EC2_USER }}/app/
+
+      - name: Deploy via SSH (Stage)
+        run: |
+          ssh ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }} << 'EOF'
+            set -e
+            cd /home/${{ secrets.STAGE_EC2_USER }}/app
+          
+            CURRENT_ID=$(docker inspect episode-api \
+              --format '{{.Image}}' 2>/dev/null || true)
+          
+            if [ ! -z "$CURRENT_ID" ]; then
+              echo "$CURRENT_ID" > .prev_image_id
+              echo "Saved previous image ID: $CURRENT_ID"
+            else
+              rm -f .prev_image_id || true
+            fi
+
+            docker compose pull
+            docker compose up -d
+            docker compose exec -T caddy caddy validate --config /etc/caddy/Caddyfile
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+
+          EOF
+
+      - name: Health check (Stage)
+        id: health_check
+        run: |
+          set -e
+          URL="https://stage.episode.io.kr/actuator/health"
+
+          echo "Checking health:"
+          for i in $(seq 1 30); do
+            resp="$(curl -sS --max-time 5 -w "\n%{http_code}" "$URL" || true)"
+            body="$(echo "$resp" | head -n 1)"
+            code="$(echo "$resp" | tail -n 1)"
+
+            echo "try=$i http=$code body=$body"
+
+            if [ "$code" = "200" ] && echo "$body" | grep -q '"status":"UP"'; then
+              echo "Health is UP"
+              exit 0
+            fi
+
+            sleep 5
+          done
+
+          echo "Health check failed"
+          exit 1
+
+      - name: Rollback on failure
+        if: failure() && steps.health_check.outcome == 'failure'
+        run: |
+          echo "Health check failed. Rolling back..."
+          ssh ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }} << 'EOF'
+            cd /home/${{ secrets.STAGE_EC2_USER }}/app
+          
+            [ -f .docker-compose.prev.yml ] && mv .docker-compose.prev.yml docker-compose.yml || echo "No previous docker-compose found"
+            [ -f .Caddyfile.prev ] && mv .Caddyfile.prev Caddyfile || echo "No previous Caddyfile found"
+          
+            if [ ! -f .prev_image_id ]; then
+              echo "No previous image ID found."
+              exit 1
+            fi
+          
+            TARGET_ID=$(cat .prev_image_id)
+          
+            echo "Restoring Image ID: $TARGET_ID"
+            docker tag $TARGET_ID ghcr.io/${{ github.repository_owner }}/episode-api:stage
+          
+            docker compose up -d
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile || true
+          
+            echo "Rollback completed."
+          EOF
+
+      - name: Cleanup Images
+        if: always()
+        run: |
+          ssh ${{ secrets.STAGE_EC2_USER }}@${{ secrets.STAGE_EC2_HOST }} << 'EOF'
+            docker image prune -f
+          EOF

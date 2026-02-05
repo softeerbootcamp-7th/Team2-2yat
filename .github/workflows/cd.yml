@@ -1,13 +1,20 @@
 name: CD
 
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
 on:
   push:
-    branches: [release]
+    branches: [ release ]
     paths:
       - "backend/**"
+      - "infra/prod/**"
+      - ".github/workflows/cd.yml"
 
 jobs:
   deploy:
+    name: Deploy
     runs-on: ubuntu-latest
 
     permissions:
@@ -62,20 +69,51 @@ jobs:
           chmod 600 ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.EC2_HOST }} >> ~/.ssh/known_hosts
 
+      - name: Backup infra files
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            set -e
+            cd /home/${{ secrets.EC2_USER }}/app
+          
+            [ -f docker-compose.yml ] && cp docker-compose.yml .docker-compose.prev.yml || echo "No docker-compose to backup"
+            [ -f Caddyfile ] && cp Caddyfile .Caddyfile.prev || echo "No Caddyfile to backup"
+          EOF
+
+      - name: Sync infra files to server
+        working-directory: .
+        run: |
+          rsync -avz --delete \
+            --exclude='.env' \
+            --exclude='.Caddyfile.prev' \
+            --exclude='.docker-compose.prev.yml' \
+            infra/prod/ \
+            ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }}:/home/${{ secrets.EC2_USER }}/app/
+
       - name: Deploy via SSH
         run: |
           ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
             set -e
-
             cd /home/${{ secrets.EC2_USER }}/app
 
-            docker pull ghcr.io/${{ github.repository_owner }}/episode-api:latest
-            docker compose up -d
+            CURRENT_ID=$(docker inspect episode-api \
+              --format '{{.Image}}' 2>/dev/null || true)
 
-            docker image prune -f
+            if [ ! -z "$CURRENT_ID" ]; then
+              echo "$CURRENT_ID" > .prev_image_id
+              echo "Saved previous image ID: $CURRENT_ID"
+            else
+              rm -f .prev_image_id || true
+            fi
+
+            docker compose pull
+            docker compose up -d
+            docker compose exec -T caddy caddy validate --config /etc/caddy/Caddyfile
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile
+
           EOF
 
       - name: Health check
+        id: health_check
         run: |
           set -e
           URL="https://api.episode.io.kr/actuator/health"
@@ -98,3 +136,36 @@ jobs:
 
           echo "Health check failed"
           exit 1
+
+      - name: Rollback on failure
+        if: failure() && steps.health_check.outcome == 'failure'
+        run: |
+          echo "Health check failed. Rolling back..."
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            cd /home/${{ secrets.EC2_USER }}/app
+
+            [ -f .docker-compose.prev.yml ] && mv .docker-compose.prev.yml docker-compose.yml || echo "No previous docker-compose found"
+            [ -f .Caddyfile.prev ] && mv .Caddyfile.prev Caddyfile || echo "No previous Caddyfile found"
+
+            if [ ! -f .prev_image_id ]; then
+              echo "No previous image ID found."
+              exit 1
+            fi
+
+            TARGET_ID=$(cat .prev_image_id)
+
+            echo "Restoring Image ID: $TARGET_ID"
+            docker tag $TARGET_ID ghcr.io/${{ github.repository_owner }}/episode-api:latest
+
+            docker compose up -d
+            docker compose exec -T caddy caddy reload --config /etc/caddy/Caddyfile || true
+
+            echo "Rollback completed."
+          EOF
+
+      - name: Cleanup Images
+        if: always()
+        run: |
+          ssh ${{ secrets.EC2_USER }}@${{ secrets.EC2_HOST }} << 'EOF'
+            docker image prune -f
+          EOF

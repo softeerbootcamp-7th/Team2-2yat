@@ -23,7 +23,7 @@ import com.yat2.episode.user.User;
 @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "episode")
+@Table(name = "episodes")
 public class Episode {
 
     @EmbeddedId

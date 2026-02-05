@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-@Table(name = "competency_type")
+@Table(name = "competency_types")
 public class CompetencyType {
 
     @Id

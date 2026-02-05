@@ -69,14 +69,22 @@ public class AuthController {
     }
 
     @GetMapping("/callback")
-    @Operation(summary = "카카오 OAuth 콜백",
+    @Operation(
+            summary = "카카오 OAuth 콜백",
             description = "카카오에서 전달된 code/state를 검증하고 토큰을 발급한 뒤, " + "access_token" + "/refresh_token 쿠키를 설정하고 프론트로 " +
-                          "Redirect 합니다.")
-    @ApiResponses({ @ApiResponse(responseCode = "302",
-            description = "프론트 Redirect + Set-Cookie(access_token, " + "refresh_token)"), })
+                          "Redirect 합니다."
+    )
+    @ApiResponses(
+            { @ApiResponse(
+                    responseCode = "302", description = "프론트 Redirect + Set-Cookie(access_token, " + "refresh_token)"
+            ), }
+    )
     @ApiErrorCodes({ ErrorCode.INVALID_OAUTH_STATE, ErrorCode.INVALID_OAUTH_ID_TOKEN, ErrorCode.INTERNAL_ERROR })
-    public ResponseEntity<Void> kakaoCallback(HttpSession session, @RequestParam("code") String code,
-                                              @RequestParam("state") String state) {
+    public ResponseEntity<Void> kakaoCallback(
+            HttpSession session,
+            @RequestParam("code") String code,
+            @RequestParam("state") String state
+    ) {
         try {
             String sessionState = (String) session.getAttribute(SESSION_STATE);
             if (sessionState == null || !sessionState.equals(state)) {
@@ -106,8 +114,12 @@ public class AuthController {
     @ApiResponses({ @ApiResponse(responseCode = "204", description = "재발급 성공 (응답 바디 없음, Set-Cookie로 토큰 갱신)") })
     @ApiErrorCodes({ ErrorCode.INVALID_TOKEN_TYPE, ErrorCode.INTERNAL_ERROR })
     public ResponseEntity<Void> refresh(
-            @Parameter(in = ParameterIn.COOKIE, name = "refresh_token", description = "Refresh Token 쿠키",
-                    required = true) @CookieValue(value = "refresh_token", required = false) String refreshToken) {
+            @Parameter(
+                    in = ParameterIn.COOKIE, name = "refresh_token", description = "Refresh Token 쿠키", required = true
+            )
+            @CookieValue(value = "refresh_token", required = false)
+            String refreshToken
+    ) {
         IssuedTokens tokens = authService.refresh(refreshToken);
 
         ResponseCookie accessCookie = authCookieFactory.access(tokens.accessToken());
@@ -123,7 +135,9 @@ public class AuthController {
     @ApiErrorCodes(ErrorCode.INTERNAL_ERROR)
     public ResponseEntity<Void> logout(
             @Parameter(in = ParameterIn.COOKIE, name = "refresh_token", description = "Refresh Token 쿠키 (없어도 로그아웃 처리됨)")
-            @CookieValue(value = "refresh_token", required = false) String refreshToken) {
+            @CookieValue(value = "refresh_token", required = false)
+            String refreshToken
+    ) {
         refreshTokenService.deleteByRefreshToken(refreshToken);
 
         ResponseCookie expiredAccess = authCookieFactory.deleteAccess();

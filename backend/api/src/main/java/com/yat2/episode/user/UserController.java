@@ -34,11 +34,17 @@ public class UserController {
 
     @GetMapping("/me")
     @Operation(summary = "내 정보 조회", description = "인증된 사용자의 userId, nickname, onboarded, guideSeen 정보를 반환합니다.")
-    @ApiResponses({ @ApiResponse(responseCode = "200", description = "조회 성공",
-            content = @Content(schema = @Schema(implementation = UserMeResponse.class))), })
+    @ApiResponses(
+            { @ApiResponse(
+                    responseCode = "200", description = "조회 성공",
+                    content = @Content(schema = @Schema(implementation = UserMeResponse.class))
+            ), }
+    )
     @AuthRequiredErrors
     @ApiErrorCodes({ ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR })
-    public UserMeResponse getMe(@RequestAttribute(USER_ID) long userId) {
+    public UserMeResponse getMe(
+            @RequestAttribute(USER_ID) long userId
+    ) {
         return userService.getMe(userId);
     }
 
@@ -48,7 +54,13 @@ public class UserController {
     @ApiErrorCodes({ ErrorCode.INTERNAL_ERROR, ErrorCode.USER_NOT_FOUND, ErrorCode.JOB_NOT_FOUND })
     @PatchMapping("/me/job")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void updateMyJob(@RequestAttribute(USER_ID) long userId, @RequestParam @NotNull @Positive Integer jobId) {
+    public void updateMyJob(
+            @RequestAttribute(USER_ID) long userId,
+            @RequestParam
+            @NotNull
+            @Positive
+            Integer jobId
+    ) {
         userService.updateJob(userId, jobId);
     }
 
@@ -58,7 +70,9 @@ public class UserController {
     @ApiErrorCodes({ ErrorCode.INTERNAL_ERROR, ErrorCode.USER_NOT_FOUND })
     @PatchMapping("/me/feature-guide")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void markFeatureGuideWatched(@RequestAttribute(USER_ID) long userId) {
+    public void markFeatureGuideWatched(
+            @RequestAttribute(USER_ID) long userId
+    ) {
         userService.markFeatureGuideWatched(userId);
     }
 }

@@ -1,0 +1,30 @@
+services:
+  api:
+    image: ghcr.io/softeerbootcamp-7th/episode-api:latest
+    container_name: episode-api
+    restart: unless-stopped
+    env_file: .env
+    networks:
+      - web
+
+  caddy:
+    image: caddy:2.10.2-alpine
+    container_name: episode-caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - web
+
+networks:
+  web:
+    driver: bridge
+
+volumes:
+  caddy_data:
+  caddy_config:

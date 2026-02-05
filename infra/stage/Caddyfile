@@ -1,0 +1,38 @@
+(common_headers) {
+    header {
+               Strict-Transport-Security "max-age=31536000;"
+               X-Frame-Options DENY
+               X-Content-Type-Options nosniff
+           }
+}
+
+(common_log) {
+    log {
+            output stdout
+            format console
+        }
+}
+
+stage.episode.io.kr {
+    import common_headers
+    import common_log
+
+    encode zstd gzip
+
+    reverse_proxy api:8080 {
+                               header_up Host {host}
+                               header_up X-Real-IP {remote_host}
+                               header_up X-Forwarded-Proto {scheme}
+                           }
+}
+
+stage.episode.io.kr:9000 {
+    import common_headers
+    import common_log
+
+    reverse_proxy minio:9000 {
+                                 header_up Host {host}
+                                 header_up X-Real-IP {remote_host}
+                                 header_up X-Forwarded-Proto {scheme}
+                             }
+}
