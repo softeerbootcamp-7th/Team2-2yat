@@ -103,5 +103,9 @@ public class SwaggerConfig {
                 .value(new ErrorExample(e.getHttpStatus().value(), e.getCode(), e.getMessage()));
     }
 
-    record ErrorExample(int status, String code, String message) {}
+    record ErrorExample(
+            int status,
+            String code,
+            String message
+    ) {}
 }

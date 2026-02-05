@@ -7,11 +7,13 @@ import java.util.List;
 
 public interface JobRepository extends JpaRepository<Job, Integer> {
 
-    @Query("""
-            SELECT j
-            FROM Job j
-            JOIN FETCH j.occupation o
-            ORDER BY o.name ASC, j.name ASC
-            """)
+    @Query(
+            """
+                    SELECT j
+                    FROM Job j
+                    JOIN FETCH j.occupation o
+                    ORDER BY o.name ASC, j.name ASC
+                    """
+    )
     List<Job> findAllWithOccupation();
 }

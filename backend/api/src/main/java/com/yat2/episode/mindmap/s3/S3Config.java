@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import software.amazon.awssdk.auth.credentials.AwsBasicCredentials;
 import software.amazon.awssdk.auth.credentials.AwsCredentialsProvider;
-import software.amazon.awssdk.auth.credentials.DefaultCredentialsProvider;
+import software.amazon.awssdk.auth.credentials.InstanceProfileCredentialsProvider;
 import software.amazon.awssdk.auth.credentials.StaticCredentialsProvider;
 import software.amazon.awssdk.regions.Region;
 import software.amazon.awssdk.services.s3.S3Configuration;
@@ -30,7 +30,7 @@ public class S3Config {
     @Bean
     @Profile("prod")
     public AwsCredentialsProvider prodCredentialsProvider() {
-        return DefaultCredentialsProvider.create(); // 여기서 EC2 Role을 알아서 찾아옴
+        return InstanceProfileCredentialsProvider.create();
     }
 
 

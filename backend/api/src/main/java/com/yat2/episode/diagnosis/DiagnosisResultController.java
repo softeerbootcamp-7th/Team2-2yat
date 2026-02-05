@@ -30,16 +30,22 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 public class DiagnosisResultController {
     private final DiagnosisResultService diagnosisResultService;
 
-    @Operation(summary = "진단 저장", description = """
+    @Operation(
+            summary = "진단 저장", description = """
             답변하지 못한 데이터를 기반으로 진단을 저장합니다.
-            """)
+            """
+    )
     @ApiResponses({ @ApiResponse(responseCode = "201", description = "저장 성공") })
     @AuthRequiredErrors
-    @ApiErrorCodes({ ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.QUESTION_NOT_FOUND,
-                     ErrorCode.JOB_NOT_SELECTED })
+    @ApiErrorCodes(
+            { ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR, ErrorCode.QUESTION_NOT_FOUND,
+              ErrorCode.JOB_NOT_SELECTED }
+    )
     @PostMapping()
-    public ResponseEntity<DiagnosisSimpleDto> createDiagnosis(@RequestAttribute(USER_ID) long userId,
-                                                              @RequestBody DiagnosisArgsReqDto reqBody) {
+    public ResponseEntity<DiagnosisSimpleDto> createDiagnosis(
+            @RequestAttribute(USER_ID) long userId,
+            @RequestBody DiagnosisArgsReqDto reqBody
+    ) {
         DiagnosisSimpleDto resBody = diagnosisResultService.createDiagnosis(userId, reqBody);
         URI location = UriUtil.createLocationUri(resBody.diagnosisId());
         return ResponseEntity.created(location).body(resBody);

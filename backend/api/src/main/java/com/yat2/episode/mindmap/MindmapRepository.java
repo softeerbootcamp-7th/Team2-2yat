@@ -14,27 +14,38 @@ import java.util.UUID;
 @Repository
 public interface MindmapRepository extends JpaRepository<Mindmap, UUID> {
 
-    @Query("""
-                SELECT m
-                FROM MindmapParticipant p
-                JOIN p.mindmap m
-                WHERE p.user.kakaoId = :userId
-                ORDER BY m.createdAt DESC
-            """)
-    List<Mindmap> findByUserIdOrderByCreatedDesc(@Param("userId") Long userId);
+    @Query(
+            """
+                        SELECT m
+                        FROM MindmapParticipant p
+                        JOIN p.mindmap m
+                        WHERE p.user.kakaoId = :userId
+                        ORDER BY m.createdAt DESC
+                    """
+    )
+    List<Mindmap> findByUserIdOrderByCreatedDesc(
+            @Param("userId") Long userId
+    );
 
-    @Query("""
-                SELECT m.name
-                FROM MindmapParticipant p
-                JOIN p.mindmap m
-                WHERE m.name LIKE CONCAT(:name, '%')
-                  AND p.user.kakaoId = :userId
-            """)
-    List<String> findAllNamesByBaseName(@Param("name") String name, @Param("userId") Long userId);
+    @Query(
+            """
+                        SELECT m.name
+                        FROM MindmapParticipant p
+                        JOIN p.mindmap m
+                        WHERE m.name LIKE CONCAT(:name, '%')
+                          AND p.user.kakaoId = :userId
+                    """
+    )
+    List<String> findAllNamesByBaseName(
+            @Param("name") String name,
+            @Param("userId") Long userId
+    );
 
 
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select m from Mindmap m where m.id = :id")
-    Optional<Mindmap> findByIdWithLock(@Param("id") UUID id);
+    Optional<Mindmap> findByIdWithLock(
+            @Param("id") UUID id
+    );
 
 }

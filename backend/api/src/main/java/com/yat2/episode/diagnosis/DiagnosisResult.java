@@ -37,7 +37,7 @@ public class DiagnosisResult {
     @JoinColumn(name = "job_id", nullable = false)
     private Job job;
 
-    @Column(name = "created_at", insertable = false, updatable = false)
+    @Column(name = "created_at", insertable = false, updatable = false, nullable = false)
     private LocalDateTime createdAt;
 
     public DiagnosisResult(User user, Job job) {

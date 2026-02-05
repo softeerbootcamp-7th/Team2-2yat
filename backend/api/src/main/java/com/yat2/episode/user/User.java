@@ -27,6 +27,7 @@ public class User {
     @JoinColumn(name = "job_id")
     private Job job;
 
+
     @Column(nullable = false, length = 45)
     private String nickname;
 

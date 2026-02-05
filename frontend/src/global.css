@@ -134,6 +134,12 @@
     --color-postit-bg: #ffdcd7;
     --color-postit-text: var(--color-postit-base);
     --color-postit-dot: color-mix(in srgb, var(--color-postit-base), transparent 40%);
+
+    /* toast */
+    --popover: #e7000b77;
+    --popover-foreground: #f9f9f9;
+    --border: #fff1f2;
+    --radius: 0.625rem;
 }
 
 /**
@@ -152,5 +158,15 @@
 @layer utilities {
     .shadow-violet-glow {
         box-shadow: 0 0 15px 0 var(--color-node-violet-op-30, --color-node-violet-op-30);
+    }
+
+    .node-group:hover .action-buttons {
+        opacity: 1;
+        visibility: visible;
+    }
+    .action-buttons {
+        opacity: 0;
+        visibility: hidden;
+        transition: opacity 0.2s;
     }
 }

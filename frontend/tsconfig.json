@@ -3,6 +3,7 @@
         "module": "preserve",
         "moduleResolution": "bundler",
         "strict": true,
+        "target": "esnext",
         "jsx": "react-jsx",
         "baseUrl": "./src",
         "skipLibCheck": true,

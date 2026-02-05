@@ -1,11 +1,21 @@
 import { ApiError } from "@/features/auth/types/api";
-import { ERROR_CODE_KEYS, ERROR_CODES } from "@/shared/constants/error";
+import { ERROR_CODES } from "@/shared/constants/error";
 
 /**
  * ApiError 타입 가드
  */
-function isApiError(error: unknown): error is ApiError {
-    return error !== null && typeof error === "object" && "status" in error && "code" in error && "message" in error;
+export function isApiError(error: unknown): error is ApiError {
+    if (error === null) {
+        return false;
+    }
+
+    if (typeof error !== "object") {
+        return false;
+    }
+
+    const hasRequiredFields = "status" in error && "code" in error && "message" in error;
+
+    return hasRequiredFields;
 }
 
 /**
@@ -17,7 +27,7 @@ export function toSafeApiError(error: unknown): ApiError {
     }
     return {
         status: 500,
-        code: ERROR_CODE_KEYS.UNKNOWN_ERROR,
+        code: "UNKNOWN_ERROR",
         message: error instanceof Error ? ERROR_CODES.UNKNOWN_ERROR : "알 수 없는 오류가 발생했습니다.",
     };
 }
