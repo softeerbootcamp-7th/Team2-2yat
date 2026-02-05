@@ -4,9 +4,11 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestAttribute;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,6 +19,7 @@ import java.net.URI;
 import java.util.List;
 
 import com.yat2.episode.diagnosis.dto.DiagnosisArgsReqDto;
+import com.yat2.episode.diagnosis.dto.DiagnosisDetailDto;
 import com.yat2.episode.diagnosis.dto.DiagnosisSummaryDto;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
@@ -33,14 +36,27 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 public class DiagnosisResultController {
     private final DiagnosisResultService diagnosisResultService;
 
-    @Operation(summary = "나의 진단 리스트 조회", description = "나의 과거 진단 결과들을 응답합니다.")
+    @Operation(summary = "나의 진단 리스트 조회")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "조회 성공") })
-    @ApiErrorCodes({ ErrorCode.INTERNAL_ERROR })
+    @ApiErrorCodes(ErrorCode.INTERNAL_ERROR)
     @GetMapping()
     public List<DiagnosisSummaryDto> getDiagnosisSummaries(
             @RequestAttribute(USER_ID) Long userId
     ) {
         return diagnosisResultService.getDiagnosisSummariesByUserId(userId);
+    }
+
+    @Operation(summary = "진단 결과 상세 조회")
+    @ApiResponses({ @ApiResponse(responseCode = "200", description = "조회 성공") })
+    @ApiErrorCodes({ ErrorCode.INTERNAL_ERROR, ErrorCode.INVALID_REQUEST })
+    @GetMapping("/{diagnosisId}")
+    public DiagnosisDetailDto getDiagnosisDetailById(
+            @PathVariable
+            @Positive(message = "Id는 1 이상의 정수여야 합니다.")
+            Integer diagnosisId,
+            @RequestAttribute(USER_ID) Long userId
+    ) {
+        return diagnosisResultService.getDiagnosisDetailById(diagnosisId, userId);
     }
 
     @Operation(
