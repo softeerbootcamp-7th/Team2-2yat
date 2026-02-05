@@ -1,16 +1,5 @@
 package com.yat2.episode.mindmap;
 
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
-import com.yat2.episode.mindmap.constants.MindmapConstants;
-import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
-import com.yat2.episode.mindmap.dto.MindmapDataDto;
-import com.yat2.episode.mindmap.dto.MindmapDataExceptDateDto;
-import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
-import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
-import com.yat2.episode.mindmap.s3.dto.S3UploadResponseDto;
-import com.yat2.episode.user.User;
-import com.yat2.episode.user.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +9,19 @@ import java.net.URI;
 import java.util.List;
 import java.util.UUID;
 
+import com.yat2.episode.global.exception.CustomException;
+import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.mindmap.constants.MindmapConstants;
+import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
+import com.yat2.episode.mindmap.dto.MindmapDataDto;
+import com.yat2.episode.mindmap.dto.MindmapDataExceptDateDto;
+import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
+import com.yat2.episode.mindmap.s3.S3ObjectKeyGenerator;
+import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
+import com.yat2.episode.mindmap.s3.dto.S3UploadResponseDto;
+import com.yat2.episode.user.User;
+import com.yat2.episode.user.UserService;
+
 @RequiredArgsConstructor
 @Service
 public class MindmapService {
@@ -27,6 +29,7 @@ public class MindmapService {
     private final MindmapParticipantRepository mindmapParticipantRepository;
     private final S3SnapshotRepository snapshotRepository;
     private final UserService userService;
+    private final S3ObjectKeyGenerator s3ObjectKeyGenerator;
 
     public MindmapDataDto getMindmapById(Long userId, String mindmapIdStr) {
         return MindmapDataDto.of(getMindmapByUUIDString(userId, mindmapIdStr));
@@ -77,7 +80,7 @@ public class MindmapService {
     }
 
     public S3UploadResponseDto getUploadInfo(UUID mindmapId) {
-        return snapshotRepository.createPresignedUploadInfo("maps/" + mindmapId);
+        return snapshotRepository.createPresignedUploadInfo(s3ObjectKeyGenerator.generateMindmapSnapshotKey(mindmapId));
     }
 
     //todo: S3로 스냅샷이 들어오지 않거나.. 잘못된 데이터가 들어온 경우 체크 후 db에서 삭제
