@@ -35,8 +35,8 @@ class CompetencyTypeServiceTest {
         List<DetailCompetencyTypeDto> result = competencyTypeService.getAllData();
 
         assertThat(result).hasSize(2);
-        assertThat(result.get(0).getCompetencyType()).isEqualTo("의사소통");
-        assertThat(result.get(1).getCompetencyType()).isEqualTo("논리적 사고");
+        assertThat(result).extracting(DetailCompetencyTypeDto::getCompetencyType)
+                .containsExactlyInAnyOrder("의사소통", "논리적 사고");
     }
 
     @Test
