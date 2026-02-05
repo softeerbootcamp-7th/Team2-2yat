@@ -175,35 +175,4 @@ export default class QuadTree {
 
         return NW.remove(point) || NE.remove(point) || SW.remove(point) || SE.remove(point);
     }
-
-    /**================= 디버깅 확인 용 ===================*/
-    /** [시각화용] 깊이 정보를 포함하여 모든 영역 수집 */
-    getAllBounds(depth: number = 0, boundsList: { rect: Rect; depth: number }[] = []): { rect: Rect; depth: number }[] {
-        boundsList.push({ rect: this.bounds, depth });
-
-        if (this.children) {
-            this.children.NW.getAllBounds(depth + 1, boundsList);
-            this.children.NE.getAllBounds(depth + 1, boundsList);
-            this.children.SW.getAllBounds(depth + 1, boundsList);
-            this.children.SE.getAllBounds(depth + 1, boundsList);
-        }
-        return boundsList;
-    }
-
-    /** [탐색 시각화용] 특정 범위를 탐색할 때 거쳐가는(방문하는) 모든 쿼드 영역을 수집합니다. */
-    getVisitedBounds(range: Rect, visited: Rect[] = []): Rect[] {
-        if (!intersects(this.bounds, range)) {
-            return visited;
-        }
-
-        visited.push(this.bounds); // 탐색 대상이 된 영역 추가
-
-        if (this.children) {
-            this.children.NW.getVisitedBounds(range, visited);
-            this.children.NE.getVisitedBounds(range, visited);
-            this.children.SW.getVisitedBounds(range, visited);
-            this.children.SE.getVisitedBounds(range, visited);
-        }
-        return visited;
-    }
 }
