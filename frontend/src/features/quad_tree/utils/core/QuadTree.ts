@@ -4,7 +4,7 @@ import { Rect } from "@/features/quad_tree/types/rect";
 /**
  * QuadTree
  *  bounds: Quad 객체가 담당하는 영역
- *  points: 현재 Quad에 저장된 노드
+ *  points: 현재 Quad에 저장된 점
  *  limit: bounds에 저장할 수 있는 최대 노드 수
  *  children: 자식 쿼드
  */
@@ -24,9 +24,7 @@ export default class QuadTree {
         this.limit = limit;
     }
 
-    /**
-     * 4개의 영역으로 쪼개기
-     */
+    /** 현재 영역을 4개의 하위 영역으로 분할 */
     split() {
         const { minX, maxX, minY, maxY } = this.bounds;
 
@@ -46,9 +44,7 @@ export default class QuadTree {
         };
     }
 
-    /**
-     *  현재 영역에 point 노드가 있는지 판별
-     */
+    /** 해당 점이 현재 Quad의 영역 내에 포함되는지 확인 */
     contains(point: Point) {
         return (
             this.bounds.minX <= point.x &&
@@ -58,36 +54,33 @@ export default class QuadTree {
         );
     }
 
-    /**
-     * 노드를 이동한 이후에 이동한 영역으로 기존 노드를 이동시키기
-     */
+    /** 새로운 점을 트리에 삽입, 개수 > limit 이면, 하위 영역으로 분할하고 자식 노드로 전달 */
     insert(point: Point): boolean {
-        // 이 영역에 없다면
+        // 삽입하려는 점이 현재 Quad 영역에 속하지 않으면 삽입 거부
         if (!this.contains(point)) {
             return false;
         }
-        // 자식 Quad가 있으면 -> 이미 4개 초과했다는 것이므로 자식 Quad 로 위임하기
-        // TODO : 이때 자식의 어디로 갈지 판단
+
+        // 이미 분할된 상태라면 자식 노드에게 삽입 위임
         if (this.children) {
             return this.delegateInsert(point);
         }
 
-        // 자식 Quad 가 없다면
-        // 자식 노드 개수 < 최대 개수
+        // 현재 노드에 여유 공간이 있으면 점을 직접 추가
         if (this.points.size < this.limit) {
             this.points.add(point);
             return true;
         }
-        // 자식 노드 꽉 찼다면 분할 후 이사
-        this.split(); // 자식 Quad 생성
-        this.moveToChild(); // 기존 Quad에 있는 points -> 자식 Quad로 복사
 
-        return this.delegateInsert(point); // 새로 들어온 point도 위임
+        // 용량 초과 시 영역을 4개로 분할하고 기존 점들을 자식 노드로 재배치
+        this.split();
+        this.moveToChild();
+
+        // 새로 들어온 점도 자식 노드로 위임
+        return this.delegateInsert(point);
     }
 
-    /**
-     * 노드 삭제
-     */
+    /** 트리에서 특정 점을 삭제하고, 삭제 후 데이터 밀도가 낮아지면 영역 병합 */
     remove(point: Point): boolean {
         if (!this.contains(point)) {
             return false;
@@ -96,22 +89,19 @@ export default class QuadTree {
         let removed = false;
 
         if (this.children) {
-            // 자식에게 삭제 위임
             removed = this.delegateRemove(point);
 
             if (removed) {
                 this.tryMerge();
             }
         } else {
-            // 내가 leaf 노드라면 직접 삭제
+            // 리프 노드인 경우 직접 점 삭제
             removed = this.points.delete(point);
         }
         return removed;
     }
 
-    /**
-     * 자식 Quad가 가진 점의 개수 총합 < limit 이면, 자식 Quad 삭제(null)하고 다시 부모로 회수
-     */
+    /** 하위 노드들의 점 개수 합 <= limit 이하일 경우, 부모 노드로 병합 */
     private tryMerge() {
         if (!this.children) {
             return;
@@ -125,9 +115,7 @@ export default class QuadTree {
         }
     }
 
-    /**
-     * 현재 노드 이하의 모든 points 개수
-     */
+    /** 현재 노드 이하의 총 노드 개수 반환 */
     private countAllPoints(): number {
         if (!this.children) {
             return 0;
@@ -137,9 +125,7 @@ export default class QuadTree {
         return NW.countAllPoints() + NE.countAllPoints() + SW.countAllPoints() + SE.countAllPoints();
     }
 
-    /**
-     * 자식 노드들에 흩어진 모든 점을 하나의 Set으로 모으기
-     */
+    /** 자식 노드들에 흩어진 모든 점을 하나의 Set으로 수집 */
     private collectAllPoints(points: Set<Point>) {
         if (!this.children) {
             this.points.forEach((point) => points.add(point));
@@ -153,15 +139,13 @@ export default class QuadTree {
         SE.collectAllPoints(points);
     }
 
-    /**
-     * 현재 points를 자식 QuadTree로 이동시키기
-     *  해당 자식의 Rect에 포함되면 넘긴다.
-     */
+    /** 현재 노드가 보유한 점들을 자식 노드로 이동시킨 후 현재 목록 비우기 */
     moveToChild() {
         this.points.forEach((point) => this.delegateInsert(point));
         this.points.clear();
     }
 
+    /** 삽입 작업을 자식 노드에게 위임 */
     private delegateInsert(point: Point): boolean {
         const { NW, NE, SW, SE } = this.children!;
 
@@ -173,6 +157,7 @@ export default class QuadTree {
         return false;
     }
 
+    /** 삭제 작업을 자식 노드에게 위임 */
     private delegateRemove(point: Point): boolean {
         const { NW, NE, SW, SE } = this.children!;
 
