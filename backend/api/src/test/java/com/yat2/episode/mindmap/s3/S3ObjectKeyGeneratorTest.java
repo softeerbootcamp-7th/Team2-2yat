@@ -19,15 +19,4 @@ class S3ObjectKeyGeneratorTest {
 
         assertThat(key).isEqualTo("mindmaps/" + mindmapId);
     }
-
-    @Test
-    @DisplayName("임시 업로드 키 생성 확인")
-    void generatePendingUploadKey_Success() {
-        long userId = 12345L;
-        String fileName = "test_image.png";
-
-        String key = generator.generatePendingUploadKey(userId, fileName);
-
-        assertThat(key).isEqualTo("temp/" + userId + "/" + fileName);
-    }
 }

@@ -10,7 +10,5 @@ public class S3ObjectKeyGenerator {
         return String.format("mindmaps/%s", mindmapId);
     }
 
-    public String generatePendingUploadKey(long userId, String fileName) {
-        return String.format("temp/%s/%s", userId, fileName);
-    }
+    //todo: validate를 위한 objectKey 생성 함수 필요
 }
