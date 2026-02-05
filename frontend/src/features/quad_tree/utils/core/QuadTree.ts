@@ -118,7 +118,7 @@ export default class QuadTree {
     /** 현재 노드 이하의 총 노드 개수 반환 */
     private countAllPoints(): number {
         if (!this.children) {
-            return 0;
+            return this.points.size;
         }
 
         const { NW, NE, SW, SE } = this.children;
