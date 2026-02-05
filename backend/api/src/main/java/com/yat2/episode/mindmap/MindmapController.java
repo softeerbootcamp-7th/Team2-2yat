@@ -1,5 +1,6 @@
 package com.yat2.episode.mindmap;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -24,6 +25,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.util.List;
+import java.util.UUID;
 
 import com.yat2.episode.auth.AuthService;
 import com.yat2.episode.global.exception.ErrorCode;
@@ -34,8 +36,11 @@ import com.yat2.episode.global.utils.UriUtil;
 import com.yat2.episode.mindmap.dto.MindmapArgsReqDto;
 import com.yat2.episode.mindmap.dto.MindmapCreatedWithUrlDto;
 import com.yat2.episode.mindmap.dto.MindmapDataDto;
+import com.yat2.episode.mindmap.dto.MindmapDataExceptDateDto;
 import com.yat2.episode.mindmap.dto.MindmapIdentityDto;
 import com.yat2.episode.mindmap.dto.MindmapNameUpdateReqDto;
+import com.yat2.episode.mindmap.s3.S3SnapshotRepository;
+import com.yat2.episode.mindmap.s3.dto.S3UploadResponseDto;
 
 import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 
@@ -47,7 +52,7 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 public class MindmapController {
     private final MindmapService mindmapService;
     private final AuthService authService;
-    private final MindmapFacade mindmapFacade;
+    private final S3SnapshotRepository s3SnapshotRepository;
 
     @Operation(
             summary = "마인드맵 목록 조회 (통합)", description = """
@@ -140,7 +145,10 @@ public class MindmapController {
             @RequestAttribute(USER_ID) long userId,
             @RequestBody MindmapArgsReqDto reqBody
     ) {
-        MindmapCreatedWithUrlDto resBody = mindmapFacade.createMindmap(userId, reqBody);
+        UUID uuid = UuidCreator.getTimeOrderedEpoch();
+        S3UploadResponseDto presignedData = mindmapService.getUploadInfo(uuid);
+        MindmapDataExceptDateDto mindmapData = mindmapService.saveMindmapAndParticipant(userId, reqBody, uuid);
+        MindmapCreatedWithUrlDto resBody = new MindmapCreatedWithUrlDto(mindmapData, presignedData);
         URI location = UriUtil.createLocationUri(resBody.mindmap().mindmapId());
         return ResponseEntity.created(location).body(resBody);
     }

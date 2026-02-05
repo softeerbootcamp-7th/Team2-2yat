@@ -1,8 +1,6 @@
 package com.yat2.episode.mindmap.s3;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.auth.credentials.AwsCredentials;
 import software.amazon.awssdk.auth.credentials.AwsSessionCredentials;
@@ -11,108 +9,89 @@ import java.nio.charset.StandardCharsets;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
+import java.time.temporal.ChronoUnit;
 import java.util.Base64;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import javax.crypto.Mac;
-import javax.crypto.spec.SecretKeySpec;
 
-import com.yat2.episode.global.exception.CustomException;
-import com.yat2.episode.global.exception.ErrorCode;
+import com.yat2.episode.mindmap.s3.dto.S3UploadFieldsDto;
+import com.yat2.episode.mindmap.s3.dto.S3UploadResponseDto;
 
+@Slf4j
 @Component
-@RequiredArgsConstructor
 public class S3PostSigner {
     private static final String HMAC_ALGORITHM = "HmacSHA256";
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    private final S3Properties s3Properties;
+    private final String bucket;
+    private final String region;
+    private final String endpoint;
+    private final long maxUploadSize;
 
-    public Map<String, String> generatePostFields(
-            String bucket, String key, String region, String endpoint,
-            AwsCredentials credentials
-    ) {
+    public S3PostSigner(S3Properties s3Properties) {
+        this.bucket = s3Properties.getBucket().getName();
+        this.region = s3Properties.getRegion();
+        this.endpoint = s3Properties.getEndpoint();
+        this.maxUploadSize = s3Properties.getMaxUploadSize();
+    }
 
-        String accessKey = credentials.accessKeyId();
-        String secretKey = credentials.secretAccessKey();
-        String sessionToken =
-                (credentials instanceof AwsSessionCredentials) ? ((AwsSessionCredentials) credentials).sessionToken() :
-                null;
+    public S3UploadResponseDto generatePostFields(String key, AwsCredentials credentials) throws Exception {
 
-        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC"));
+        String accessKey = credentials.accessKeyId().trim();
+        String secretKey = credentials.secretAccessKey().trim();
+        String sessionToken = (credentials instanceof AwsSessionCredentials) ?
+                              ((AwsSessionCredentials) credentials).sessionToken().trim() : null;
+
+        ZonedDateTime now = ZonedDateTime.now(ZoneId.of("UTC")).truncatedTo(ChronoUnit.SECONDS);
         String dateStamp = now.format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         String xAmzDate = now.format(DateTimeFormatter.ofPattern("yyyyMMdd'T'HHmmss'Z'"));
+        String expiration = now.plusMinutes(15).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm:ss'Z'"));
+
         String credential = accessKey + "/" + dateStamp + "/" + region + "/s3/aws4_request";
-
-        String policyJson = createPolicyJson(bucket, key, credential, xAmzDate, sessionToken, now);
-
+        String policyJson = buildPolicy(bucket, key, credential, xAmzDate, sessionToken, expiration);
         String policyBase64 = Base64.getEncoder().encodeToString(policyJson.getBytes(StandardCharsets.UTF_8));
         String signature = calculateSignature(policyBase64, secretKey, dateStamp, region);
-
-        Map<String, String> fields = new LinkedHashMap<>();
 
         String actionUrl = (endpoint != null && !endpoint.isEmpty()) ? endpoint + "/" + bucket :
                            "https://" + bucket + ".s3." + region + ".amazonaws.com";
 
-        fields.put("action", actionUrl);
-        fields.put("key", key);
-        fields.put("x-amz-algorithm", "AWS4-HMAC-SHA256");
-        fields.put("x-amz-credential", credential);
-        fields.put("x-amz-date", xAmzDate);
-        if (sessionToken != null) {
-            fields.put("x-amz-security-token", sessionToken);
-        }
-        fields.put("policy", policyBase64);
-        fields.put("x-amz-signature", signature);
-
-        return fields;
+        return new S3UploadResponseDto(actionUrl, new S3UploadFieldsDto(key, "AWS4-HMAC-SHA256", credential, xAmzDate,
+                                                                        sessionToken, policyBase64, signature));
     }
 
-    private String createPolicyJson(
-            String bucket, String key, String credential, String xAmzDate, String sessionToken,
-            ZonedDateTime now
-    ) {
-        try {
-            Map<String, Object> policy = new LinkedHashMap<>();
-            policy.put("expiration", now.plusMinutes(10).format(DateTimeFormatter.ISO_INSTANT));
+    private String buildPolicy(String bucket, String key, String credential, String xAmzDate, String sessionToken,
+                               String expiration) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("{");
+        sb.append("\"expiration\":\"").append(expiration).append("\",");
 
-            List<Object> conditions = new ArrayList<>();
-            conditions.add(Map.of("bucket", bucket));
-            conditions.add(List.of("starts-with", "$key", key));
-            conditions.add(Map.of("x-amz-algorithm", "AWS4-HMAC-SHA256"));
-            conditions.add(Map.of("x-amz-credential", credential));
-            conditions.add(Map.of("x-amz-date", xAmzDate));
+        sb.append("\"conditions\":[");
 
-            if (sessionToken != null) {
-                conditions.add(Map.of("x-amz-security-token", sessionToken));
-            }
+        sb.append("{\"bucket\":\"").append(bucket).append("\"},");
+        sb.append("{\"key\":\"").append(key).append("\"},");
+        sb.append("{\"x-amz-algorithm\":\"AWS4-HMAC-SHA256\"},");
+        sb.append("{\"x-amz-credential\":\"").append(credential).append("\"},");
+        sb.append("{\"x-amz-date\":\"").append(xAmzDate).append("\"}");
 
-            conditions.add(List.of("content-length-range", 0, s3Properties.getMaxUploadSize()));
-
-            policy.put("conditions", conditions);
-            return objectMapper.writeValueAsString(policy);
-        } catch (JsonProcessingException e) {
-            throw new CustomException(ErrorCode.S3_URL_FAIL);
+        if (sessionToken != null && !sessionToken.trim().isEmpty()) {
+            sb.append(",{\"x-amz-security-token\":\"").append(sessionToken.trim()).append("\"}");
         }
+
+        sb.append(",[\"content-length-range\",0,").append(maxUploadSize).append("]");
+
+        sb.append("]}");
+        return sb.toString();
     }
 
-    private String calculateSignature(String stringToSign, String secret, String dateStamp, String region) {
-        try {
-            byte[] kSecret = ("AWS4" + secret).getBytes(StandardCharsets.UTF_8);
-            byte[] kDate = hmac(kSecret, dateStamp);
-            byte[] kRegion = hmac(kDate, region);
-            byte[] kService = hmac(kRegion, "s3");
-            byte[] kSigning = hmac(kService, "aws4_request");
-            return toHex(hmac(kSigning, stringToSign));
-        } catch (Exception e) {
-            throw new CustomException(ErrorCode.S3_URL_FAIL);
-        }
+    private String calculateSignature(String stringToSign, String secret, String dateStamp, String region)
+            throws Exception {
+        byte[] kSecret = ("AWS4" + secret).getBytes(StandardCharsets.UTF_8);
+        byte[] kDate = hmac(kSecret, dateStamp);
+        byte[] kRegion = hmac(kDate, region);
+        byte[] kService = hmac(kRegion, "s3");
+        byte[] kSigning = hmac(kService, "aws4_request");
+        return toHex(hmac(kSigning, stringToSign));
     }
 
     private byte[] hmac(byte[] key, String data) throws Exception {
-        Mac mac = Mac.getInstance(HMAC_ALGORITHM);
-        mac.init(new SecretKeySpec(key, HMAC_ALGORITHM));
+        javax.crypto.Mac mac = javax.crypto.Mac.getInstance(HMAC_ALGORITHM);
+        mac.init(new javax.crypto.spec.SecretKeySpec(key, HMAC_ALGORITHM));
         return mac.doFinal(data.getBytes(StandardCharsets.UTF_8));
     }
 

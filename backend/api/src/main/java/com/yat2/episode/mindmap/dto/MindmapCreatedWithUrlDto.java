@@ -2,7 +2,7 @@ package com.yat2.episode.mindmap.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 
-import java.util.Map;
+import com.yat2.episode.mindmap.s3.dto.S3UploadResponseDto;
 
 public record MindmapCreatedWithUrlDto(
         MindmapDataExceptDateDto mindmap,
@@ -18,5 +18,5 @@ public record MindmapCreatedWithUrlDto(
                     "x-amz-signature": "a1b2..."
                 }
                 """
-        ) Map<String, String> uploadInfo
+        ) S3UploadResponseDto uploadInfo
 ) {}

@@ -1,5 +1,6 @@
 package com.yat2.episode.mindmap;
 
+import com.github.f4b6a3.uuid.UuidCreator;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -7,7 +8,7 @@ import jakarta.persistence.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.UuidGenerator;
+import org.springframework.data.domain.Persistable;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -16,9 +17,8 @@ import java.util.UUID;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Table(name = "mindmaps")
-public class Mindmap {
+public class Mindmap implements Persistable<UUID> {
     @Id
-    @UuidGenerator(style = UuidGenerator.Style.VERSION_7)
     @Column(name = "id", columnDefinition = "BINARY(16)")
     private UUID id;
 
@@ -35,11 +35,23 @@ public class Mindmap {
     private boolean shared;
 
     public Mindmap(String name, boolean shared) {
+        this.id = UuidCreator.getTimeOrderedEpoch();
+        this.name = name;
+        this.shared = shared;
+    }
+
+    public Mindmap(UUID id, String name, boolean shared) {
+        this.id = id;
         this.name = name;
         this.shared = shared;
     }
 
     public void updateName(String name) {
         this.name = name;
+    }
+
+    @Override
+    public boolean isNew() {
+        return createdAt == null;
     }
 }
