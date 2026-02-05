@@ -33,15 +33,16 @@ public interface DiagnosisResultRepository extends JpaRepository<DiagnosisResult
 
     @Query(
             """
-                        SELECT DISTINCT d
-                        FROM DiagnosisResult d
-                        LEFT JOIN FETCH d.job
-                        LEFT JOIN FETCH d.user
-                        LEFT JOIN FETCH DiagnosisWeakness w ON w.diagnosisResult = d
-                        LEFT JOIN FETCH w.question q
-                        WHERE d.id = :diagnosisId
-                          AND d.user.kakaoId = :userId
+                    SELECT DISTINCT d
+                    FROM DiagnosisResult d
+                    LEFT JOIN FETCH d.job
+                    LEFT JOIN FETCH d.user
+                    LEFT JOIN FETCH d.weaknesses w
+                    LEFT JOIN FETCH w.question
+                    WHERE d.id = :diagnosisId
+                    AND d.user.kakaoId = :userId
                     """
+
     )
     Optional<DiagnosisResult> findDetailByIdAndUserId(
             @Param("diagnosisId") Integer diagnosisId,
