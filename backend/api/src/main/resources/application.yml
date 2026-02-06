@@ -1,6 +1,6 @@
 spring:
   application:
-    name: episode
+    name: episode-api
 
   # ===============================
   # Datasource (MySQL)
