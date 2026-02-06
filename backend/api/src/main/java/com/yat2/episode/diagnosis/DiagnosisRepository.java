@@ -11,7 +11,7 @@ import java.util.Optional;
 import com.yat2.episode.diagnosis.dto.DiagnosisSummaryDto;
 
 @Repository
-public interface DiagnosisResultRepository extends JpaRepository<DiagnosisResult, Integer> {
+public interface DiagnosisRepository extends JpaRepository<DiagnosisResult, Integer> {
     @Query(
             """
                     SELECT NEW com.yat2.episode.diagnosis.dto.DiagnosisSummaryDto(

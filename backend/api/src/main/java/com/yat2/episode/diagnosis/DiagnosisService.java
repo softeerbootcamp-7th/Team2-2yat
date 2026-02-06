@@ -20,8 +20,8 @@ import com.yat2.episode.user.UserService;
 @Transactional(readOnly = true)
 @RequiredArgsConstructor
 @Service
-public class DiagnosisResultService {
-    private final DiagnosisResultRepository diagnosisResultRepository;
+public class DiagnosisService {
+    private final DiagnosisRepository diagnosisRepository;
     private final DiagnosisWeaknessRepository diagnosisWeaknessRepository;
     private final QuestionRepository questionRepository;
     private final UserService userService;
@@ -36,7 +36,7 @@ public class DiagnosisResultService {
             throw new CustomException(ErrorCode.QUESTION_NOT_FOUND);
         }
 
-        DiagnosisResult diagnosisResult = diagnosisResultRepository.save(new DiagnosisResult(user, user.getJob()));
+        DiagnosisResult diagnosisResult = diagnosisRepository.save(new DiagnosisResult(user, user.getJob()));
 
         List<DiagnosisWeakness> weaknesses =
                 questions.stream().map(q -> new DiagnosisWeakness(diagnosisResult, q)).toList();
@@ -47,11 +47,11 @@ public class DiagnosisResultService {
     }
 
     public List<DiagnosisSummaryDto> getDiagnosisSummariesByUserId(Long userId) {
-        return diagnosisResultRepository.findDiagnosisSummariesByUserId(userId);
+        return diagnosisRepository.findDiagnosisSummariesByUserId(userId);
     }
 
     public DiagnosisDetailDto getDiagnosisDetailById(Integer diagnosisId, Long userId) {
-        DiagnosisResult diagnosis = diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, userId)
+        DiagnosisResult diagnosis = diagnosisRepository.findDetailByIdAndUserId(diagnosisId, userId)
                 .orElseThrow(() -> new CustomException(ErrorCode.DIAGNOSIS_NOT_FOUND));
 
         List<QuestionDetailDto> weaknesses =

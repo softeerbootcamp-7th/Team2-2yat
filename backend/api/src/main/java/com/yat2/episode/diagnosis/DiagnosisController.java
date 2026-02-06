@@ -33,8 +33,8 @@ import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 @RequiredArgsConstructor
 @RequestMapping("/diagnosis")
 @Tag(name = "Diagnosis", description = "역량 진단 관리 API")
-public class DiagnosisResultController {
-    private final DiagnosisResultService diagnosisResultService;
+public class DiagnosisController {
+    private final DiagnosisService diagnosisService;
 
     @Operation(summary = "나의 진단 리스트 조회")
     @ApiResponses({ @ApiResponse(responseCode = "200", description = "조회 성공") })
@@ -43,7 +43,7 @@ public class DiagnosisResultController {
     public List<DiagnosisSummaryDto> getDiagnosisSummaries(
             @RequestAttribute(USER_ID) Long userId
     ) {
-        return diagnosisResultService.getDiagnosisSummariesByUserId(userId);
+        return diagnosisService.getDiagnosisSummariesByUserId(userId);
     }
 
     @Operation(summary = "진단 결과 상세 조회")
@@ -56,7 +56,7 @@ public class DiagnosisResultController {
             Integer diagnosisId,
             @RequestAttribute(USER_ID) Long userId
     ) {
-        return diagnosisResultService.getDiagnosisDetailById(diagnosisId, userId);
+        return diagnosisService.getDiagnosisDetailById(diagnosisId, userId);
     }
 
     @Operation(
@@ -74,7 +74,7 @@ public class DiagnosisResultController {
             @RequestAttribute(USER_ID) long userId,
             @RequestBody DiagnosisArgsReqDto reqBody
     ) {
-        DiagnosisSummaryDto resBody = diagnosisResultService.createDiagnosis(userId, reqBody);
+        DiagnosisSummaryDto resBody = diagnosisService.createDiagnosis(userId, reqBody);
         URI location = UriUtil.createLocationUri(resBody.diagnosisId());
         return ResponseEntity.created(location).body(resBody);
     }

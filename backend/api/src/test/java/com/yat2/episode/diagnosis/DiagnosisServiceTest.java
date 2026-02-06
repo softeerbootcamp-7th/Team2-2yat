@@ -40,10 +40,10 @@ import static org.mockito.Mockito.when;
 @ExtendWith(MockitoExtension.class)
 @MockitoSettings(strictness = Strictness.LENIENT)
 @DisplayName("DiagnosisResultService 단위 테스트")
-class DiagnosisResultServiceTest {
+class DiagnosisServiceTest {
 
     @Mock
-    private DiagnosisResultRepository diagnosisResultRepository;
+    private DiagnosisRepository diagnosisRepository;
 
     @Mock
     private DiagnosisWeaknessRepository diagnosisWeaknessRepository;
@@ -55,7 +55,7 @@ class DiagnosisResultServiceTest {
     private UserService userService;
 
     @InjectMocks
-    private DiagnosisResultService diagnosisResultService;
+    private DiagnosisService diagnosisService;
 
     private User testUser;
     private Job testJob;
@@ -92,17 +92,17 @@ class DiagnosisResultServiceTest {
 
             when(userService.getUserOrThrow(userId)).thenReturn(testUser);
             when(questionRepository.findAllById(questionIds)).thenReturn(questions);
-            when(diagnosisResultRepository.save(any(DiagnosisResult.class))).thenReturn(savedDiagnosis);
+            when(diagnosisRepository.save(any(DiagnosisResult.class))).thenReturn(savedDiagnosis);
             when(diagnosisWeaknessRepository.saveAll(anyList())).thenAnswer(invocation -> invocation.getArgument(0));
 
-            DiagnosisSummaryDto result = diagnosisResultService.createDiagnosis(userId, reqDto);
+            DiagnosisSummaryDto result = diagnosisService.createDiagnosis(userId, reqDto);
 
             assertThat(result).isNotNull();
             assertThat(result.diagnosisId()).isEqualTo(1);
             assertThat(result.jobName()).isEqualTo("백엔드 개발자");
             assertThat(result.weaknessCount()).isEqualTo(3);
 
-            verify(diagnosisResultRepository).save(any(DiagnosisResult.class));
+            verify(diagnosisRepository).save(any(DiagnosisResult.class));
             verify(diagnosisWeaknessRepository).saveAll(anyList());
         }
 
@@ -116,11 +116,11 @@ class DiagnosisResultServiceTest {
 
             when(userService.getUserOrThrow(userId)).thenReturn(userWithoutJob);
 
-            assertThatThrownBy(() -> diagnosisResultService.createDiagnosis(userId, reqDto)).isInstanceOf(
+            assertThatThrownBy(() -> diagnosisService.createDiagnosis(userId, reqDto)).isInstanceOf(
                             CustomException.class).extracting(e -> ((CustomException) e).getErrorCode())
                     .isEqualTo(ErrorCode.JOB_NOT_SELECTED);
 
-            verify(diagnosisResultRepository, never()).save(any());
+            verify(diagnosisRepository, never()).save(any());
         }
 
         @Test
@@ -137,11 +137,11 @@ class DiagnosisResultServiceTest {
             when(userService.getUserOrThrow(userId)).thenReturn(testUser);
             when(questionRepository.findAllById(questionIds)).thenReturn(questions);
 
-            assertThatThrownBy(() -> diagnosisResultService.createDiagnosis(userId, reqDto)).isInstanceOf(
+            assertThatThrownBy(() -> diagnosisService.createDiagnosis(userId, reqDto)).isInstanceOf(
                             CustomException.class).extracting(e -> ((CustomException) e).getErrorCode())
                     .isEqualTo(ErrorCode.QUESTION_NOT_FOUND);
 
-            verify(diagnosisResultRepository, never()).save(any());
+            verify(diagnosisRepository, never()).save(any());
         }
 
         @Test
@@ -158,10 +158,10 @@ class DiagnosisResultServiceTest {
 
             when(userService.getUserOrThrow(userId)).thenReturn(testUser);
             when(questionRepository.findAllById(questionIds)).thenReturn(List.of());
-            when(diagnosisResultRepository.save(any(DiagnosisResult.class))).thenReturn(savedDiagnosis);
+            when(diagnosisRepository.save(any(DiagnosisResult.class))).thenReturn(savedDiagnosis);
             when(diagnosisWeaknessRepository.saveAll(anyList())).thenReturn(List.of());
 
-            DiagnosisSummaryDto result = diagnosisResultService.createDiagnosis(userId, reqDto);
+            DiagnosisSummaryDto result = diagnosisService.createDiagnosis(userId, reqDto);
 
             assertThat(result).isNotNull();
             assertThat(result.weaknessCount()).isEqualTo(0);
@@ -180,9 +180,9 @@ class DiagnosisResultServiceTest {
             List<DiagnosisSummaryDto> summaries = List.of(new DiagnosisSummaryDto(1, "백엔드 개발자", now, 5),
                                                           new DiagnosisSummaryDto(2, "프론트엔드 개발자", now.minusDays(1), 3));
 
-            when(diagnosisResultRepository.findDiagnosisSummariesByUserId(userId)).thenReturn(summaries);
+            when(diagnosisRepository.findDiagnosisSummariesByUserId(userId)).thenReturn(summaries);
 
-            List<DiagnosisSummaryDto> result = diagnosisResultService.getDiagnosisSummariesByUserId(userId);
+            List<DiagnosisSummaryDto> result = diagnosisService.getDiagnosisSummariesByUserId(userId);
 
             assertThat(result).hasSize(2);
             assertThat(result.get(0).diagnosisId()).isEqualTo(1);
@@ -190,16 +190,16 @@ class DiagnosisResultServiceTest {
             assertThat(result.get(0).weaknessCount()).isEqualTo(5);
             assertThat(result.get(1).diagnosisId()).isEqualTo(2);
 
-            verify(diagnosisResultRepository).findDiagnosisSummariesByUserId(userId);
+            verify(diagnosisRepository).findDiagnosisSummariesByUserId(userId);
         }
 
         @Test
         @DisplayName("진단 이력이 없으면 빈 목록을 반환")
         void getDiagnosisSummaries_empty() {
             Long userId = 1L;
-            when(diagnosisResultRepository.findDiagnosisSummariesByUserId(userId)).thenReturn(List.of());
+            when(diagnosisRepository.findDiagnosisSummariesByUserId(userId)).thenReturn(List.of());
 
-            List<DiagnosisSummaryDto> result = diagnosisResultService.getDiagnosisSummariesByUserId(userId);
+            List<DiagnosisSummaryDto> result = diagnosisService.getDiagnosisSummariesByUserId(userId);
 
             assertThat(result).isEmpty();
         }
@@ -236,10 +236,9 @@ class DiagnosisResultServiceTest {
             when(diagnosis.getWeaknesses()).thenReturn(List.of(weakness));
             when(weakness.getQuestion()).thenReturn(question);
 
-            when(diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(
-                    Optional.of(diagnosis));
+            when(diagnosisRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(Optional.of(diagnosis));
 
-            DiagnosisDetailDto result = diagnosisResultService.getDiagnosisDetailById(diagnosisId, userId);
+            DiagnosisDetailDto result = diagnosisService.getDiagnosisDetailById(diagnosisId, userId);
 
             assertThat(result).isNotNull();
             assertThat(result.diagnosisId()).isEqualTo(diagnosisId);
@@ -255,9 +254,9 @@ class DiagnosisResultServiceTest {
             Integer diagnosisId = 999;
             Long userId = 1L;
 
-            when(diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(Optional.empty());
+            when(diagnosisRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(Optional.empty());
 
-            assertThatThrownBy(() -> diagnosisResultService.getDiagnosisDetailById(diagnosisId, userId)).isInstanceOf(
+            assertThatThrownBy(() -> diagnosisService.getDiagnosisDetailById(diagnosisId, userId)).isInstanceOf(
                             CustomException.class).extracting(e -> ((CustomException) e).getErrorCode())
                     .isEqualTo(ErrorCode.DIAGNOSIS_NOT_FOUND);
         }
@@ -268,11 +267,9 @@ class DiagnosisResultServiceTest {
             Integer diagnosisId = 1;
             Long wrongUserId = 999L;
 
-            when(diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, wrongUserId)).thenReturn(
-                    Optional.empty());
+            when(diagnosisRepository.findDetailByIdAndUserId(diagnosisId, wrongUserId)).thenReturn(Optional.empty());
 
-            assertThatThrownBy(
-                    () -> diagnosisResultService.getDiagnosisDetailById(diagnosisId, wrongUserId)).isInstanceOf(
+            assertThatThrownBy(() -> diagnosisService.getDiagnosisDetailById(diagnosisId, wrongUserId)).isInstanceOf(
                             CustomException.class).extracting(e -> ((CustomException) e).getErrorCode())
                     .isEqualTo(ErrorCode.DIAGNOSIS_NOT_FOUND);
         }
@@ -290,10 +287,9 @@ class DiagnosisResultServiceTest {
             when(diagnosis.getCreatedAt()).thenReturn(createdAt);
             when(diagnosis.getWeaknesses()).thenReturn(List.of());
 
-            when(diagnosisResultRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(
-                    Optional.of(diagnosis));
+            when(diagnosisRepository.findDetailByIdAndUserId(diagnosisId, userId)).thenReturn(Optional.of(diagnosis));
 
-            DiagnosisDetailDto result = diagnosisResultService.getDiagnosisDetailById(diagnosisId, userId);
+            DiagnosisDetailDto result = diagnosisService.getDiagnosisDetailById(diagnosisId, userId);
 
             assertThat(result).isNotNull();
             assertThat(result.weaknesses()).isEmpty();
