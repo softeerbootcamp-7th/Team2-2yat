@@ -21,7 +21,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
 import com.yat2.episode.global.swagger.AuthRequiredErrors;
-import com.yat2.episode.user.dto.UserMeResponse;
+import com.yat2.episode.user.dto.UserMeDto;
 
 import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
 
@@ -37,12 +37,12 @@ public class UserController {
     @ApiResponses(
             { @ApiResponse(
                     responseCode = "200", description = "조회 성공",
-                    content = @Content(schema = @Schema(implementation = UserMeResponse.class))
+                    content = @Content(schema = @Schema(implementation = UserMeDto.class))
             ), }
     )
     @AuthRequiredErrors
     @ApiErrorCodes({ ErrorCode.USER_NOT_FOUND, ErrorCode.INTERNAL_ERROR })
-    public UserMeResponse getMe(
+    public UserMeDto getMe(
             @RequestAttribute(USER_ID) long userId
     ) {
         return userService.getMe(userId);

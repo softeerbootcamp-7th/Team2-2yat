@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface CompetencyTypeRepository extends JpaRepository<CompetencyType, Integer> {
     @Query(
-            value = "SELECT DISTINCT ct.* FROM episode e " +
-                    "JOIN competency_type ct ON e.competency_type_id = ct.id " +
+            value = "SELECT DISTINCT ct.* FROM episodes e " +
+                    "JOIN competency_types ct ON e.competency_type_id = ct.id " +
                     "WHERE e.mindmap_id = UUID_TO_BIN(:mindmapId)", nativeQuery = true
     )
     List<CompetencyType> findByMindmapId(

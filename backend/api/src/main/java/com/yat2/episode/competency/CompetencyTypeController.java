@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 import com.yat2.episode.auth.AuthService;
-import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
+import com.yat2.episode.competency.dto.CompetencyTypeDto;
 import com.yat2.episode.mindmap.MindmapService;
 
 import static com.yat2.episode.global.constant.RequestAttrs.USER_ID;
@@ -26,12 +26,12 @@ public class CompetencyTypeController {
     private final AuthService authService;
 
     @GetMapping
-    public ResponseEntity<List<DetailCompetencyTypeDto>> getAllCompetencies() {
+    public ResponseEntity<List<CompetencyTypeDto>> getAllCompetencies() {
         return ResponseEntity.ok(competencyTypeService.getAllData());
     }
 
     @GetMapping("/mindmap/{mindmapId}")
-    public ResponseEntity<List<DetailCompetencyTypeDto>> getCompetenciesInMindmap(
+    public ResponseEntity<List<CompetencyTypeDto>> getCompetenciesInMindmap(
             @RequestAttribute(USER_ID) long userId,
             @PathVariable String mindmapId
     ) {

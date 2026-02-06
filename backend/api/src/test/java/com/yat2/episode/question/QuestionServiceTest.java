@@ -14,7 +14,7 @@ import com.yat2.episode.competency.CompetencyType;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.job.Job;
-import com.yat2.episode.question.dto.CategoryGroupResponseDto;
+import com.yat2.episode.question.dto.QuestionsByCompetencyCategoryDto;
 import com.yat2.episode.user.User;
 import com.yat2.episode.user.UserService;
 
@@ -69,7 +69,7 @@ class QuestionServiceTest {
         given(userService.getUserOrThrow(userId)).willReturn(user);
         given(questionRepository.findAllWithCompetencyByJobId(10)).willReturn(List.of(q1, q2));
 
-        List<CategoryGroupResponseDto> result = questionService.getQuestionSetByUserId(userId);
+        List<QuestionsByCompetencyCategoryDto> result = questionService.getQuestionSetByUserId(userId);
 
         assertThat(result).hasSize(2);
 

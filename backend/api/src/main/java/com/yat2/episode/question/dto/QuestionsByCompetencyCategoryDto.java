@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.yat2.episode.competency.CompetencyType;
 
-public record CategoryGroupResponseDto(
+public record QuestionsByCompetencyCategoryDto(
         CompetencyType.Category category,
-        List<SimpleQuestionDto> questions
+        List<QuestionSummaryDto> questions
 ) {}

@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Objects;
 
 import com.yat2.episode.job.dto.JobDto;
-import com.yat2.episode.job.dto.OccupationWithJobsResponse;
+import com.yat2.episode.job.dto.JobsByOccupationDto;
 
 @Service
 @RequiredArgsConstructor
@@ -20,11 +20,11 @@ public class JobService {
 
     @Cacheable("occupationsWithJobs")
     @Transactional(readOnly = true)
-    public List<OccupationWithJobsResponse> getOccupationsWithJobs() {
+    public List<JobsByOccupationDto> getOccupationsWithJobs() {
         List<Job> jobs = jobRepository.findAllWithOccupation();
         if (jobs.isEmpty()) return List.of();
 
-        List<OccupationWithJobsResponse> res = new ArrayList<>();
+        List<JobsByOccupationDto> res = new ArrayList<>();
         Integer curOccId = null;
         String curOccName = null;
         List<JobDto> curJobs = null;
@@ -34,7 +34,7 @@ public class JobService {
 
             if (!Objects.equals(curOccId, o.getId())) {
                 if (curOccId != null) {
-                    res.add(new OccupationWithJobsResponse(curOccId, curOccName, curJobs));
+                    res.add(new JobsByOccupationDto(curOccId, curOccName, curJobs));
                 }
                 curOccId = o.getId();
                 curOccName = o.getName();
@@ -44,7 +44,7 @@ public class JobService {
             curJobs.add(JobDto.of(j));
         }
 
-        res.add(new OccupationWithJobsResponse(curOccId, curOccName, curJobs));
+        res.add(new JobsByOccupationDto(curOccId, curOccName, curJobs));
         return res;
     }
 }

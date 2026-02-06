@@ -8,7 +8,7 @@ import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.job.Job;
 import com.yat2.episode.job.JobRepository;
-import com.yat2.episode.user.dto.UserMeResponse;
+import com.yat2.episode.user.dto.UserMeDto;
 
 @Service
 @RequiredArgsConstructor
@@ -28,12 +28,12 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public UserMeResponse getMe(long userId) {
+    public UserMeDto getMe(long userId) {
         User user = getUserOrThrow(userId);
 
         boolean onboarded = user.getJob() != null;
 
-        return new UserMeResponse(user.getKakaoId(), user.getNickname(), onboarded, user.getHasWatchedFeatureGuide());
+        return new UserMeDto(user.getKakaoId(), user.getNickname(), onboarded, user.getHasWatchedFeatureGuide());
     }
 
     @Transactional

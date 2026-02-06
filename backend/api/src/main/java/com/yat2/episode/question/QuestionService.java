@@ -11,8 +11,8 @@ import java.util.stream.Collectors;
 import com.yat2.episode.competency.CompetencyType;
 import com.yat2.episode.global.exception.CustomException;
 import com.yat2.episode.global.exception.ErrorCode;
-import com.yat2.episode.question.dto.CategoryGroupResponseDto;
-import com.yat2.episode.question.dto.SimpleQuestionDto;
+import com.yat2.episode.question.dto.QuestionSummaryDto;
+import com.yat2.episode.question.dto.QuestionsByCompetencyCategoryDto;
 import com.yat2.episode.user.User;
 import com.yat2.episode.user.UserService;
 
@@ -23,7 +23,7 @@ public class QuestionService {
     private final UserService userService;
 
     @Transactional(readOnly = true)
-    public List<CategoryGroupResponseDto> getQuestionSetByUserId(long userId) {
+    public List<QuestionsByCompetencyCategoryDto> getQuestionSetByUserId(long userId) {
         User user = userService.getUserOrThrow(userId);
 
         if (user.getJob() == null) {
@@ -37,9 +37,9 @@ public class QuestionService {
 
         return questionsByCategory.entrySet().stream().sorted(Map.Entry.comparingByKey()).map(entry -> {
             CompetencyType.Category category = entry.getKey();
-            List<SimpleQuestionDto> questionDtos = entry.getValue().stream().map(SimpleQuestionDto::of).toList();
+            List<QuestionSummaryDto> questionDtos = entry.getValue().stream().map(QuestionSummaryDto::of).toList();
 
-            return new CategoryGroupResponseDto(category, questionDtos);
+            return new QuestionsByCompetencyCategoryDto(category, questionDtos);
         }).toList();
     }
 }

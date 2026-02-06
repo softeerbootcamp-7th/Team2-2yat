@@ -18,7 +18,7 @@ import java.util.List;
 import com.yat2.episode.auth.security.Public;
 import com.yat2.episode.global.exception.ErrorCode;
 import com.yat2.episode.global.swagger.ApiErrorCodes;
-import com.yat2.episode.job.dto.OccupationWithJobsResponse;
+import com.yat2.episode.job.dto.JobsByOccupationDto;
 
 @Public
 @RestController
@@ -33,12 +33,12 @@ public class JobController {
     @ApiResponses(
             { @ApiResponse(
                     responseCode = "200", description = "조회 성공", content = @Content(
-                    array = @ArraySchema(schema = @Schema(implementation = OccupationWithJobsResponse.class))
+                    array = @ArraySchema(schema = @Schema(implementation = JobsByOccupationDto.class))
             )
             ) }
     )
     @ApiErrorCodes(ErrorCode.INTERNAL_ERROR)
-    public ResponseEntity<List<OccupationWithJobsResponse>> getOccupationsWithJobs() {
+    public ResponseEntity<List<JobsByOccupationDto>> getOccupationsWithJobs() {
         return ResponseEntity.ok(jobService.getOccupationsWithJobs());
     }
 }

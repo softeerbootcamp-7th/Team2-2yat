@@ -10,7 +10,7 @@ import org.springframework.test.util.ReflectionTestUtils;
 
 import java.util.List;
 
-import com.yat2.episode.competency.dto.DetailCompetencyTypeDto;
+import com.yat2.episode.competency.dto.CompetencyTypeDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -32,11 +32,10 @@ class CompetencyTypeServiceTest {
 
         given(competencyTypeRepository.findAll()).willReturn(List.of(type1, type2));
 
-        List<DetailCompetencyTypeDto> result = competencyTypeService.getAllData();
+        List<CompetencyTypeDto> result = competencyTypeService.getAllData();
 
         assertThat(result).hasSize(2);
-        assertThat(result).extracting(DetailCompetencyTypeDto::getCompetencyType)
-                .containsExactlyInAnyOrder("의사소통", "논리적 사고");
+        assertThat(result).extracting(CompetencyTypeDto::competencyType).containsExactlyInAnyOrder("의사소통", "논리적 사고");
     }
 
     @Test
@@ -47,11 +46,10 @@ class CompetencyTypeServiceTest {
 
         given(competencyTypeRepository.findByMindmapId(mindmapId)).willReturn(List.of(type));
 
-        List<DetailCompetencyTypeDto> result = competencyTypeService.getCompetencyTypesInMindmap(mindmapId);
+        List<CompetencyTypeDto> result = competencyTypeService.getCompetencyTypesInMindmap(mindmapId);
 
         assertThat(result).hasSize(1);
-        assertThat(result.get(0).getId()).isEqualTo(10);
-        assertThat(result.get(0).getCompetencyType()).isEqualTo("성장 가능성");
+        assertThat(result.get(0).competencyType()).isEqualTo("성장 가능성");
     }
 
     private CompetencyType createCompetencyType(Integer id, String typeName, CompetencyType.Category category) {

@@ -9,7 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.List;
 
-import com.yat2.episode.job.dto.OccupationWithJobsResponse;
+import com.yat2.episode.job.dto.JobsByOccupationDto;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.BDDMockito.given;
@@ -28,7 +28,7 @@ class JobServiceTest {
     void getOccupationsWithJobs_Empty() {
         given(jobRepository.findAllWithOccupation()).willReturn(List.of());
 
-        List<OccupationWithJobsResponse> result = jobService.getOccupationsWithJobs();
+        List<JobsByOccupationDto> result = jobService.getOccupationsWithJobs();
 
         assertThat(result).isEmpty();
     }
@@ -45,7 +45,7 @@ class JobServiceTest {
 
         given(jobRepository.findAllWithOccupation()).willReturn(List.of(job1, job2, job3));
 
-        List<OccupationWithJobsResponse> result = jobService.getOccupationsWithJobs();
+        List<JobsByOccupationDto> result = jobService.getOccupationsWithJobs();
 
         assertThat(result).hasSize(2);
 
