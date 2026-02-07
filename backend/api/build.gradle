@@ -61,6 +61,19 @@ dependencies {
 tasks.named('test') {
     useJUnitPlatform()
     failOnNoDiscoveredTests = false
+    def envFile = file("${rootDir}/.env")
+    if (envFile.exists()) {
+        envFile.eachLine { line ->
+            if (line.trim() && !line.startsWith("#")) {
+                def parts = line.split("=", 2)
+                if (parts.length == 2) {
+                    def key = parts[0].trim()
+                    def value = parts[1].trim().replaceAll(/^["']|["']$/, "")
+                    environment key, value
+                }
+            }
+        }
+    }
 }
 
 bootJar {
