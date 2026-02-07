@@ -29,12 +29,17 @@ export default class QuadTree {
     insert(point: Point): boolean {
         // 삽입하려는 점이 현재 Quad 영역에 속하지 않으면 삽입 거부
         if (!this.isPointInBounds(point)) {
+            console.error(`[QuadTree 삽입 실패] 점 (${point.x}, ${point.y})이 경계 영역 밖에 있습니다.`);
             return false;
         }
 
         // 이미 분할된 상태라면 자식 노드에게 삽입 위임
         if (this.children) {
-            return this.delegateInsert(point);
+            const success = this.delegateInsert(point);
+            if (!success) {
+                console.warn(`[QuadTree] 자식 노드 위임 실패: (${point.x}, ${point.y}) 점을 수용할 자식이 없습니다.`);
+            }
+            return success;
         }
 
         // 현재 노드에 여유 공간이 있으면 점을 직접 추가
@@ -54,6 +59,7 @@ export default class QuadTree {
     /** [Remove/DragStart] 점 삭제 : 삭제 후 데이터 밀도가 낮아지면 tryMerge */
     remove(point: Point): boolean {
         if (!this.isPointInBounds(point)) {
+            console.error(`[QuadTree 삽입 실패] 점 (${point.x}, ${point.y})이 경계 영역 밖에 있습니다.`);
             return false;
         }
 
@@ -64,10 +70,18 @@ export default class QuadTree {
 
             if (removed) {
                 this.tryMerge();
+            } else {
+                // 삭제 대상이 영역 안에는 있어야 하는데 못 찾은 경우
+                console.error(
+                    `[QuadTree 삭제 실패] 하위 자식 노드에서 점 (${point.x}, ${point.y})을 찾을 수 없습니다.`,
+                );
             }
         } else {
             // 리프 노드인 경우 직접 점 삭제
             removed = this.points.delete(point);
+            if (!removed) {
+                console.error(`[QuadTree 삭제 실패] 리프 노드에 삭제하려는 점 (${point.x}, ${point.y})이 없습니다.`);
+            }
         }
         return removed;
     }
@@ -165,6 +179,7 @@ export default class QuadTree {
     /** 삽입 작업을 자식 노드에게 위임 */
     private delegateInsert(point: Point): boolean {
         if (!this.children) {
+            console.error("[QuadTree 위임 실패] 자식 노드가 생성되지 않은 상태입니다.");
             return false;
         }
         const { NW, NE, SW, SE } = this.children;
@@ -175,6 +190,7 @@ export default class QuadTree {
     /** 삭제 작업을 자식 노드에게 위임 */
     private delegateRemove(point: Point): boolean {
         if (!this.children) {
+            console.error("[QuadTree 위임 실패] 삭제를 위임할 자식 노드가 존재하지 않습니다.");
             return false;
         }
         const { NW, NE, SW, SE } = this.children;
