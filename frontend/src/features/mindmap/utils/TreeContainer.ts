@@ -354,7 +354,9 @@ export default class TreeContainer {
 
     getChildIds(nodeId: NodeId): NodeId[] {
         const node = this.safeGetNode(nodeId);
-        if (!node) return [];
+        if (!node) {
+            return [];
+        }
 
         const childIds: NodeId[] = [];
         let currentChildId = node.firstChildId;
@@ -426,6 +428,31 @@ export default class TreeContainer {
 
         traverse(nodeId);
         return descendants;
+    }
+
+    getChildNodes(parentNodeId: NodeId): NodeElement[] {
+        const node = this.safeGetNode(parentNodeId);
+        if (!node) {
+            return [];
+        }
+
+        const childNodes: NodeElement[] = [];
+        let currentChildId = node.firstChildId;
+
+        while (currentChildId) {
+            const childNode = this.safeGetNode(currentChildId);
+
+            if (!childNode) {
+                console.error("유효하지 않은 childNode가 존재하므로 빈 배열을 반환합니다.");
+                return [];
+            }
+
+            childNodes.push(childNode);
+
+            currentChildId = childNode.nextId;
+        }
+
+        return childNodes;
     }
 
     private generateNewNodeElement({
