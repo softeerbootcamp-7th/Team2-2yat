@@ -1,6 +1,6 @@
 import { Point } from "@/features/quad_tree/types/point";
 import { Rect } from "@/features/quad_tree/types/rect";
-import { intersects, isPointInRect } from "@/features/quad_tree/utils/helpers/rect_helper";
+import { intersects, isPointInRect } from "@/shared/utils/rect_helper";
 
 /**
  * QuadTree
@@ -12,7 +12,7 @@ import { intersects, isPointInRect } from "@/features/quad_tree/utils/helpers/re
 export default class QuadTree {
     private bounds: Rect;
     private points: Set<Point> = new Set();
-    private limit: number = 4;
+    private limit: number;
     private children: {
         NW: QuadTree;
         NE: QuadTree;
@@ -20,7 +20,7 @@ export default class QuadTree {
         SE: QuadTree;
     } | null = null;
 
-    constructor(bounds: Rect, limit: number) {
+    constructor(bounds: Rect, limit: number = 4) {
         this.bounds = bounds;
         this.limit = limit;
     }
