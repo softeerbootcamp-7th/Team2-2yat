@@ -1,6 +1,6 @@
 import { RefObject, useLayoutEffect, useState } from "react";
 
-import findParentDOMByClass from "@/utils/findParentDOMByClass";
+import findParentDOMByClass from "@/utils/find_parent_dom_by_class";
 
 export const BASE_DIRECTIONS = ["top", "bottom", "left", "right"] as const;
 export type BaseDirection = (typeof BASE_DIRECTIONS)[number];

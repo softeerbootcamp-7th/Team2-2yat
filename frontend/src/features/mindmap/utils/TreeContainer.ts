@@ -1,7 +1,7 @@
 import { NodeData, NodeElement, NodeId, NodeType } from "@/features/mindmap/types/mindmapType";
-import { EventBroker } from "@/utils/eventBroker";
-import { exhaustiveCheck } from "@/utils/exhaustiveCheck";
-import generateId from "@/utils/generateId";
+import { EventBroker } from "@/utils/EventBroker";
+import { exhaustiveCheck } from "@/utils/exhaustive_check";
+import generateId from "@/utils/generate_id";
 
 // TODO: quadtree 준비되면 의존성 주입
 type QuadTreeManager = undefined;
@@ -10,8 +10,8 @@ const ROOT_NODE_PARENT_ID = "empty";
 const ROOT_NODE_CONTENTS = "김현대의 마인드맵";
 const DETACHED_NODE_PARENT_ID = "detached";
 
-export default class MindmapContainer {
-    private nodes: Map<NodeId, NodeElement>;
+export default class TreeContainer {
+    public nodes: Map<NodeId, NodeElement>;
     private quadTreeManager: QuadTreeManager;
     private broker: EventBroker<NodeId>;
     private isThrowError: boolean;
@@ -47,10 +47,6 @@ export default class MindmapContainer {
         this.isThrowError = isThrowError;
     }
 
-    /**
-     * 배치가 바뀌었을 때 rerendering trigger 하기 위해 사용한다.
-     * 안쓰면 UI 업데이트 안될 것.
-     */
     private notify(nodeId: NodeId) {
         const node = this.nodes.get(nodeId);
         if (node) {
@@ -120,6 +116,8 @@ export default class MindmapContainer {
                 default:
                     exhaustiveCheck(`${direction} 방향은 불가능합니다.`);
             }
+
+            this.notify(baseNode.id);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(e.message);
@@ -306,6 +304,8 @@ export default class MindmapContainer {
                 default:
                     exhaustiveCheck(`${direction} 방향은 불가능합니다.`);
             }
+
+            this.notify(baseNode.id);
         } catch (e) {
             if (e instanceof Error) {
                 console.error(e.message);
@@ -354,7 +354,9 @@ export default class MindmapContainer {
 
     getChildIds(nodeId: NodeId): NodeId[] {
         const node = this.safeGetNode(nodeId);
-        if (!node) return [];
+        if (!node) {
+            return [];
+        }
 
         const childIds: NodeId[] = [];
         let currentChildId = node.firstChildId;
@@ -371,6 +373,40 @@ export default class MindmapContainer {
         }
 
         return childIds;
+    }
+
+    safeGetParentNode(nodeId: NodeId) {
+        const node = this.safeGetNode(nodeId);
+
+        if (!node) {
+            return undefined;
+        }
+
+        const parentNode = this.safeGetNode(node.parentId);
+
+        if (!parentNode) {
+            return undefined;
+        }
+
+        return parentNode;
+    }
+
+    getRootId() {
+        return this.rootNodeId;
+    }
+
+    getParentId(nodeId: NodeId): NodeId | undefined {
+        const node = this.safeGetNode(nodeId);
+        if (!node) {
+            return undefined;
+        }
+
+        const parentNode = this.safeGetNode(node.id);
+        if (!parentNode) {
+            return undefined;
+        }
+
+        return parentNode.id;
     }
 
     update({ nodeId, newNodeData }: { nodeId: NodeId; newNodeData: Partial<Omit<NodeElement, "id">> }) {
@@ -394,6 +430,47 @@ export default class MindmapContainer {
                 throw e;
             }
         }
+    }
+
+    getAllDescendantIds(nodeId: NodeId): Set<NodeId> {
+        const descendants = new Set<NodeId>();
+        descendants.add(nodeId); // 자기 자신 포함
+
+        const traverse = (currentId: NodeId) => {
+            const children = this.getChildIds(currentId);
+            children.forEach((childId) => {
+                descendants.add(childId);
+                traverse(childId); // 재귀 호출
+            });
+        };
+
+        traverse(nodeId);
+        return descendants;
+    }
+
+    getChildNodes(parentNodeId: NodeId): NodeElement[] {
+        const node = this.safeGetNode(parentNodeId);
+        if (!node) {
+            return [];
+        }
+
+        const childNodes: NodeElement[] = [];
+        let currentChildId = node.firstChildId;
+
+        while (currentChildId) {
+            const childNode = this.safeGetNode(currentChildId);
+
+            if (!childNode) {
+                console.error("유효하지 않은 childNode가 존재하므로 빈 배열을 반환합니다.");
+                return [];
+            }
+
+            childNodes.push(childNode);
+
+            currentChildId = childNode.nextId;
+        }
+
+        return childNodes;
     }
 
     private generateNewNodeElement({
@@ -445,6 +522,6 @@ export default class MindmapContainer {
     }
 
     getRootNode() {
-        this._getNode(this.rootNodeId);
+        return this._getNode(this.rootNodeId);
     }
 }
