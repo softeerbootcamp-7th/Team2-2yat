@@ -66,7 +66,7 @@ class MindmapServiceTest {
         @Test
         @DisplayName("팀 마인드맵 생성 시 제목이 없으면 MINDMAP_TITLE_REQUIRED 예외가 발생한다")
         void should_throw_exception_when_shared_mindmap_has_no_title() {
-            MindmapArgsReqDto req = new MindmapArgsReqDto(true, ""); // shared=true, title=""
+            MindmapArgsReqDto req = new MindmapArgsReqDto(true, "");
             given(userService.getUserOrThrow(testUserId)).willReturn(testUser);
 
             assertThatThrownBy(

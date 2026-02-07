@@ -33,7 +33,7 @@ class DiagnosisRepositoryTest {
     private UserRepository userRepository;
 
     @Autowired
-    private DiagnosisWeaknessRepository weaknessRepository; // 취약점 저장을 위한 리포지토리
+    private DiagnosisWeaknessRepository weaknessRepository;
 
     @Test
     @DisplayName("사용자 ID로 진단 요약 목록을 DTO로 조회한다")
@@ -47,7 +47,7 @@ class DiagnosisRepositoryTest {
 
         Job fakeJob = createEntity(Job.class);
         ReflectionTestUtils.setField(fakeJob, "id", 1);
-        ReflectionTestUtils.setField(fakeJob, "name", "백엔드"); // DTO 조회 시 직무명이 필요하므로 설정
+        ReflectionTestUtils.setField(fakeJob, "name", "백엔드");
 
         DiagnosisResult dr = createEntity(DiagnosisResult.class);
         ReflectionTestUtils.setField(dr, "user", user);
@@ -60,7 +60,7 @@ class DiagnosisRepositoryTest {
             ReflectionTestUtils.setField(weakness, "diagnosisResult", dr);
 
             Question fakeQuestion = createEntity(Question.class);
-            ReflectionTestUtils.setField(fakeQuestion, "id", i); // DB에 있는 질문 ID 활용
+            ReflectionTestUtils.setField(fakeQuestion, "id", i);
             ReflectionTestUtils.setField(weakness, "question", fakeQuestion);
 
             weaknessRepository.save(weakness);
