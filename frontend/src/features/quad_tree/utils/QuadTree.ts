@@ -1,6 +1,6 @@
 import { Point } from "@/features/quad_tree/types/point";
 import { Rect } from "@/features/quad_tree/types/rect";
-import { intersects, isPointInRect } from "@/shared/utils/rect_helper";
+import { isIntersected, isPointInRect } from "@/shared/utils/rect_helper";
 
 /**
  * QuadTree
@@ -74,7 +74,7 @@ export default class QuadTree {
 
     /**[DragMove] 범위 탐색 : 마우스 주변의 스냅 가능한 노드 확보 */
     getPointsInRange(range: Rect, found: Point[] = []): Point[] {
-        if (!intersects(this.bounds, range)) {
+        if (!isIntersected(this.bounds, range)) {
             return found;
         }
 

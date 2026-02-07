@@ -7,6 +7,6 @@ export const isPointInRect = (point: Point, rect: Rect): boolean => {
 };
 
 /** 두 사각형 영역이 서로 겹치는지 확인  */
-export const intersects = (rectA: Rect, rectB: Rect): boolean => {
+export const isIntersected = (rectA: Rect, rectB: Rect): boolean => {
     return !(rectB.minX > rectA.maxX || rectB.maxX < rectA.minX || rectB.minY > rectA.maxY || rectB.maxY < rectA.minY);
 };
