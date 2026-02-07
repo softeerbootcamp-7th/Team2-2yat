@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static com.yat2.episode.utils.TestEntityFactory.createEntity;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @SpringBootTest
@@ -75,15 +76,5 @@ class QuestionRepositoryTest {
         List<Question> result = questionRepository.findAllWithCompetency();
 
         assertThat(result.stream().anyMatch(res -> res.getContent().equals("유니크 질문 123"))).isTrue();
-    }
-
-    private <T> T createEntity(Class<T> clazz) {
-        try {
-            java.lang.reflect.Constructor<T> constructor = clazz.getDeclaredConstructor();
-            constructor.setAccessible(true);
-            return constructor.newInstance();
-        } catch (Exception e) {
-            throw new RuntimeException("엔티티 생성 실패", e);
-        }
     }
 }
